@@ -1,2 +1,2 @@
 # BSC
-pps
+programming principles and practices c++ second edition
