@@ -1,0 +1,63 @@
+rock paper scissors game
+main()
+{
+	//game() recursive call until exit
+}
+
+
+//Token type to build tokens
+tokens:  quit  
+	 name  
+	 invalid
+
+// Token Stream  type to hold token and evaluate against each grammar rule
+	//Token buffer
+	//void ignore()
+	//Token get()
+	//bool full
+	//putback()
+
+h = help screen
+n = name
+! = invalid 
+q or Q = quit
+a = name
+
+void game()
+{
+	grammar
+
+	win:
+	
+		rock > scissors
+		paper > rock
+		scissors > paper
+       
+	tie:
+	same choice
+
+        lose:
+        rock < paper
+	scisscors < rock
+	paper < scissors
+}
+
+
+TokenStream.get()
+{
+	//gets user input
+	// convert input to lowercase to accept both upper and lower string input
+	// use if else selection since we are evaluating strings
+	// if the input is invalid return invalid token
+	// if valid return key value pair
+	// if user enters q or Q return quit token and exit program
+	// if user presses h display a message explaining the program and restart the get process
+	// only take one selection at a time if user enters rock scissors clear the second string and
+		display a message use cin>> to cut off input at whitespace character
+}
+
+cleanup_mess()
+{
+	//purge all tokens/input buffer
+	//recover from thrown exception and restart the game
+}
