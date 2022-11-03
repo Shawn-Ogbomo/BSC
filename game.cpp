@@ -60,11 +60,11 @@ void game()
 	while (true) try
 	{
 		Token player1 = ts.get();
+		if (player1.kind == quit) return;
 		const int sim = randRange(0, 2);
 		if (WinsAgainst[player1.value] == sim) { std::cout << "You win...\n"; }
 		else if (WinsAgainst[sim] == player1.value) { std::cout << "You lose...\n"; }
 		else { std::cout << "Tie...\n"; }
-		continue;
 	}
 	catch (const std::exception& e)
 	{
