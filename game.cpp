@@ -1,3 +1,11 @@
+//Shawn Ogbomo
+//Rock,Paper,Scissors game
+//revision history
+// Replaces if else chain in game function with enum State and wins 3Against
+//Input from cin; output to cout.
+//	input comes from cin through token stream
+// H or h for help screen
+// q to exit
 #include <iostream>
 #include <string>
 #include <vector>
@@ -12,7 +20,7 @@ State WinsAgainst[3] = {
 	rock,
 	paper,
 };
-struct Token																																//composes token...
+struct Token																																//composes token based on input...
 {
 	char kind;
 	int value;
@@ -25,8 +33,7 @@ struct Token_stream																															// holds token...
 	Token get();
 };
 int randRange(int low, int high);
-int set_value(const std::string v);
-void game();
+void game();																																//rock paper scissors game
 void clean_up_mess();
 const std::string help = "h";
 const char quit = 'q';
@@ -37,6 +44,7 @@ Token_stream ts;
 std::vector<std::string> valid_options = { "rock","paper","scissors" };
 int main()
 {
+	std::cout << "Enter rock, paper, or scissors. \nPress h for instructions: ";
 	game();
 }
 int randRange(int low, int high)
@@ -52,7 +60,7 @@ int set_value(const std::string v)
 			return i;
 		}
 	}
-	throw std::runtime_error("\ninvalid input.\nRestarting...\n press ; to continue...\n");
+	throw std::runtime_error("\ninvalid input.\nRestarting...\npress ; to continue...\n");
 }
 void game()
 {
@@ -62,14 +70,16 @@ void game()
 		Token player1 = ts.get();
 		if (player1.kind == quit) return;
 		const int sim = randRange(0, 2);
-		if (WinsAgainst[player1.value] == sim) { std::cout << "You win...\n"; }
-		else if (WinsAgainst[sim] == player1.value) { std::cout << "You lose...\n"; }
+		if (WinsAgainst[player1.value] == sim) { std::cout << "Sim selected: " << valid_options[sim] << "\nYou win...\n"; }
+		else if (WinsAgainst[sim] == player1.value) { std::cout << "Sim selected: " << valid_options[sim] << "\nYou lose...\n"; }
 		else { std::cout << "Tie...\n"; }
+		std::cout << "Keep playing... \npress q to quit...\n\n";
 	}
 	catch (const std::exception& e)
 	{
 		std::cerr << e.what() << "\n";
 		clean_up_mess();
+		std::cout << "Enter rock, paper, or scissors. \nPress h for instructions: ";
 	}
 }
 void clean_up_mess()
@@ -92,7 +102,7 @@ Token Token_stream::get()
 	}
 	else if (choice == help)
 	{
-		std::cout << "This program plays rock paper scissors with a simulator.\nEnter the string rock, paper, or scissors in upper or lowercase."
+		std::cout << "\nThis program plays rock paper scissors with a simulator.\nEnter the string rock, paper, or scissors in upper or lowercase."
 			<< "\nTo quit, press q\nTo display instructions press h";
 		throw std::runtime_error("\nrestarting...\npress ; to continue...");
 	}
