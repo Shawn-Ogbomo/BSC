@@ -3,7 +3,7 @@
 //revision history
 // Replaces if else chain in game function with enum State and wins 3Against
 //Input from cin; output to cout.
-//	input comes from cin through token stream
+//input comes from cin through token stream
 // H or h for help screen
 // q to exit
 #include <iostream>
