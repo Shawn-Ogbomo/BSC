@@ -1,7 +1,7 @@
 //Shawn Ogbomo
 //Rock,Paper,Scissors game
 //revision history
-// Replaces if else chain in game function with enum State and wins 3Against
+// Replaces if else chain in game function with enum State and winsAgainst
 //Input from cin; output to cout.
 //input comes from cin through token stream
 // H or h for help screen
