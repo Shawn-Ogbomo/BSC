@@ -3,6 +3,14 @@
 // works on integer values  only
 // replaced cin with get in token stream to read whitespace
 // changed terminate command from exit to q
+// added istream& parameter to token stream constructor
+// remove global token stream
+// added token stream parameter to statement
+// added token stream parameter to declaration
+// added token stream parameter to expression
+// added token stream parameter to term
+// added token stream parameter to primary
+// added token stream parameter to clean_up_mess
 //This program implements a basic expression calculator.
 //Input from cin; output to cout.
 //The grammar for input is :
@@ -81,7 +89,7 @@ class Token_stream																											// Holds a token
 	bool full;
 	Token buffer;
 public:
-	Token_stream() :full(0), buffer(0) {}
+	Token_stream(std::istream&) :full(0), buffer(0) {}
 	Token get();
 	void unget(Token t) {
 		buffer = t; full = true;
@@ -196,7 +204,6 @@ void Token_stream::ignore(char c)																												// ignores print ch
 	while (std::cin >> ch)
 		if (ch == c) return;
 }
-Token_stream ts;
 struct Variable
 {
 	char type;
@@ -206,7 +213,7 @@ struct Variable
 	Variable(char kind, std::string n, double v) : type(kind), name(n), value(v) {}
 	bool is_constant() const;
 };
-double expression();
+double expression(Token_stream& ts);
 class Symbol_table
 {
 public:
@@ -223,7 +230,7 @@ public:
 			if (var_table[i].name == s) return true;
 		return false;
 	}
-	double declaration()
+	double declaration(Token_stream& ts)
 	{
 		char type = 'V';
 		Token t = ts.get();
@@ -237,7 +244,7 @@ public:
 		if (is_declared(name)) std::cerr << name << " declared twice\n";
 		Token t2 = ts.get();
 		if (t2.kind != '=') std::cerr << "= missing in declaration of " << name << "\n";
-		double d = expression();
+		double d = expression(ts);
 		var_table.push_back(Variable(type, name, d));
 		return d;
 	}
@@ -258,22 +265,22 @@ private:
 };
 Symbol_table st;
 
-double primary()
+double primary(Token_stream& ts)
 {
 	Token t = ts.get();
 	switch (t.kind)
 	{
 	case '(':
 	{
-		double d = expression();
+		double d = expression(ts);
 		t = ts.get();
 		if (t.kind != ')') std::cerr << "')' expected";
 		return d;
 	}
 	case '-':
-		return -primary();
+		return -primary(ts);
 	case'+':
-		return +primary();
+		return +primary(ts);
 	case number:
 		return t.value;
 	case name:
@@ -285,9 +292,9 @@ double primary()
 		std::cerr << "primary expected\n";
 	}
 }
-double term()
+double term(Token_stream& ts)
 {
-	double left = primary();
+	double left = primary(ts);
 	while (true) {
 		Token t = ts.get();
 		switch (t.kind) {
@@ -302,23 +309,23 @@ double term()
 		}
 		case'^':
 		{
-			double right = primary();
+			double right = primary(ts);
 			left = std::pow(left, right);
 			return left;
 			break;
 		}
 		case '*':
-			left *= primary();
+			left *= primary(ts);
 			break;
 		case '/':
-		{	double d = primary();
+		{	double d = primary(ts);
 		if (d == 0) std::cerr << "divide by zero";
 		left /= d;
 		break;
 		}
 		case'%':
 		{
-			double d = primary();
+			double d = primary(ts);
 			if (d == 0) std::cerr << "mod by zero";
 			left = std::fmod(left, d);
 			break;
@@ -329,7 +336,7 @@ double term()
 			t = ts.get();
 			if (t.kind == '=')
 			{
-				double result = expression();
+				double result = expression(ts);
 				st.set_value(temp_name, result);
 				return result;
 			}
@@ -340,17 +347,17 @@ double term()
 		}
 	}
 }
-double expression()
+double expression(Token_stream& ts)
 {
-	double left = term();
+	double left = term(ts);
 	while (true) {
 		Token t = ts.get();
 		switch (t.kind) {
 		case '+':
-			left += term();
+			left += term(ts);
 			break;
 		case '-':
-			left -= term();
+			left -= term(ts);
 			break;
 		default:
 			ts.unget(t);
@@ -359,24 +366,24 @@ double expression()
 	}
 }
 
-double statement()
+double statement(Token_stream& ts)
 {
 	Token t = ts.get();
 	switch (t.kind) {
 	case let:
-		return st.declaration();
+		return st.declaration(ts);
 	default:
 		ts.unget(t);
-		return expression();
+		return expression(ts);
 	}
 }
-void clean_up_mess()
+void clean_up_mess(Token_stream& ts)
 {
 	ts.ignore(print);
 }
 const std::string prompt = "> ";
 const std::string result = "= ";
-void calculate()
+void calculate(Token_stream& ts)
 {
 	while (true) try
 	{
@@ -385,17 +392,18 @@ void calculate()
 		while (t.kind == print) t = ts.get();
 		if (t.kind == quit) return;
 		ts.unget(t);
-		std::cout << result << statement() << std::endl;
+		std::cout << result << statement(ts) << std::endl;
 	}
 	catch (std::runtime_error& e) {
 		std::cerr << e.what() << std::endl;
-		clean_up_mess();
+		clean_up_mess(ts);
 	}
 }
 int main()
 {
 	try {
-		calculate();
+		Token_stream ts{ std::cin };
+		calculate(ts);
 		return 0;
 	}
 	catch (std::exception& e) {
