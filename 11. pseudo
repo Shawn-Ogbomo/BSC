@@ -1,0 +1,26 @@
+// finds the smallest and largets element of a vector; computes mean and median.
+void calc(const std::vector<double>&vals, double &smallest, double &largest,double &mean, double &median) 
+{
+    // size must be atleast 2 for the function to execute else display error msg...
+    //sort the vector lexicographically 
+    //vals.front() is smallest
+    //vals.back() is greatest
+    
+  //calculate mean
+  for(unsigned int i = 0; i < vals.size(); ++i)
+  {
+    mean+=vals[i];
+  }
+  mean/vals.size();
+
+
+  //calculate median 
+  //check for odd and even
+  //odd set
+  //5 6 7 8 9 10 11 
+  //cut in half divide size by half if the size of the set is odd
+
+  //even set
+  //5 6 7 8 9 10 
+  //add two middles and divide by 2
+{
