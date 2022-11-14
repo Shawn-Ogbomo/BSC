@@ -18,21 +18,21 @@ private:
 class Date
 {
 public:
-	Date(Year yy, int mm, int dd);
+	Date(Year yy, Month mm, int dd);
 	void add_day(int n);
 	int year() const { return y.year(); }
-	int month() const { return m; }
+	int month() const { return static_cast<int>(m); }
 	int day() const { return d; }
 private:
 	Year y;
-	int m;
+	Month m;
 	int d;
 };
-Date::Date(Year yy, int mm, int dd)
+Date::Date(Year yy, Month mm, int dd)
 	:y{ yy }, m{ mm }, d{ dd }
 {
 	// check that (y,m,d) is a valid date
-	if ((m < static_cast<int>(Month::jan)) || (m > static_cast<int>(Month::dec)) || (d < 1 || d > 31))
+	if ((static_cast<int>(m) < static_cast<int>(Month::jan)) || (static_cast<int>(m) > static_cast<int>(Month::dec)) || (d < 1 || d > 31))
 	{
 		throw std::runtime_error("Invalid date...");
 	}
@@ -58,7 +58,7 @@ int main()
 	// finally output today and tomorrow using a << defined in 9.8
 	try
 	{
-		Date today{ 1999, 5, 4 };
+		Date today{ 1999, Month::may, 4 };
 		Date tomorrow = today;
 		tomorrow.add_day(1);
 		std::cout << today << " " << tomorrow;
