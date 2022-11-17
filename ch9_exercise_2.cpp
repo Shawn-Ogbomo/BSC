@@ -20,7 +20,18 @@ int main()
 	Name_pairs people;
 	people.read_names();
 	people.read_ages();
+	people.sort();
 	people.print();
+}
+double search(const std::vector<std::string>& original, const std::string target, const std::vector<double>& vals)
+{
+	for (unsigned int i = 0; i < original.size(); ++i)
+	{
+		if (target == original[i])
+		{
+			return vals[i];
+		}
+	}
 }
 void Name_pairs::read_names()
 {
@@ -71,15 +82,21 @@ void Name_pairs::print() const
 {
 	if (names.size())
 	{
-		for (int i{}; i < names.size(); ++i)
+		for (unsigned int i{}; i < names.size(); ++i)
 		{
 			std::cout << names[i] << " " << ages[i] << "\n";
 		}
-		return;
 	}
 	std::cout << "exiting...";
 }
-
 void Name_pairs::sort()
 {
+	std::vector<std::string> names_cpy = names;
+	std::vector<double> ages_new;
+	std::sort(names.begin(), names.end());
+	for (const auto& target : names)
+	{
+		ages_new.push_back(search(names_cpy, target, ages));
+	}
+	ages = ages_new;
 }
