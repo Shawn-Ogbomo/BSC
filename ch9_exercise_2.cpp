@@ -6,22 +6,28 @@
 class Name_pairs
 {
 public:
-	void read_names();
-	void read_ages();
-	void print() const;
-	void sort();
-private:
 	std::vector<std::string> names;
 	std::vector<double> ages;
+	void read_names();
+	void read_ages();
+	void sort();
+private:
 };
+bool operator==(const Name_pairs& a, const Name_pairs& b);
+bool operator!=(const Name_pairs& a, const Name_pairs& b);
+std::ostream& operator<<(std::ostream& os, Name_pairs n);
+
 const std::string quit = "q";
 int main()
 {
-	Name_pairs people;
-	people.read_names();
-	people.read_ages();
-	people.sort();
-	people.print();
+	Name_pairs pair1;
+	pair1.read_names();
+	pair1.read_ages();
+	pair1.sort();
+	Name_pairs pair2;
+	pair2.read_names();
+	pair2.read_ages();
+	pair2.sort();
 }
 double search(const std::vector<std::string>& original, const std::string target, const std::vector<double>& vals)
 {
@@ -78,17 +84,6 @@ void Name_pairs::read_ages()
 		}
 	}
 }
-void Name_pairs::print() const
-{
-	if (names.size())
-	{
-		for (unsigned int i{}; i < names.size(); ++i)
-		{
-			std::cout << names[i] << " " << ages[i] << "\n";
-		}
-	}
-	std::cout << "exiting...";
-}
 void Name_pairs::sort()
 {
 	std::vector<std::string> names_cpy = names;
@@ -99,4 +94,30 @@ void Name_pairs::sort()
 		ages_new.push_back(search(names_cpy, target, ages));
 	}
 	ages = ages_new;
+}
+
+bool operator==(const Name_pairs& a, const Name_pairs& b)
+{
+	return a.ages == b.ages && a.names == b.names;
+}
+
+bool operator!=(const Name_pairs& a, const Name_pairs& b)
+{
+	return a.ages != b.ages && a.names != b.names;
+}
+std::ostream& operator<<(std::ostream& os, Name_pairs n)
+{
+	if (n.names.size())
+	{
+		for (unsigned int i{}; i < n.names.size(); ++i)
+		{
+			os << n.names[i] << " " << n.ages[i] << "\n";
+		}
+		return os;
+	}
+	else
+	{
+		os << "You didn't enter any names value pairs....";
+		return os;
+	}
 }
