@@ -1,3 +1,5 @@
+#pragma once
+#include <stdexcept>
 namespace Date_lib {
 	enum class Month
 	{

@@ -1,4 +1,3 @@
-#include <stdexcept>
 #include "date.h"
 Date_lib::Date::Date(Year yy, Month mm, int dd)
 	:y{ yy }, m{ mm }, d{ dd }
