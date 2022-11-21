@@ -14,6 +14,10 @@ private:
 	std::string first_name;
 	std::string last_name;
 };
+enum class Genre
+{
+	fiction = 1, nonfiction, periodical, biography, children
+};
 
 class Book
 {
@@ -22,14 +26,16 @@ public:
 	std::string get_isbn() const;
 	std::string get_title() const;
 	std::string get_author() const;
+	Genre get_genre() const;
 	Date_lib::Date get_copyright_date() const;
 	void checkout_book();
-	Book(std::string book_isbn, std::string book_name, Author book_author, Date_lib::Date book_copyright_date);
+	Book(std::string book_isbn, std::string book_name, Author book_author, Date_lib::Date book_copyright_date, Genre book_genre);
 private:
 	std::string isbn;
 	std::string title;
 	Author author;
 	Date_lib::Date copyright_date;
+	Genre genre;
 	bool is_valid();
 	bool checked_out;
 };

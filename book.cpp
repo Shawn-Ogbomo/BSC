@@ -13,6 +13,11 @@ std::string Book::get_author() const
 	return author.get_first_name() + " " + author.get_last_name();
 }
 
+Genre Book::get_genre() const
+{
+	return genre;
+}
+
 Date_lib::Date Book::get_copyright_date() const
 {
 	return copyright_date;
@@ -28,11 +33,12 @@ void Book::checkout_book()
 	std::cout << "The book: " << get_title() << " has already been checked out. Please try checking out another book instead if interested";
 }
 
-Book::Book(std::string book_isbn, std::string book_name, Author book_author, Date_lib::Date book_copyright_date)
+Book::Book(std::string book_isbn, std::string book_name, Author book_author, Date_lib::Date book_copyright_date, Genre book_genre)
 	:isbn{ book_isbn },
 	title{ book_name },
 	author{ book_author },
 	copyright_date{ book_copyright_date },
+	genre{ book_genre },
 	checked_out{ false }
 {
 	if (!is_valid())
@@ -43,7 +49,7 @@ Book::Book(std::string book_isbn, std::string book_name, Author book_author, Dat
 
 bool Book::is_valid()
 {
-	if (isbn.size() == valid_isbn_size && std::count(isbn.begin(), isbn.end(), '-') == 3)
+	if ((isbn.size() == valid_isbn_size) && (std::count(isbn.begin(), isbn.end(), '-') == 3) && (genre <= Genre::children))
 	{
 		for (unsigned int i = 0, count = 1; (i < valid_isbn_size) && (isdigit(isbn[i]) || isalpha(isbn.back())); ++i, ++count)
 		{
@@ -77,5 +83,7 @@ std::ostream& operator<<(std::ostream& os, const Book& a)
 		<< "\n"
 		<< a.get_author()
 		<< "\n"
-		<< a.get_isbn();
+		<< a.get_isbn()
+		<< "\n"
+		<< static_cast<int>(a.get_genre());
 }
