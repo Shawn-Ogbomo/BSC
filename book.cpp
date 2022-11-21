@@ -1,4 +1,3 @@
-#include<iostream>
 #include "book.h"
 std::string Book::get_isbn() const
 {
@@ -11,7 +10,7 @@ std::string Book::get_title() const
 
 std::string Book::get_author() const
 {
-	return author;
+	return author.get_first_name() + " " + author.get_last_name();
 }
 
 Date_lib::Date Book::get_copyright_date() const
@@ -29,7 +28,7 @@ void Book::checkout_book()
 	std::cout << "The book: " << get_title() << " has already been checked out. Please try checking out another book instead if interested";
 }
 
-Book::Book(std::string book_isbn, std::string book_name, std::string book_author, Date_lib::Date book_copyright_date)
+Book::Book(std::string book_isbn, std::string book_name, Author book_author, Date_lib::Date book_copyright_date)
 	:isbn{ book_isbn },
 	title{ book_name },
 	author{ book_author },
@@ -38,17 +37,25 @@ Book::Book(std::string book_isbn, std::string book_name, std::string book_author
 {
 	if (!is_valid())
 	{
-		throw std::runtime_error("isbn or author is in invalid format...");
+		throw std::runtime_error("isbn is in invalid format...");
 	}
 }
 
 bool Book::is_valid()
 {
-	for (const auto& target : author)
+	if (isbn.size() == valid_isbn_size && std::count(isbn.begin(), isbn.end(), '-') == 3)
 	{
-		if ((target < 65 || target > 90) && (target < 97 || target > 122) && (!isspace(target)))
+		for (unsigned int i = 0, count = 1; (i < valid_isbn_size) && (isdigit(isbn[i]) || isalpha(isbn.back())); ++i, ++count)
 		{
-			return false;
+			if (count % 4 == 0 && (isbn[i + 1] == '-'))
+			{
+				++i;
+			}
+			else if (i == (valid_isbn_size - 1))
+			{
+				return true;
+			}
 		}
 	}
+	return false;
 }
