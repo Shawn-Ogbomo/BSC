@@ -59,3 +59,23 @@ bool Book::is_valid()
 	}
 	return false;
 }
+
+bool operator==(const Book& a, const Book& b)
+{
+	return a.get_isbn() == b.get_isbn();
+}
+
+bool operator!=(const Book& a, const Book& b)
+{
+	return a.get_isbn() != b.get_isbn();
+}
+
+std::ostream& operator<<(std::ostream& os, const Book& a)
+{
+	return os
+		<< a.get_title()
+		<< "\n"
+		<< a.get_author()
+		<< "\n"
+		<< a.get_isbn();
+}

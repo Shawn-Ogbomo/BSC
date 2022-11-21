@@ -33,3 +33,6 @@ private:
 	bool is_valid();
 	bool checked_out;
 };
+bool operator == (const Book& a, const Book& b);
+bool operator != (const Book& a, const Book& b);
+std::ostream& operator << (std::ostream& os, const Book& a);
