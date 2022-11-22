@@ -18,7 +18,7 @@ public:
 	std::string get_author() const;
 	Genre get_genre() const;
 	Date_lib::Date get_copyright_date() const;
-	void checkout_book();
+	bool checkout_book();
 	Book(std::string book_isbn, std::string book_name, std::string book_author, Date_lib::Date book_copyright_date, Genre book_genre);
 private:
 	std::string isbn;
@@ -26,7 +26,6 @@ private:
 	std::string author;
 	Date_lib::Date copyright_date;
 	Genre genre;
-	//bool is_valid();
 	bool checked_out;
 };
 bool operator == (const Book& a, const Book& b);

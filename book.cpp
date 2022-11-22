@@ -19,14 +19,15 @@ Date_lib::Date Book::get_copyright_date() const
 {
 	return copyright_date;
 }
-void Book::checkout_book()
+bool Book::checkout_book()
 {
 	if (!checked_out)
 	{
 		checked_out = true;
-		return;
+		return true;
 	}
 	std::cout << "The book: " << get_title() << " has already been checked out. Please try checking out another book instead if interested";
+	return false;
 }
 Book::Book(std::string book_isbn, std::string book_name, std::string book_author, Date_lib::Date book_copyright_date, Genre book_genre)
 	:isbn{ book_isbn },
