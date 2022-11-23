@@ -19,6 +19,7 @@ public:
 	Genre get_genre() const;
 	Date_lib::Date get_copyright_date() const;
 	bool checkout_book();
+	//Book();
 	Book(std::string book_isbn, std::string book_name, std::string book_author, Date_lib::Date book_copyright_date, Genre book_genre);
 private:
 	std::string isbn;

@@ -1,6 +1,15 @@
+#include<iostream>
 #include "patron.h"
+//Patron::Patron()
+//	:name{},
+//	card_number{},
+//	fees{}
+//{
+//}
 Patron::Patron(std::string member_name, std::string member_card_number)
-	:name{ member_name }, card_number{ member_card_number }, fees{ 0.00 }, in_debt{ false }
+	: name{ member_name },
+	card_number{ member_card_number },
+	fees{ 0.00 }
 {
 	if (!is_valid())
 	{
@@ -17,6 +26,7 @@ std::string Patron::get_card_number() const
 }
 double Patron::get_fees() const
 {
+	if (fees > 0) { std::cout << get_name() << " Owes " << "$" << fees; }
 	return fees;
 }
 bool Patron::is_valid()
@@ -41,8 +51,4 @@ bool Patron::is_valid()
 		return true;
 	}
 	return false;
-}
-bool debt(const Patron& member)
-{
-	return member.get_fees() < 0;
 }

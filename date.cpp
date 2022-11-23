@@ -7,3 +7,10 @@ Date_lib::Date::Date(Year yy, Month mm, int dd)
 		throw std::runtime_error("Invalid date...");
 	}
 }
+
+//Date_lib::Date::Date()
+//	:y{ 2002 },
+//	m{ Date_lib::Month::may },
+//	d{ 03 }
+//{
+//}
