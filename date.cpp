@@ -8,9 +8,7 @@ Date_lib::Date::Date(Year yy, Month mm, int dd)
 	}
 }
 
-//Date_lib::Date::Date()
-//	:y{ 2002 },
-//	m{ Date_lib::Month::may },
-//	d{ 03 }
-//{
-//}
+bool Date_lib::leapyear(int y)
+{
+	return false;
+}

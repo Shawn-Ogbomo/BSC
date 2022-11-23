@@ -20,7 +20,6 @@ namespace Date_lib {
 	{
 	public:
 		Date(Year yy, Month mm, int dd);
-		//Date();
 		int year() const { return y.year(); }
 		Month month() const { return m; }
 		int day() const { return d; }
@@ -29,4 +28,5 @@ namespace Date_lib {
 		Month m;
 		int d;
 	};
+	bool leapyear(int y);
 }
