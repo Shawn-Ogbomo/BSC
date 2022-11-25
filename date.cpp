@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "date.h"
 Date_lib::Date::Date(Year yy, Month mm, int dd)
 	:y{ yy }, m{ mm }, d{ dd }
@@ -14,7 +15,7 @@ bool Date_lib::leapyear(int y)
 	return y % 4 == 0;
 }
 
-int Date_lib::next_workday(const Date& d)		//use Jan not may
+int Date_lib::next_workday(const Date& d)
 {
 	if (d.day() % 7 == 0)
 	{
@@ -27,10 +28,28 @@ int Date_lib::next_workday(const Date& d)		//use Jan not may
 	return d.day() + 1;
 }
 
-int Date_lib::week_of_the_year(const Date& d)
+double Date_lib::week_of_the_year(const Date& d)
 {
-	static Date_lib::Date sample{ 1999, Date_lib::Month::jan, 01 };
-	if (d.day())
+	constexpr double weeks_in_month = 4.3;
+	static std::vector<std::vector<int>> ranges
+	{ {1, 2, 3, 4, 5, 6, 7},
+		{ 8,9,10,11,12,13,14 },
+		{ 15,16,17,18,19,20,21 },
+		{ 22,23,24,25,26,27,28 },
+		{ 29,30,31 } };
+	double months_in_weeks = weeks_in_month * (static_cast<int>(d.month()) - 1);
+	for (unsigned int i = 0; i < ranges.size(); ++i)
 	{
+		for (unsigned int j = 0; j < ranges[i].size(); ++j)
+		{
+			if (d.day() == ranges[i][j] && i == (ranges.size() - 1))
+			{
+				return months_in_weeks += weeks_in_month;
+			}
+			if (d.day() == ranges[i][j])
+			{
+				return months_in_weeks += (i + 1);
+			}
+		}
 	}
 }
