@@ -29,4 +29,6 @@ namespace Date_lib {
 		int d;
 	};
 	bool leapyear(int y);
+	int next_workday(const Date& d);
+	int week_of_the_year(const Date& d);
 }
