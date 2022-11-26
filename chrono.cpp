@@ -9,24 +9,27 @@ const Chrono::Date& default_date()
 Chrono::Date::Date()
 	:y{ default_date().year() },
 	m{ default_date().month() },
-	d{ default_date().day() }
+	d{ default_date().day() },
+	days_since_jan_1_1970{ }
 {
 }
-Chrono::Date::Date(Year yy, Month mm, int dd)
+Chrono::Date::Date(int yy, Month mm, int dd)
 	: y{ yy }, m{ mm }, d{ dd }
 {
-	if ((static_cast<int>(m) < static_cast<int>(Month::jan)) || (static_cast<int>(m) > static_cast<int>(Month::dec)) || (d < 1 || d > 31))
+	if (y < default_date().year() || m < default_date().month() || d < default_date().day() || d > 31)
 	{
 		throw std::runtime_error("Invalid date...");
 	}
-	//days_since_jan_1_1970 = ((yy.year() - 1970) * (days_in_a_year)) + (d);
 }
-
-bool Chrono::leapyear(Year y)
+Chrono::Day Chrono::day_of_the_week(const Date& d)
 {
-	return y.year() % 4 == 0;
+	return Day();
 }
 
+bool Chrono::leapyear(int yy)
+{
+	return yy % 4 == 0;
+}
 int Chrono::next_workday(const Date& d)
 {
 	if (d.day() % 7 == 0)
@@ -64,7 +67,7 @@ double Chrono::week_of_the_year(const Date& d)
 		}
 	}
 }
-bool Chrono::is_date(Year yr, Month m, int d)
+bool Chrono::is_date(int yy, Month m, int d)
 {
 	if (d <= 0) return false;
 	if (m < Month::jan || Month::dec < m) return false;
@@ -72,7 +75,7 @@ bool Chrono::is_date(Year yr, Month m, int d)
 	switch (m)
 	{
 	case Month::feb:
-		days_in_month = leapyear(yr) ? 29 : 28;
+		days_in_month = leapyear(yy) ? 29 : 28;
 		break;
 	case Month::apr: case Month::jun: case Month::sep: case Month::nov:
 		days_in_month = 30;
@@ -83,13 +86,14 @@ bool Chrono::is_date(Year yr, Month m, int d)
 	if (days_in_month < d) return false;
 	return true;
 }
-bool Chrono::	operator ==(const Date& a, const Date& b)
+
+bool Chrono::operator ==(const Date& a, const Date& b)
 {
 	return a.year() == b.year()
 		&& a.month() == b.month()
 		&& a.day() == b.day();
 }
-bool Chrono::	operator !=(const Date& a, const Date& b)
+bool Chrono::operator !=(const Date& a, const Date& b)
 {
 	return !(a == b);
 }
