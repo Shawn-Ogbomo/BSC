@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include<iostream>
-#include "date.h"
+#include "chrono.h"
 
 enum class Genre
 {
@@ -17,15 +17,14 @@ public:
 	std::string get_title() const;
 	std::string get_author() const;
 	Genre get_genre() const;
-	Date_lib::Date get_copyright_date() const;
+	Chrono::Date get_copyright_date() const;
 	bool checkout_book();
-	//Book();
-	Book(std::string book_isbn, std::string book_name, std::string book_author, Date_lib::Date book_copyright_date, Genre book_genre);
+	Book(std::string book_isbn, std::string book_name, std::string book_author, Chrono::Date book_copyright_date, Genre book_genre);
 private:
 	std::string isbn;
 	std::string title;
 	std::string author;
-	Date_lib::Date copyright_date;
+	Chrono::Date copyright_date;
 	Genre genre;
 	bool checked_out;
 };

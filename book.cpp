@@ -15,7 +15,7 @@ Genre Book::get_genre() const
 {
 	return genre;
 }
-Date_lib::Date Book::get_copyright_date() const
+Chrono::Date Book::get_copyright_date() const
 {
 	return copyright_date;
 }
@@ -26,20 +26,11 @@ bool Book::checkout_book()
 		checked_out = true;
 		return true;
 	}
-	std::cout << "The book: " << get_title() << " has already been checked out. Please try checking out another book instead if interested";
+	std::cout << "The book: " << get_title() << " has already been checked out. Please try checking out another book instead if interested\n";
 	return false;
 }
-//Book::Book()
-//	:isbn{},
-//	title{},
-//	author{},
-//	genre{},
-//	copyright_date{ 1978,Date_lib::Month::may,01 },
-//	checked_out{ false }
-//{
-//}
 
-Book::Book(std::string book_isbn, std::string book_name, std::string book_author, Date_lib::Date book_copyright_date, Genre book_genre)
+Book::Book(std::string book_isbn, std::string book_name, std::string book_author, Chrono::Date book_copyright_date, Genre book_genre)
 	:isbn{ book_isbn },
 	title{ book_name },
 	author{ book_author },
@@ -86,5 +77,6 @@ std::ostream& operator<<(std::ostream& os, const Book& a)
 		<< "\n"
 		<< a.get_isbn()
 		<< "\n"
-		<< static_cast<int>(a.get_genre());
+		<< static_cast<int>(a.get_genre())
+		<< "\n\n";
 }

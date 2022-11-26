@@ -1,17 +1,21 @@
 #include<iostream>
 #include "patron.h"
-//Patron::Patron()
-//	:name{},
-//	card_number{},
-//	fees{}
-//{
-//}
 Patron::Patron(std::string member_name, std::string member_card_number)
 	: name{ member_name },
 	card_number{ member_card_number },
 	fees{ 0.00 }
 {
 	if (!is_valid())
+	{
+		throw std::runtime_error("Invalid member credentials...");
+	}
+}
+Patron::Patron(std::string member_name, std::string member_card_number, double debt)
+	:name{ member_name },
+	card_number{ member_card_number },
+	fees{ debt }
+{
+	if (!is_valid() || debt < 0)
 	{
 		throw std::runtime_error("Invalid member credentials...");
 	}
@@ -26,7 +30,6 @@ std::string Patron::get_card_number() const
 }
 double Patron::get_fees() const
 {
-	if (fees > 0) { std::cout << get_name() << " Owes " << "$" << fees; }
 	return fees;
 }
 bool Patron::is_valid()
@@ -51,4 +54,10 @@ bool Patron::is_valid()
 		return true;
 	}
 	return false;
+}
+
+bool in_debt(const Patron& member)
+{
+	if (member.get_fees() > 0) { std::cout << member.get_name() << " Owes " << "$" << member.get_fees() << "\n"; }
+	return member.get_fees() > 0;
 }
