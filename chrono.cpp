@@ -16,21 +16,29 @@ Chrono::Date::Date()
 Chrono::Date::Date(int yy, Month mm, int dd)
 	: y{ yy }, m{ mm }, d{ dd }
 {
-	if (y < default_date().year() || m < default_date().month() || d < default_date().day() || d > 31)
+	if ((!is_date(y, m, d)) || y < min_year)
 	{
 		throw std::runtime_error("Invalid date...");
 	}
+	days_since_jan_1_1970 = (((yy - min_year) * (365)) + (static_cast<int>(mm) - static_cast<int>(Month::jan)) * (30.4167) + (dd - static_cast<int>(Day::sunday)));
 }
 Chrono::Day Chrono::day_of_the_week(const Date& d)
 {
-	return Day();
+	if (d.day() % 7 == 0)
+	{
+		return Day::saturday;
+	}
+	else if (d.day() > 7)
+	{
+		return static_cast<Day>(d.day() % 7);
+	}
+	return static_cast<Day>(d.day());
 }
-
 bool Chrono::leapyear(int yy)
 {
 	return yy % 4 == 0;
 }
-int Chrono::next_workday(const Date& d)
+int Chrono::next_workday(const Date& d)					 //fix this...
 {
 	if (d.day() % 7 == 0)
 	{
@@ -42,7 +50,7 @@ int Chrono::next_workday(const Date& d)
 	}
 	return d.day() + 1;
 }
-double Chrono::week_of_the_year(const Date& d)
+double Chrono::week_of_the_year(const Date& d)				//fix this...
 {
 	constexpr double weeks_in_month = 4.3;
 	static std::vector<std::vector<int>> ranges
@@ -86,6 +94,10 @@ bool Chrono::is_date(int yy, Month m, int d)
 	if (days_in_month < d) return false;
 	return true;
 }
+
+//Chrono::Date Chrono::next_sunday(const Date& d)
+//{
+//}
 
 bool Chrono::operator ==(const Date& a, const Date& b)
 {

@@ -11,6 +11,7 @@ namespace Chrono {
 	};
 	class Date
 	{
+		static constexpr int min_year = 1970;
 	public:
 		Date();
 		Date(int yy, Month mm, int dd);
@@ -27,6 +28,7 @@ namespace Chrono {
 	int next_workday(const Date& d);
 	double week_of_the_year(const Date& d);
 	bool is_date(int yy, Month m, int d);
+	//Date next_sunday(const Date& d);
 	Chrono::Day day_of_the_week(const Date& d);
 	bool operator ==(const Date& a, const Date& b);
 	bool operator !=(const Date& a, const Date& b);
