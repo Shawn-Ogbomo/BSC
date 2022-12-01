@@ -46,6 +46,7 @@ void Chrono::Date::add_month(int n)
 	if (month_to_int > static_cast<int>(Month::dec))
 	{
 		m = static_cast<Month>((month_to_int % static_cast<int>(Month::dec)));
+		add_year(month_to_int / 12);
 		return;
 	}
 	m = static_cast<Month>(month_to_int);
