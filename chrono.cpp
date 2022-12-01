@@ -14,13 +14,58 @@ Chrono::Date::Date()
 {
 }
 Chrono::Date::Date(int yy, Month mm, int dd)
-	: y{ yy }, m{ mm }, d{ dd }
+	:y{ yy },
+	m{ mm },
+	d{ dd }
 {
 	if ((!is_date(y, m, d)) || y < min_year)
 	{
 		throw std::runtime_error("Invalid date...");
 	}
 	days_since_jan_1_1970 = (((yy - min_year) * (365)) + (static_cast<int>(mm) - static_cast<int>(Month::jan)) * (30.4167) + (dd - static_cast<int>(Day::sunday)));
+}
+int Chrono::Date::days_in_the_month() const
+{
+	int days_in_month = 31;
+	switch (m)
+	{
+	case Month::feb:
+		days_in_month = leapyear(y) ? 29 : 28;
+		break;
+	case Month::apr: case Month::jun: case Month::sep: case Month::nov:
+		days_in_month = 30;
+		break;
+	default:
+		break;
+	}
+	return days_in_month;
+}
+void Chrono::Date::add_month(int n)
+{
+	const int month_to_int = static_cast<int>(month()) + n;
+	if (month_to_int > static_cast<int>(Month::dec))
+	{
+		m = static_cast<Month>((month_to_int % static_cast<int>(Month::dec)));
+		return;
+	}
+	m = static_cast<Month>(month_to_int);
+}
+void Chrono::Date::add_year(int n)
+{
+	y += n;
+}
+void Chrono::Date::add_day(int n)
+{
+	d += n;
+	while (d > days_in_the_month())
+	{
+		d -= days_in_the_month();
+		add_month(1);
+		if (m == Month::jan)
+		{
+			add_year(1);
+		}
+	}
 }
 Chrono::Day Chrono::day_of_the_week(const Date& d)
 {
@@ -34,23 +79,24 @@ Chrono::Day Chrono::day_of_the_week(const Date& d)
 	}
 	return static_cast<Day>(d.day());
 }
+
 bool Chrono::leapyear(int yy)
 {
 	return yy % 4 == 0;
 }
-int Chrono::next_workday(const Date& d)					 //fix this...
-{
-	if (d.day() % 7 == 0)
-	{
-		return d.day() + 2;
-	}
-	else if (d.day() == 31)
-	{
-		return 1;
-	}
-	return d.day() + 1;
-}
-double Chrono::week_of_the_year(const Date& d)				//fix this...
+//Chrono::Date Chrono::next_workday(const Date& d)								 //fix this...
+//{
+//	if (d.day() % static_cast<int>(Day::saturday) == 0)
+//	{
+//		return d.day() + 2;
+//	}
+//	else if (d.day() == 31)
+//	{
+//		return 1;
+//	}
+//	return d.day() + 1;
+//}
+double Chrono::week_of_the_year(const Date& d)									//fix this...
 {
 	constexpr double weeks_in_month = 4.3;
 	static std::vector<std::vector<int>> ranges
