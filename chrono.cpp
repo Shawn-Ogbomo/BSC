@@ -80,48 +80,51 @@ Chrono::Day Chrono::day_of_the_week(const Date& d)
 	}
 	return static_cast<Day>(d.day());
 }
-
 bool Chrono::leapyear(int yy)
 {
 	return yy % 4 == 0;
 }
-//Chrono::Date Chrono::next_workday(const Date& d)								 //fix this...
-//{
-//	if (d.day() % static_cast<int>(Day::saturday) == 0)
-//	{
-//		return d.day() + 2;
-//	}
-//	else if (d.day() == 31)
-//	{
-//		return 1;
-//	}
-//	return d.day() + 1;
-//}
-double Chrono::week_of_the_year(const Date& d)									//fix this...
+Chrono::Date Chrono::next_workday(const Date& d)
 {
-	constexpr double weeks_in_month = 4.3;
-	static std::vector<std::vector<int>> ranges
-	{ {1, 2, 3, 4, 5, 6, 7},
-		{ 8,9,10,11,12,13,14 },
-		{ 15,16,17,18,19,20,21 },
-		{ 22,23,24,25,26,27,28 },
-		{ 29,30,31 } };
-	double months_in_weeks = weeks_in_month * (static_cast<int>(d.month()) - 1);
-	for (unsigned int i = 0; i < ranges.size(); ++i)
+	Date next_w_day = d;
+	if (day_of_the_week(next_w_day) == Day::saturday)
 	{
-		for (unsigned int j = 0; j < ranges[i].size(); ++j)
-		{
-			if (d.day() == ranges[i][j] && i == (ranges.size() - 1))
-			{
-				return months_in_weeks += weeks_in_month;
-			}
-			if (d.day() == ranges[i][j])
-			{
-				return months_in_weeks += (i + 1);
-			}
-		}
+		next_w_day.add_day(2);
+		return next_w_day;
 	}
+	else if (day_of_the_week(next_w_day) == Day::friday)
+	{
+		next_w_day.add_day(3);
+		return next_w_day;
+	}
+	next_w_day.add_day(1);
+	return next_w_day;
 }
+//double Chrono::week_of_the_year(const Date& d)									//fix this...
+//{
+//	constexpr double weeks_in_month = 4.3;
+//	static std::vector<std::vector<int>> ranges
+//	{ {1, 2, 3, 4, 5, 6, 7},
+//		{ 8,9,10,11,12,13,14 },
+//		{ 15,16,17,18,19,20,21 },
+//		{ 22,23,24,25,26,27,28 },
+//		{ 29,30,31 } };
+//	double months_in_weeks = weeks_in_month * (static_cast<int>(d.month()) - 1);
+//	for (unsigned int i = 0; i < ranges.size(); ++i)
+//	{
+//		for (unsigned int j = 0; j < ranges[i].size(); ++j)
+//		{
+//			if (d.day() == ranges[i][j] && i == (ranges.size() - 1))
+//			{
+//				return months_in_weeks += weeks_in_month;
+//			}
+//			if (d.day() == ranges[i][j])
+//			{
+//				return months_in_weeks += (i + 1);
+//			}
+//		}
+//	}
+//}
 bool Chrono::is_date(int yy, Month m, int d)
 {
 	if (d <= 0) return false;
@@ -142,10 +145,36 @@ bool Chrono::is_date(int yy, Month m, int d)
 	return true;
 }
 
-//Chrono::Date Chrono::next_sunday(const Date& d)
-//{
-//}
-
+Chrono::Date Chrono::next_sunday(Date& d)
+{
+	switch (static_cast<int>(day_of_the_week(d)))
+	{
+	case static_cast<int>(Day::sunday):
+		d.add_day(7);
+		break;
+	case static_cast<int>(Day::monday):
+		d.add_day(6);
+		break;
+	case static_cast<int>(Day::tuesday):
+		d.add_day(5);
+		break;
+	case static_cast<int>(Day::wednesday):
+		d.add_day(4);
+		break;
+	case static_cast<int>(Day::thursday):
+		d.add_day(3);
+		break;
+	case static_cast<int>(Day::friday):
+		d.add_day(2);
+		break;
+	case static_cast<int>(Day::saturday):
+		d.add_day(1);
+		break;
+	default:
+		break;
+	}
+	return d;
+}
 bool Chrono::operator ==(const Date& a, const Date& b)
 {
 	return a.year() == b.year()

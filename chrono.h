@@ -29,11 +29,11 @@ namespace Chrono {
 		long int days_since_jan_1_1970;
 	};
 	bool leapyear(int yy);
-	double week_of_the_year(const Date& d);
+	//double week_of_the_year(const Date& d);
 	bool is_date(int yy, Month m, int d);
 	Chrono::Day day_of_the_week(const Date& d);
-	// next_workday(const Date& d);
-	//Date next_sunday(const Date& d);
+	Date next_workday(const Date& d);
+	Date next_sunday(Date& d);
 	bool operator ==(const Date& a, const Date& b);
 	bool operator !=(const Date& a, const Date& b);
 	std::ostream& operator <<(std::ostream& os, const Date& d);
