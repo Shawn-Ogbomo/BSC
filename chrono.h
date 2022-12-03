@@ -27,6 +27,7 @@ namespace Chrono {
 		Month m;
 		int d;
 		long int days_since_jan_1_1970;
+		void update_days_since_1970();
 	};
 	bool leapyear(int yy);
 	int week_of_the_year(const Date& d);

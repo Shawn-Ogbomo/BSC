@@ -17,14 +17,16 @@ Chrono::Date::Date()
 Chrono::Date::Date(int yy, Month mm, int dd)
 	:y{ yy },
 	m{ mm },
-	d{ dd }
+	d{ dd },
+	days_since_jan_1_1970{  }
 {
 	if ((!is_date(y, m, d)) || y < min_year)
 	{
 		throw std::runtime_error("Invalid date...");
 	}
-	days_since_jan_1_1970 = (((yy - min_year) * (365)) + (static_cast<int>(mm) - static_cast<int>(Month::jan)) * (30.4167) + (dd - static_cast<int>(Day::sunday)));
+	update_days_since_1970();
 }
+
 int Chrono::Date::days_in_the_month() const
 {
 	int days_in_month = 31;
@@ -48,9 +50,11 @@ void Chrono::Date::add_month(int n)
 	{
 		m = static_cast<Month>((month_to_int % static_cast<int>(Month::dec)));
 		add_year(month_to_int / 12);
+		update_days_since_1970();
 		return;
 	}
 	m = static_cast<Month>(month_to_int);
+	update_days_since_1970();
 }
 void Chrono::Date::add_year(int n)
 {
@@ -66,6 +70,26 @@ void Chrono::Date::add_day(int n)
 		if (m == Month::jan)
 		{
 			add_year(1);
+		}
+	}
+}
+void Chrono::Date::update_days_since_1970()
+{
+	std::vector<Month> months = { Month::jan , Month::feb, Month::mar, Month::apr, Month::may, Month::jun, Month::jul, Month::aug, Month::sep, Month::oct, Month::nov, Month::dec };
+	if (y == min_year && m == Month::jan) { days_since_jan_1_1970 = d - 1; return; }
+	else if (y == min_year && m > Month::jan)
+	{
+		int month_cpy = static_cast<int>(m);
+		m = Month::jan;
+		while (m < static_cast<Month>(month_cpy))
+		{
+			days_since_jan_1_1970 += days_in_the_month();
+			m = months[(static_cast<int>(m) + 1) - (1)];
+			if (m == static_cast<Month>(month_cpy))
+			{
+				days_since_jan_1_1970 += (d - 1);
+				return;
+			}
 		}
 	}
 }
