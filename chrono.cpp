@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include "chrono.h"
 const Chrono::Date& default_date()
 {
@@ -86,45 +87,40 @@ bool Chrono::leapyear(int yy)
 }
 Chrono::Date Chrono::next_workday(const Date& d)
 {
-	Date next_w_day = d;
-	if (day_of_the_week(next_w_day) == Day::saturday)
+	Date current_w_day = d;
+	if (day_of_the_week(current_w_day) == Day::saturday)
 	{
-		next_w_day.add_day(2);
-		return next_w_day;
+		current_w_day.add_day(2);
+		return current_w_day;
 	}
-	else if (day_of_the_week(next_w_day) == Day::friday)
+	else if (day_of_the_week(current_w_day) == Day::friday)
 	{
-		next_w_day.add_day(3);
-		return next_w_day;
+		current_w_day.add_day(3);
+		return current_w_day;
 	}
-	next_w_day.add_day(1);
-	return next_w_day;
+	current_w_day.add_day(1);
+	return current_w_day;
 }
-//double Chrono::week_of_the_year(const Date& d)									//fix this...
-//{
-//	constexpr double weeks_in_month = 4.3;
-//	static std::vector<std::vector<int>> ranges
-//	{ {1, 2, 3, 4, 5, 6, 7},
-//		{ 8,9,10,11,12,13,14 },
-//		{ 15,16,17,18,19,20,21 },
-//		{ 22,23,24,25,26,27,28 },
-//		{ 29,30,31 } };
-//	double months_in_weeks = weeks_in_month * (static_cast<int>(d.month()) - 1);
-//	for (unsigned int i = 0; i < ranges.size(); ++i)
-//	{
-//		for (unsigned int j = 0; j < ranges[i].size(); ++j)
-//		{
-//			if (d.day() == ranges[i][j] && i == (ranges.size() - 1))
-//			{
-//				return months_in_weeks += weeks_in_month;
-//			}
-//			if (d.day() == ranges[i][j])
-//			{
-//				return months_in_weeks += (i + 1);
-//			}
-//		}
-//	}
-//}
+double Chrono::week_of_the_year(const Date& d)
+{
+	Date first_day_of_year{ d.year(),Month::jan,1 };
+	double week_in_year = 0;
+	if (first_day_of_year.month() < d.month())
+	{
+		while (true)
+		{
+			week_in_year += (first_day_of_year.days_in_the_month() / static_cast<double>(7));
+			first_day_of_year.add_month(1);
+			if (first_day_of_year.month() == d.month())
+			{
+				week_in_year += d.day() / static_cast<double>(7);
+				return std::round(week_in_year);
+			}
+		}
+	}
+	// what if the months are the same?
+	return std::round(week_in_year);
+}
 bool Chrono::is_date(int yy, Month m, int d)
 {
 	if (d <= 0) return false;
@@ -144,7 +140,6 @@ bool Chrono::is_date(int yy, Month m, int d)
 	if (days_in_month < d) return false;
 	return true;
 }
-
 Chrono::Date Chrono::next_sunday(Date& d)
 {
 	switch (static_cast<int>(day_of_the_week(d)))
