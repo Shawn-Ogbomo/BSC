@@ -101,25 +101,21 @@ Chrono::Date Chrono::next_workday(const Date& d)
 	current_w_day.add_day(1);
 	return current_w_day;
 }
-double Chrono::week_of_the_year(const Date& d)
+int Chrono::week_of_the_year(const Date& d)
 {
 	Date first_day_of_year{ d.year(),Month::jan,1 };
 	double week_in_year = 0;
-	if (first_day_of_year.month() < d.month())
+	while (first_day_of_year.month() < d.month())
 	{
-		while (true)
+		week_in_year += (first_day_of_year.days_in_the_month() / static_cast<double>(7));
+		first_day_of_year.add_month(1);
+		if (first_day_of_year.month() == d.month())
 		{
-			week_in_year += (first_day_of_year.days_in_the_month() / static_cast<double>(7));
-			first_day_of_year.add_month(1);
-			if (first_day_of_year.month() == d.month())
-			{
-				week_in_year += d.day() / static_cast<double>(7);
-				return std::round(week_in_year);
-			}
+			week_in_year += d.day() / static_cast<double>(7);
+			return std::round(week_in_year);
 		}
 	}
-	// what if the months are the same?
-	return std::round(week_in_year);
+	return std::round(d.day() / static_cast<double>(7));
 }
 bool Chrono::is_date(int yy, Month m, int d)
 {
