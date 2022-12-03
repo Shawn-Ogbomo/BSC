@@ -50,11 +50,9 @@ void Chrono::Date::add_month(int n)
 	{
 		m = static_cast<Month>((month_to_int % static_cast<int>(Month::dec)));
 		add_year(month_to_int / 12);
-		update_days_since_1970();
 		return;
 	}
 	m = static_cast<Month>(month_to_int);
-	update_days_since_1970();
 }
 void Chrono::Date::add_year(int n)
 {
@@ -77,19 +75,33 @@ void Chrono::Date::update_days_since_1970()
 {
 	std::vector<Month> months = { Month::jan , Month::feb, Month::mar, Month::apr, Month::may, Month::jun, Month::jul, Month::aug, Month::sep, Month::oct, Month::nov, Month::dec };
 	if (y == min_year && m == Month::jan) { days_since_jan_1_1970 = d - 1; return; }
-	else if (y == min_year && m > Month::jan)
-	{
+	else if (y == min_year && m > Month::jan) {
 		int month_cpy = static_cast<int>(m);
 		m = Month::jan;
-		while (m < static_cast<Month>(month_cpy))
-		{
+		while (m < static_cast<Month>(month_cpy)) {
 			days_since_jan_1_1970 += days_in_the_month();
 			m = months[(static_cast<int>(m) + 1) - (1)];
-			if (m == static_cast<Month>(month_cpy))
-			{
+			if (m == static_cast<Month>(month_cpy)) {
 				days_since_jan_1_1970 += (d - 1);
 				return;
 			}
+		}
+	}
+	int year_cpy = min_year;
+	int target_year_cpy = y;
+	int month_cpy = static_cast<int>(m);
+	y = year_cpy;
+	while (y < target_year_cpy) {
+		m = Month::jan;
+		for (auto i = 0; i < static_cast<int>(Month::dec); ++i, add_month(1)) {
+			days_since_jan_1_1970 += days_in_the_month();
+		}
+		if (y == target_year_cpy) {
+			m = Month::jan;
+			for (auto i = 0; i < static_cast<int>(month_cpy) - 1; ++i, add_month(1)) {
+				days_since_jan_1_1970 += days_in_the_month();
+			}
+			days_since_jan_1_1970 += (d - 1);
 		}
 	}
 }
