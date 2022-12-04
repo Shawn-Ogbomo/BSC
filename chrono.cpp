@@ -73,26 +73,19 @@ void Chrono::Date::add_day(int n)
 }
 void Chrono::Date::update_days_since_1970()
 {
-	std::vector<Month> months = { Month::jan , Month::feb, Month::mar, Month::apr, Month::may, Month::jun, Month::jul, Month::aug, Month::sep, Month::oct, Month::nov, Month::dec };
-	if (y == min_year && m == Month::jan) { days_since_jan_1_1970 = d - 1; return; }
-	else if (y == min_year && m > Month::jan) {
-		int month_cpy = static_cast<int>(m);
-		m = Month::jan;
-		while (m < static_cast<Month>(month_cpy)) {
-			days_since_jan_1_1970 += days_in_the_month();
-			m = months[(static_cast<int>(m) + 1) - (1)];
-			if (m == static_cast<Month>(month_cpy)) {
-				days_since_jan_1_1970 += (d - 1);
-				return;
-			}
-		}
-	}
-	int year_cpy = min_year;
-	int target_year_cpy = y;
-	int month_cpy = static_cast<int>(m);
+	const int target_year_cpy = y;
+	const int year_cpy = min_year;
+	const int month_cpy = static_cast<int>(m);
 	y = year_cpy;
+	m = Month::jan;
+	while (y == min_year && m < static_cast<Month>(month_cpy)) {
+		for (auto i = 0; i < static_cast<int>(month_cpy) - 1; ++i, add_month(1)) {
+			days_since_jan_1_1970 += days_in_the_month();
+		}
+		days_since_jan_1_1970 += (d - 1);
+		return;
+	}
 	while (y < target_year_cpy) {
-		m = Month::jan;
 		for (auto i = 0; i < static_cast<int>(Month::dec); ++i, add_month(1)) {
 			days_since_jan_1_1970 += days_in_the_month();
 		}
@@ -101,9 +94,9 @@ void Chrono::Date::update_days_since_1970()
 			for (auto i = 0; i < static_cast<int>(month_cpy) - 1; ++i, add_month(1)) {
 				days_since_jan_1_1970 += days_in_the_month();
 			}
-			days_since_jan_1_1970 += (d - 1);
 		}
 	}
+	days_since_jan_1_1970 += (d - 1);
 }
 Chrono::Day Chrono::day_of_the_week(const Date& d)
 {
