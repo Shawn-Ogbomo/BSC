@@ -20,7 +20,7 @@ Chrono::Date::Date(int yy, Month mm, int dd)
 	d{ dd },
 	days_since_jan_1_1970{  }
 {
-	if ((!is_date(y, m, d)) || y < min_year)
+	if ((!is_date(y, m, d)))
 	{
 		throw std::runtime_error("Invalid date...");
 	}
@@ -74,30 +74,30 @@ void Chrono::Date::add_day(int n)
 void Chrono::Date::update_days_since_1970()
 {
 	const int target_year_cpy = y;
-	const int year_cpy = min_year;
 	const int month_cpy = static_cast<int>(m);
-	y = year_cpy;
+	y = min_year;
 	m = Month::jan;
-	while (y == min_year && m < static_cast<Month>(month_cpy)) {
-		for (auto i = 0; i < static_cast<int>(month_cpy) - 1; ++i, add_month(1)) {
+	if (target_year_cpy == min_year && m < static_cast<Month>(month_cpy)) {
+		for (auto i = 0; i < static_cast<int>(month_cpy) - 1; ++i, ++m) {
 			days_since_jan_1_1970 += days_in_the_month();
 		}
 		days_since_jan_1_1970 += (d - 1);
 		return;
 	}
-	while (y < target_year_cpy) {
-		for (auto i = 0; i < static_cast<int>(Month::dec); ++i, add_month(1)) {
+	while ((y < target_year_cpy)) {
+		for (auto i = 0; i < static_cast<int>(Month::dec); ++i, ++m) {
 			days_since_jan_1_1970 += days_in_the_month();
 		}
+		++y;
 		if (y == target_year_cpy) {
-			m = Month::jan;
-			for (auto i = 0; i < static_cast<int>(month_cpy) - 1; ++i, add_month(1)) {
+			for (auto i = 0; i < (static_cast<int>(month_cpy) - 1); ++i, ++m) {
 				days_since_jan_1_1970 += days_in_the_month();
 			}
 		}
 	}
 	days_since_jan_1_1970 += (d - 1);
 }
+
 Chrono::Day Chrono::day_of_the_week(const Date& d)
 {
 	if (d.day() % 7 == 0)
@@ -110,9 +110,13 @@ Chrono::Day Chrono::day_of_the_week(const Date& d)
 	}
 	return static_cast<Day>(d.day());
 }
+Chrono::Month Chrono::operator++(Month& m)
+{
+	return m = (m == Month::dec) ? Month::jan : static_cast<Month>(static_cast<int>(m) + (1));
+}
 bool Chrono::leapyear(int yy)
 {
-	return yy % 4 == 0;
+	return (yy % 4 == 0) && (yy % 100 == 0) && (yy % 400 == 0);
 }
 Chrono::Date Chrono::next_workday(const Date& d)
 {
@@ -148,6 +152,7 @@ int Chrono::week_of_the_year(const Date& d)
 }
 bool Chrono::is_date(int yy, Month m, int d)
 {
+	if (yy < 1970) return false;
 	if (d <= 0) return false;
 	if (m < Month::jan || Month::dec < m) return false;
 	int days_in_month = 31;

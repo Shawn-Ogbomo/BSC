@@ -5,6 +5,7 @@ namespace Chrono {
 	{
 		jan = 1, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
 	};
+	Month operator ++(Month& m);
 	enum class Day
 	{
 		sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
