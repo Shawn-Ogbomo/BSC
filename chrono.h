@@ -1,5 +1,4 @@
 #pragma once
-#include <stdexcept>
 namespace Chrono {
 	enum class Month
 	{

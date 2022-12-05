@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <stdexcept>
 class Patron
 {
 	static constexpr int first_name_max = 12;

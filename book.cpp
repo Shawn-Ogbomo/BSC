@@ -29,7 +29,6 @@ bool Book::checkout_book()
 	std::cout << "The book: " << get_title() << " has already been checked out. Please try checking out another book instead if interested\n";
 	return false;
 }
-
 Book::Book(std::string book_isbn, std::string book_name, std::string book_author, Chrono::Date book_copyright_date, Genre book_genre)
 	:isbn{ book_isbn },
 	title{ book_name },

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include <cmath>
 #include "chrono.h"
 const Chrono::Date& default_date() {
@@ -44,12 +43,15 @@ void Chrono::Date::add_month(int n) {
 	if (month_to_int > static_cast<int>(Month::dec)) {
 		m = static_cast<Month>((month_to_int % static_cast<int>(Month::dec)));
 		add_year(month_to_int / 12);
+		update_days_since_1970();
 		return;
 	}
 	m = static_cast<Month>(month_to_int);
+	update_days_since_1970();
 }
 void Chrono::Date::add_year(int n) {
 	y += n;
+	update_days_since_1970();
 }
 void Chrono::Date::add_day(int n) {
 	d += n;
@@ -60,12 +62,14 @@ void Chrono::Date::add_day(int n) {
 			add_year(1);
 		}
 	}
+	update_days_since_1970();
 }
 void Chrono::Date::update_days_since_1970() {
 	const int target_year_cpy = y;
 	const int month_cpy = static_cast<int>(m);
 	y = min_year;
 	m = Month::jan;
+	days_since_jan_1_1970 = 0;
 	if (target_year_cpy == min_year && m < static_cast<Month>(month_cpy)) {
 		for (auto i = 0; i < static_cast<int>(month_cpy) - 1; ++i, ++m) {
 			days_since_jan_1_1970 += days_in_the_month();

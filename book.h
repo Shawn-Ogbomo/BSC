@@ -1,8 +1,7 @@
 #pragma once
 #include <string>
-#include<iostream>
+#include <iostream>
 #include "chrono.h"
-
 enum class Genre
 {
 	fiction = 1, nonfiction, periodical, biography, children
