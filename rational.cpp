@@ -1,27 +1,45 @@
+#include <stdexcept>
+#include <cmath>
 #include "rational.h"
-#include  <stdexcept>
 Rational_number::Rational_number(int n, int d)
 	: numerator{ n },
-	denominator{ d },
-	quotient{}{
-	if ((numerator == 0) || (numerator < 0 && denominator == 0)) {
+	denominator{ d } {
+	if (!numerator || !denominator) {
 		throw std::runtime_error("Cannot divide by 0...");
 	}
-	quotient = static_cast<double>(n) / d;
 }
-
 int Rational_number::get_numerator() const {
 	return numerator;
 }
-
 int Rational_number::get_denominator() const {
 	return denominator;
 }
-
-double Rational_number::get_quotient() const {
-	return quotient;
+Rational_number::operator double() {
+	return (numerator / static_cast<double>(denominator));
 }
-
-Rational_number operator+(const Rational_number& lhs, const Rational_number& rhs) {
-	double result = lhs.get_quotient() + rhs.get_quotient();
+void Rational_number::operator=(const Rational_number& right) {
+	numerator = right.numerator;
+	denominator = right.denominator;
+}
+Rational_number operator+(const Rational_number& left, const Rational_number& right) {
+	Rational_number result = { left.get_numerator() + right.get_numerator(),left.get_denominator() };
+	if (left.get_denominator() != right.get_denominator() && left.get_denominator() % right.get_denominator() == 0) {
+		double quotient = static_cast<double>(left.get_denominator()) / right.get_denominator();
+		Rational_number result = { (right.get_numerator() * static_cast<int>(quotient)) + (left.get_numerator()) , (right.get_denominator() * static_cast<int>(quotient)) };
+		return result;
+	}
+	else if (left.get_denominator() != right.get_denominator() && right.get_denominator() % left.get_denominator() == 0) {
+		double quotient = static_cast<double>(right.get_denominator()) / left.get_denominator();
+		Rational_number result = { (left.get_numerator() * static_cast<int>(quotient)) + (right.get_numerator()) , (left.get_denominator() * static_cast<int>(quotient)) };
+		return result;
+	}
+	return result;
+}
+bool operator==(const Rational_number& left, const Rational_number& right) {
+	return left.get_numerator() == right.get_numerator() &&
+		left.get_denominator() == right.get_denominator();
+}
+bool operator!=(const Rational_number& left, const Rational_number& right) {
+	return !(left.get_numerator() == right.get_numerator() &&
+		left.get_denominator() == right.get_denominator());
 }
