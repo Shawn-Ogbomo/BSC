@@ -43,6 +43,10 @@ Rational_number operator*(const Rational_number& left, const Rational_number& ri
 	}
 	return result;
 }
+Rational_number operator/(const Rational_number& left, const Rational_number& right) {
+	Rational_number right_inverted = Rational_number{ right.get_denominator(),right.get_numerator() };
+	return left * right_inverted;
+}
 bool operator==(const Rational_number& left, const Rational_number& right) {
 	return left.get_numerator() == right.get_numerator() &&
 		left.get_denominator() == right.get_denominator();

@@ -13,5 +13,6 @@ private:
 };
 //Rational_number operator +(const Rational_number& left, const Rational_number& right);
 Rational_number operator *(const Rational_number& left, const Rational_number& right);
+Rational_number operator /(const Rational_number& left, const Rational_number& right);
 bool operator == (const Rational_number& left, const Rational_number& right);
 bool operator != (const Rational_number& left, const Rational_number& right);
