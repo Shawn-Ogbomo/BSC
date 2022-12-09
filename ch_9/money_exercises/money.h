@@ -1,13 +1,12 @@
 #pragma once
 class Money {
-	static constexpr int max_currency_size = 3;
 public:
 	Money();
-	Money(std::string c, double qty);
+	Money(std::string currency_code, double qty);
 	std::string currency() const;
 	explicit operator double() const;
+	class Invalid {};
 private:
-	bool currency_ok()const;
 	std::string code;
 	long int total_cents;
 };
