@@ -71,32 +71,35 @@ Money operator+(const Money& left, const Money& right) {
 Money exchange(const Money& left, const Money& right) {
 	if (left.currency() == "USD") {
 		Exchange_rates::USD american_exchange;
-		return Money{ left.currency(), left.operator double() + american_exchange.operator*(right) };
+		return Money{ left.currency(),  american_exchange.operator*(right) };
 	}
 	else if (left.currency() == "CAD") {
 		Exchange_rates::CAD canadian_exchange;
-		return Money{ left.currency(), left.operator double() + canadian_exchange.operator*(right) };
+		return Money{ left.currency(), canadian_exchange.operator*(right) };
 	}
 	else if (left.currency() == "JPY") {
 		Exchange_rates::JPY japanese_exchange;
-		return Money{ left.currency(), left.operator double() + japanese_exchange.operator*(right) };
+		return Money{ left.currency(), japanese_exchange.operator*(right) };
 	}
 	else if (left.currency() == "NGN") {
 		Exchange_rates::NGN nigerian_exchange;
-		return Money{ left.currency(), left.operator double() + nigerian_exchange.operator*(right) };
+		return Money{ left.currency(),  nigerian_exchange.operator*(right) };
 	}
 	else if (left.currency() == "DKK") {
 		Exchange_rates::DKK danish_exchange;
-		return Money{ left.currency(), left.operator double() + danish_exchange.operator*(right) };
+		return Money{ left.currency(),  danish_exchange.operator*(right) };
 	}
 	else if (left.currency() == "CNY") {
 		Exchange_rates::CNY chinese_exchange;
-		return Money{ left.currency(), left.operator double() + chinese_exchange.operator*(right) };
+		return Money{ left.currency(),  chinese_exchange.operator*(right) };
 	}
 }
-//Money operator-(const Money& left, const Money& right) {
-//	return static_cast<double>(left) - static_cast<double>(right);
-//}
+Money operator-(const Money& left, const Money& right) {
+	if (left.currency() != right.currency()) {
+		return exchange(left, right);
+	}
+	return Money{ left.currency(), static_cast<double>(left) - static_cast<double>(right) };
+}
 double Exchange_rates::USD::operator*(const Money& m) {
 	if (m.currency() == "CAD") {
 		return m.operator double() * cad_to_usd;

@@ -16,7 +16,7 @@ std::istream& operator >>(std::istream& is, Money& m);
 std::ostream& operator <<(std::ostream& os, const Money& m);
 Money operator +(const Money& left, const Money& right);
 Money exchange(const Money& left, const Money& right);
-//Money operator -(const Money& left, const Money& right);
+Money operator -(const Money& left, const Money& right);
 struct Exchange_rates {
 	struct USD {
 		static constexpr double cad_to_usd = 0.7285178304739;
