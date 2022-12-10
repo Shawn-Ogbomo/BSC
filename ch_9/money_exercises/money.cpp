@@ -64,7 +64,7 @@ std::ostream& operator<<(std::ostream& os, const Money& m) {
 }
 Money operator+(const Money& left, const Money& right) {
 	if (left.currency() != right.currency()) {
-		return exchange(left, right);
+		return Money{ left.currency(), (left.operator double() + static_cast<double>(exchange(left, right))) };
 	}
 	return Money{ left.currency(), static_cast<double>(left) + static_cast<double>(right) };
 }
