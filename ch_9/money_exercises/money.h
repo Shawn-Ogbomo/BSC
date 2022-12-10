@@ -17,54 +17,54 @@ std::ostream& operator <<(std::ostream& os, const Money& m);
 Money operator +(const Money& left, const Money& right);
 Money exchange(const Money& left, const Money& right);
 //Money operator -(const Money& left, const Money& right);
-struct Echange_rates {
+struct Exchange_rates {
 	struct USD {
-		static constexpr double cad_to_usd = 0.73;
-		static constexpr double jpy = 136.47;
-		static constexpr double ngn = 445.02;
-		static constexpr double dkk = 7.06;
-		static constexpr double cny = 6.96;
+		static constexpr double cad_to_usd = 0.7285178304739;
+		static constexpr double jpy_to_usd = 0.0073225199900779;
+		static constexpr double ngn_to_usd = 0.0022473425174731;
+		static constexpr double dkk_to_usd = 0.14160094023024;
+		static constexpr double cny_to_usd = 0.14372359079019;
+		double operator*(const Money& m);
+	};
+
+	struct CAD {
+		static constexpr double usd_to_cad = 1.37265;
+		static constexpr double jpy_to_cad = 0.01005125706438;
+		static constexpr double ngn_to_cad = 0.0030848147066094;
+		static constexpr double dkk_to_cad = 0.19436853060704;
+		static constexpr double cny_to_cad = 0.19728218689816;
+		double operator*(const Money& m);
+	};
+	struct JPY {
+		static constexpr double usd_to_jpy = 136.56500786;
+		static constexpr double cad_to_jpy = 99.490043244818;
+		static constexpr double ngn_to_jpy = 0.30690834856282;
+		static constexpr double dkk_to_jpy = 19.337733515527;
+		static constexpr double cny_to_jpy = 19.62761330593;
+		double operator*(const Money& m);
+	};
+	struct NGN {
+		static constexpr double usd_to_ngn = 444.97;
+		static constexpr double cad_to_ngn = 324.16857902597;
+		static constexpr double jpy_to_ngn = 3.258301719985;
+		static constexpr double dkk_to_ngn = 63.008170374251;
+		static constexpr double cny_to_ngn = 63.952686193912;
+		double operator*(const Money& m);
+	};
+	struct DKK {
+		static constexpr double usd_to_dkk = 7.0621;
+		static constexpr double cad_to_dkk = 5.1448657705897;
+		static constexpr double jpy_to_dkk = 0.051712368421929;
+		static constexpr double ngn_to_dkk = 0.015870957592647;
+		static constexpr double cny_to_dkk = 1.0149903705194;
+		double operator*(const Money& m);
+	};
+	struct CNY {
+		static constexpr double usd_to_cny = 6.9578;
+		static constexpr double cad_to_cny = 5.0688813608713;
+		static constexpr double jpy_to_cny = 0.050948629586964;
+		static constexpr double ngn_to_cny = 0.015636559768074;
+		static constexpr double dkk_to_cny = 0.98523102193399;
 		double operator*(const Money& m);
 	};
 };
-/*struct CAD {
-	static constexpr double to_usd = 0.74;
-	static constexpr double to_jpy = 100.21;
-	static constexpr double to_ngn = 326.79;
-	static constexpr double to_dkk = 5.18;
-	static constexpr double to_cny = 5.11;
-	double operator*(const std::string& c);
-};
-struct JPY {
-	static constexpr double to_usd = 0.0073;
-	static constexpr double to_cad = 0.0100;
-	static constexpr double to_ngn = 3.26;
-	static constexpr double to_dkk = 0.052;
-	static constexpr double to_cny = 0.051;
-	double operator*(const std::string& c);
-};
-struct NGN {
-	static constexpr double to_usd = 0.0022;
-	static constexpr double to_cad = 0.0031;
-	static constexpr double to_jpy = 0.31;
-	static constexpr double to_dkk = 0.016;
-	static constexpr double to_cny = 0.016;
-	double operator*(const std::string& c);
-};
-struct DKK {
-	static constexpr double to_usd = 0.14;
-	static constexpr double to_cad = 0.19;
-	static constexpr double to_jpy = 19.35;
-	static constexpr double to_ngn = 63.10;
-	static constexpr double to_cny = 1.36;
-	double operator*(const std::string& c);
-};
-struct CNY {
-	static constexpr double to_usd = 0.14;
-	static constexpr double to_cad = 0.20;
-	static constexpr double to_jpy = 19.62;
-	static constexpr double to_ngn = 63.96;
-	static constexpr double to_dkk = 1.01;
-	double operator*(const std::string& c);
-};*/
-//};
