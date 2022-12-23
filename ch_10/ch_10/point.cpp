@@ -1,5 +1,6 @@
 #include <iostream>
 #include "point.h"
+#include "util.h"
 int Point::x_cord() const {
 	return x;
 }
@@ -17,9 +18,8 @@ Point::Point(int coord_x, int coord_y)
 }
 
 std::istream& operator>>(std::istream& is, Point& p) {
-	int val1{};
-	int val2{};
-	is >> val1 >> val2;
+	int val1 = Utils::get_int(0, 1000, "Enter a value from", "out or range");
+	int val2 = Utils::get_int(0, 1000, "Enter a value from", "out or range");
 	if (!is) {
 		return is;
 	}
