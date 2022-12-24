@@ -1,9 +1,9 @@
 #include <iostream>
 #include "util.h"
-int Utils::get_int() {
+int Utils::get_int(std::istream& is) {
 	int n = 0;
 	while (true) {
-		if (std::cin >> n) {
+		if (is >> n) {
 			return n;
 		}
 		std::cout << "Sorry that was not a number; please try again\n";
@@ -22,16 +22,18 @@ int Utils::get_int(int low, int high, const std::string& greeting, const std::st
 	}
 }
 
-void Utils::skip_to_int() {
-	if (std::cin.fail()) {
-		std::cin.clear();
+void Utils::skip_to_int(std::istream& is) {
+	if (is.eof()) {
+		throw Invalid{};
+	}
+	if (is.fail()) {
+		is.clear();
 		for (char ch; std::cin >> ch;) {
-			if (isdigit(ch) || ch == '-') {
+			if (isdigit(ch)) {
 				std::cin.unget();
 				return;
 			}
 		}
-		std::cerr << "no input...\n";
-		throw Invalid{};
+		is.clear(std::ios_base::failbit);
 	}
 }
