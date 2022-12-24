@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+#include <string>
 class Point {
 public:
 	class Invalid {};
@@ -12,3 +14,4 @@ private:
 };
 std::istream& operator>>(std::istream& is, Point& p);
 std::ostream& operator<<(std::ostream& os, const Point& p);
+void fill_file(std::vector<Point>& points, const std::string& name);

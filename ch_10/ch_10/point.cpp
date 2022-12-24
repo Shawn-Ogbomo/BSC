@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "point.h"
 #include "util.h"
 int Point::x_cord() const {
@@ -18,8 +19,8 @@ Point::Point(int coord_x, int coord_y)
 }
 
 std::istream& operator>>(std::istream& is, Point& p) {
-	int val1 = Utils::get_int(0, 1000, "Enter a value from", "out or range");
-	int val2 = Utils::get_int(0, 1000, "Enter a value from", "out or range");
+	int val1 = Utils::get_int();
+	int val2 = Utils::get_int();
 	if (!is) {
 		return is;
 	}
@@ -28,6 +29,17 @@ std::istream& operator>>(std::istream& is, Point& p) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Point& p) {
-	os << p.x_cord() << " " << p.y_cord();
+	os << p.x_cord() << " " << p.y_cord() << "\n";
 	return os;
+}
+
+void fill_file(std::vector<Point>& points, const std::string& name) {
+	std::ofstream ost{ name };
+	if (!ost) {
+		std::cerr << "can't open file " << name;
+		throw Utils::Invalid{};
+	}
+	for (const auto& target : points) {
+		ost << target;
+	}
 }
