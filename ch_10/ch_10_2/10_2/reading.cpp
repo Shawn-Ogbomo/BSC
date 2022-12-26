@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <fstream>
 #include "reading.h"
 #include "util.h"
@@ -46,4 +47,24 @@ void fill_from_file(std::vector<Reading>& r, const std::string& name) {
 		r.push_back(temp);
 		temp = Reading{};
 	}
+}
+
+double mode(const std::vector<Reading>& r) {
+	if (r.size()) {
+		Reading mode;
+		int max = 0;
+		for (const auto& target : r) {
+			int num_items = std::count(r.begin(), r.end(), target);
+			if (num_items > max) {
+				max = num_items;
+				mode = target;
+			}
+		}
+		return mode.temperature_fahrenheit;
+	}
+	throw std::length_error("The vector is empty...\nNo mode...");
+}
+
+bool operator==(const Reading& left, const Reading& right) {
+	return (left.temperature_fahrenheit == right.temperature_fahrenheit);
 }
