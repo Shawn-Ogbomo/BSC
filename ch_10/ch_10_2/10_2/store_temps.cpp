@@ -8,8 +8,8 @@ int main() {
 		fill_vector(temps);
 		send_to_file(temps);
 		fill_from_file(temps_updated, "raw_temps.txt");
-		std::cout << mode(temps_updated) << "\n";
-		std::cout << mean(temps_updated);
+		std::cout << "mean temp reading: " << mean(temps_updated) << "\n";
+		std::cout << "median temp reading: " << median(temps_updated);
 	}
 	catch (const std::exception& e) {
 		std::cerr << e.what() << "\n";

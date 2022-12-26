@@ -1,6 +1,6 @@
 #include <iostream>
-#include <algorithm>
 #include <fstream>
+#include <algorithm>
 #include "reading.h"
 #include "util.h"
 void send_to_file(const std::vector<Reading>& r) {
@@ -49,22 +49,6 @@ void fill_from_file(std::vector<Reading>& r, const std::string& name) {
 	}
 }
 
-double mode(const std::vector<Reading>& r) {
-	if (r.size()) {
-		double m = 0;
-		int max = 0;
-		for (const auto& target : r) {
-			int num_items = std::count(r.begin(), r.end(), target);
-			if (num_items > max) {
-				max = num_items;
-				m = target.temperature_fahrenheit;
-			}
-		}
-		return m;
-	}
-	throw std::length_error("The vector is empty...\nNo mode...");
-}
-
 double mean(const std::vector<Reading>& r) {
 	if (r.size()) {
 		double m = 0;
@@ -76,6 +60,20 @@ double mean(const std::vector<Reading>& r) {
 	throw std::length_error("The vector is empty...\nNo mean...");
 }
 
-bool operator==(const Reading& left, const Reading& right) {
-	return (left.temperature_fahrenheit == right.temperature_fahrenheit);
+double median(const std::vector<Reading>& r) {
+	if (r.size() > 1) {
+		std::vector<double> temps;
+		for (const auto& target : r) {
+			temps.push_back(target.temperature_fahrenheit);
+		}
+		std::sort(temps.begin(), temps.end());
+		bool is_odd = r.size() % 2 == 1 ? true : false;
+		if (is_odd) {
+			return temps[(r.size() / 2)];
+		}
+		else if (!is_odd) {
+			return (((temps[(r.size() / 2) - 1]) + temps[(r.size() / 2)])) / 2;
+		}
+	}
+	throw std::length_error("Not enough temps in the list...");
 }
