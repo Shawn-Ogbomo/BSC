@@ -14,7 +14,7 @@ int main() {
 		return 1;
 	}
 	catch (...) {
-		std::cerr << "something went wrong...\n Exiting...";
+		std::cerr << "something went wrong...\nExiting...";
 		return 2;
 	}
 }

@@ -8,8 +8,10 @@ void send_to_file(const std::vector<Reading>& r) {
 		ofs.exceptions(ofs.exceptions() | std::ios_base::badbit);
 		throw std::runtime_error("the file does not exist");
 	}
-	for (const auto& target : r) {
-		ofs << target.hour << " " << target.temperature_fahrenheit << "\n";
+
+	for (std::size_t i = 0; i < r.size(); ++i) {
+		if (i > 0) ofs << '\n';
+		ofs << r[i].hour << " " << r[i].temperature_fahrenheit;
 	}
 }
 void fill_vector(std::vector<Reading>& r) {
@@ -39,5 +41,9 @@ void fill_from_file(std::vector<Reading>& r, const std::string& name) {
 	if (!ifs) {
 		ifs.exceptions(ifs.exceptions() | std::ios_base::badbit);
 		throw std::runtime_error("the file does not exist");
+	}
+	for (Reading temp; ifs >> temp.hour >> temp.temperature_fahrenheit;) {
+		r.push_back(temp);
+		temp = Reading{};
 	}
 }
