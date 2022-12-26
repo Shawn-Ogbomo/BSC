@@ -51,18 +51,29 @@ void fill_from_file(std::vector<Reading>& r, const std::string& name) {
 
 double mode(const std::vector<Reading>& r) {
 	if (r.size()) {
-		Reading mode;
+		double m = 0;
 		int max = 0;
 		for (const auto& target : r) {
 			int num_items = std::count(r.begin(), r.end(), target);
 			if (num_items > max) {
 				max = num_items;
-				mode = target;
+				m = target.temperature_fahrenheit;
 			}
 		}
-		return mode.temperature_fahrenheit;
+		return m;
 	}
 	throw std::length_error("The vector is empty...\nNo mode...");
+}
+
+double mean(const std::vector<Reading>& r) {
+	if (r.size()) {
+		double m = 0;
+		for (const auto& target : r) {
+			m += target.temperature_fahrenheit;
+		}
+		return m / r.size();
+	}
+	throw std::length_error("The vector is empty...\nNo mean...");
 }
 
 bool operator==(const Reading& left, const Reading& right) {
