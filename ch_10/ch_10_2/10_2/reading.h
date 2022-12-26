@@ -3,6 +3,7 @@
 struct Reading {
 	int hour{};
 	double temperature_fahrenheit{};
+	char code{};
 };
 void send_to_file(const std::vector<Reading>& r);
 void fill_vector(std::vector<Reading>& r);

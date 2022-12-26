@@ -12,21 +12,32 @@ void send_to_file(const std::vector<Reading>& r) {
 
 	for (std::size_t i = 0; i < r.size(); ++i) {
 		if (i > 0) ofs << '\n';
-		ofs << r[i].hour << " " << r[i].temperature_fahrenheit;
+		ofs << r[i].hour << " " << r[i].temperature_fahrenheit << " " << r[i].code;
 	}
 }
 void fill_vector(std::vector<Reading>& r) {
+	int h = 0;
+	double temp_f = 0;
+	char c{};
+	static char quit = 'q';
+	static const char celcius = 'C';
+	static const char farenheit = 'F';
 	while (true) {
-		int h = 0;
-		double temp_f = 0;
-		static char quit = 'q';
 		std::cout << "Enter temp readings hour followed by temp. \nWhen finished, press q to stop... \n";
-		while (std::cin >> h >> temp_f) {
+		while (std::cin >> h >> temp_f >> c) {
 			if (h < 0 || 23 < h) {
 				std::cerr << "Value is out of range try again...\n";
 				continue;
 			}
-			r.push_back(Reading{ h,temp_f });
+			if (c != farenheit && c != celcius) {
+				std::cerr << "Incorrect temp suffix. Try again..." << "\n";
+				continue;
+			}
+			if (c == celcius) {
+				temp_f = (temp_f * (9 / static_cast<double>(5))) + 32;
+				c = farenheit;
+			}
+			r.push_back(Reading{ h,temp_f,c });
 		}
 		Utils::skip_to_int(quit);
 		if (std::cin.peek() == quit) {
@@ -48,7 +59,6 @@ void fill_from_file(std::vector<Reading>& r, const std::string& name) {
 		temp = Reading{};
 	}
 }
-
 double mean(const std::vector<Reading>& r) {
 	if (r.size()) {
 		double m = 0;
@@ -59,7 +69,6 @@ double mean(const std::vector<Reading>& r) {
 	}
 	throw std::length_error("The vector is empty...\nNo mean...");
 }
-
 double median(const std::vector<Reading>& r) {
 	if (r.size() > 1) {
 		std::vector<double> temps;
