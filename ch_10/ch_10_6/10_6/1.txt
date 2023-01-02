@@ -1,0 +1,126 @@
+std::map<char, int>::iterator it;
+	int result = 0;
+	for (int i = 0; i < roman_code.size(); ++i) {
+		it = valids.find(roman_code[i]);
+		switch (roman_code[i]) {
+		case 'I':
+			result += (*it).second;
+			break;
+		case 'V':
+			if (i == 0 || (*it).second == 5) {
+				result += 5;
+				break;
+			}
+			if ((*it).second > result && result > 1) {
+				std::cerr << "Invalid format...\n";
+				throw Invalid{};
+			}
+			if ((*it).second > result && result == 1) {
+				result = (*it).second - 1;
+				break;
+			}
+			if ((*it).second == result) {
+				std::cerr << "Invalid format...\n";
+				throw Invalid{};
+			}
+		case 'X':
+			if (i == 0 || roman_code[i] == roman_code[i - 1] || (*it).second < (*it).second) {
+				result += 10;
+				break;
+			}
+			//	if (next value its greater) {
+			//		-minus only with(L and C only)
+			//			break
+			//	}
+
+		default:
+			break;
+		}
+	}
+	value = result;
+
+
+
+
+
+
+
+
+
+
+
+	for (int i = 0, count = 1; i < roman_code.size(); ++i) {
+		count = 1;
+		for (int j = i + 1; j < roman_code.size(); ++j) {
+			if (roman_code[i] == 'V' && roman_code[i + 1] > roman_code[i]) {
+				std::cerr << roman_code[i] << " cannot be subtracted...\n";
+			}
+
+			if (roman_code[j] == roman_code[i]) {
+				if (roman_code[j] == 'V' || roman_code[j] == 'L' || roman_code[j] == 'D') {
+					std::cerr << "The roman numeral " << roman_code[j] << " cannot repeat...\n";
+					throw Invalid{};
+				}
+				++count;
+				if (count == repeat_limit) {
+					std::cerr << "Roman numerals can only repeat 3 times consecutively...\n";
+					throw Invalid{};
+				}
+			}
+			else if (roman_code[j] != roman_code[i]) {
+				count = 0;
+			}
+		}
+	}
+	int result = Util::expression(valids, roman_code);
+
+
+
+
+
+
+
+
+
+
+
+
+
+	std::map<char, int>::iterator it;
+	std::map<char, int>::iterator it2;
+	for (int i = 0, count = 1; i < roman_code.size(); ++i) {
+		it = valids.find(roman_code[i]);
+		count = 1;
+		for (int j = i + 1; j < roman_code.size(); ++j) {
+			it2 = valids.find(roman_code[j]);
+			if ((*it).first == 'V' && (*it2).second > (*it).second) {
+				std::cerr << (*it).first << " cannot be subtracted...\n";
+				throw Invalid{};
+			}
+
+			if ((*it).first == 'I' && ((*it2).second > (*it).second && ((*it2).second != 5 && (*it2).second != 10))) {
+				std::cerr << (*it).first << " cannot be subtracted from " << (*it2).first << "\n";
+				throw Invalid{};
+			}
+
+			if ((*it).first == 'X' && ((*it2).second > (*it).second && (*it2).second != 50 && (*it2).second != 100)) {
+				std::cerr << (*it).first << " cannot be subtracted from " << (*it2).first << "\n";
+				throw Invalid{};
+			}
+
+			if ((*it2).first == (*it).first) {
+				if ((*it2).first == 'V' || (*it2).first == 'L' || (*it2).first == 'D') {
+					std::cerr << "The roman numeral " << (*it2).first << " cannot repeat...\n";
+					throw Invalid{};
+				}
+				++count;
+				if (count == repeat_limit) {
+					std::cerr << "Roman numerals can only repeat 3 times consecutively...\n";
+					throw Invalid{};
+				}
+			}
+			else if ((*it2).first != (*it).first) {
+				count = 0;
+			}
+		}
+	}

@@ -15,29 +15,36 @@ Roman_int::Roman_int(const std::string& symbols)
 		std::cerr << "Too many symbols...\n";
 		throw Invalid{};
 	}
-	std::vector<char>valids = { 'I','V','X','L','C','D','M' };
+	std::vector<std::pair<char, int>>toks;
 	for (int i = 0; i < roman_code.size(); ++i) {
-		if (islower(symbols[i])) {
+		if (islower(roman_code[i])) {
 			roman_code[i] = toupper(symbols[i]);
 		}
-		if (auto search = std::find(std::begin(valids), std::end(valids), roman_code[i]) == valids.end()) {
-			std::cerr << "Invalid Roman symbol: " << roman_code[i] << "\n";
+		switch (roman_code[i]) {
+		case 'I':
+			toks.push_back({ roman_code[i], 1 });
+			break;
+		case 'V':
+			toks.push_back({ roman_code[i], 5 });
+			break;
+		case 'X':
+			toks.push_back({ roman_code[i], 10 });
+			break;
+		case 'L':
+			toks.push_back({ roman_code[i], 50 });
+			break;
+		case 'C':
+			toks.push_back({ roman_code[i], 100 });
+			break;
+		case 'D':
+			toks.push_back({ roman_code[i], 500 });
+			break;
+		case 'M':
+			toks.push_back({ roman_code[i], 1000 });
+			break;
+		default:
+			std::cerr << "Invalid roman symbol " << roman_code[i] << " \n";
 			throw Invalid{};
-		}
-	}
-
-	for (int i = 0, count = 1; i < roman_code.size(); ++i) {
-		for (int j = i + 1; j < roman_code.size(); ++j) {
-			if (roman_code[j] == roman_code[i]) {
-				++count;
-				if (count == repeat_limit) {
-					std::cerr << "Roman numerals can only repeat 3 times consecutively...\n";
-					throw Invalid{};
-				}
-			}
-			else if (roman_code[j] != roman_code[i]) {
-				count = 0;
-			}
 		}
 	}
 }
