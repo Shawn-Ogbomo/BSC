@@ -11,11 +11,8 @@ Roman_int::Roman_int()
 Roman_int::Roman_int(const std::string& symbols)
 	: roman_code{ symbols },
 	value{}{
-	if (symbols.size() > max_sz) {
-		std::cerr << "Too many symbols...\n";
-		throw Invalid{};
-	}
 	std::vector<std::pair<char, int>>toks;
+	int result{};
 	for (int i = 0; i < roman_code.size(); ++i) {
 		if (islower(roman_code[i])) {
 			roman_code[i] = toupper(symbols[i]);
@@ -46,12 +43,14 @@ Roman_int::Roman_int(const std::string& symbols)
 			std::cerr << "Invalid roman symbol " << roman_code[i] << " \n";
 			throw Invalid{};
 		}
+		char sign{};
 	}
+
+	value = result;
 }
 int Roman_int::as_int() const {
 	return value;
 }
-
 std::string Roman_int::as_symbols() const {
 	return roman_code;
 }
