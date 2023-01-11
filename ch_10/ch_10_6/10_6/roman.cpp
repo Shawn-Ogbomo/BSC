@@ -1,8 +1,8 @@
 #include <iostream>
-#include <algorithm>
 #include <vector>
-#include <cctype>
+#include "place_value.h"
 #include "roman.h"
+#include "token.h"
 #include "util.h"
 Roman_int::Roman_int()
 	:roman_code{ "nulla" },
@@ -11,49 +11,70 @@ Roman_int::Roman_int()
 Roman_int::Roman_int(const std::string& symbols)
 	: roman_code{ symbols },
 	value{}{
-	std::vector<std::pair<char, int>>toks;
-	int result{};
+	Place_value p;
 	for (int i = 0; i < roman_code.size(); ++i) {
 		if (islower(roman_code[i])) {
-			roman_code[i] = toupper(symbols[i]);
+			roman_code[i] = toupper(roman_code[i]);
 		}
-		switch (roman_code[i]) {
-		case 'I':
-			toks.push_back({ roman_code[i], 1 });
-			break;
-		case 'V':
-			toks.push_back({ roman_code[i], 5 });
-			break;
-		case 'X':
-			toks.push_back({ roman_code[i], 10 });
-			break;
-		case 'L':
-			toks.push_back({ roman_code[i], 50 });
-			break;
-		case 'C':
-			toks.push_back({ roman_code[i], 100 });
-			break;
-		case 'D':
-			toks.push_back({ roman_code[i], 500 });
-			break;
-		case 'M':
-			toks.push_back({ roman_code[i], 1000 });
-			break;
-		default:
-			std::cerr << "Invalid roman symbol " << roman_code[i] << " \n";
-			throw Invalid{};
-		}
-		char sign{};
 	}
 
-	value = result;
+	for (int i = 0; i < roman_code.size(); ++i) {
+		switch (roman_code[i]) {
+		case'I':
+		{
+			if (Util::next_value(roman_code, i + 1)) {
+				if (roman_code[i + 1] == 'V') {
+					p.ones += 4;
+					i += 2;
+					break;
+				}
+				else if (roman_code[i + 1] == 'X') {
+					p.ones += 9;
+					i += 2;
+					break;
+				}
+				++p.ones;
+				break;
+			}
+		}
+		case'V':
+			break;
+		case'X': {
+			++p.tens;
+			break;
+		}
+		case'L':
+			break;
+		case'C':
+			break;
+		case'D':
+			break;
+		case'M':
+			break;
+		default:
+			std::cerr << "Invalid Roman symbol...\n";
+			throw Invalid{};
+		}
+	}
+	if (p.thousands) {
+		value += (1000 * p.thousands);
+	}
+	if (p.hundreds) {
+		value += (100 * p.hundreds);
+	}
+	if (p.tens) {
+		value += (10 * p.tens);
+	}
+	if (p.ones) {
+		value += (p.ones);
+	}
 }
 int Roman_int::as_int() const {
 	return value;
 }
-std::string Roman_int::as_symbols() const {
+std::string Roman_int::as_string() const {
 	return roman_code;
 }
 std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
-	return os << r.as_symbols();
+	return os << r.as_string();
 }
