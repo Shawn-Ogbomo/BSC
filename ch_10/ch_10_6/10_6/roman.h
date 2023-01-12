@@ -12,7 +12,5 @@ public:
 private:
 	std::string roman_code;
 	int value;
-	//int expression(Token_stream& ts);
-	//int primary(Token_stream& ts);
 };
 std::ostream& operator<< (std::ostream& os, const Roman_int& r);
