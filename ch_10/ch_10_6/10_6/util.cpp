@@ -31,3 +31,25 @@ bool Util::duplicate_substrs(const std::string& target_string, const std::string
 	}
 	return false;
 }
+
+bool Util::repeats(std::string& target_string, char c) {
+	constexpr int repeat_limit = 3;
+	if (target_string.size()) {
+		int count = 1;
+		for (int i = 0; i < target_string.size(); ++i) {
+			for (int j = i + 1; j < target_string.size(); ++j) {
+				if (target_string[j] == target_string[i]) {
+					++count;
+					if (count > repeat_limit) {
+						return true;
+					}
+				}
+				else if (target_string[j] != target_string[i]) {
+					count = 0;
+				}
+			}
+		}
+		return false;
+	}
+	throw std::length_error("oops, the string is empty...\n");
+}

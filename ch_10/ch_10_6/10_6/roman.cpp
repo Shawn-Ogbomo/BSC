@@ -83,6 +83,13 @@ Roman_int::Roman_int(const std::string& symbols)
 		}
 		left += t.val;
 		break;
+		case 'X':
+			if (Util::repeats(roman_code, roman_code[i])) {
+				std::cerr << "oops " << roman_code[i] << " cannot repeat...\n";
+				throw Roman_int::Invalid{};
+			}
+			left += t.val;
+			break;
 		}
 	}
 	value = left;
