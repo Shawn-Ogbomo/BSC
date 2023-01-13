@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cctype>
 #include "token.h"
 Token_stream::Token_stream() :buffer{},
 full{ false } {
@@ -16,14 +15,14 @@ Token Token_stream::get(const char c) {
 		return Token{ c, 5 };
 	case 'X':
 		return Token{ c, 10 };
-	case 'L':
-		return Token{ c, 50 };
-	case 'C':
-		return Token{ c, 100 };
-	case 'D':
-		return Token{ c, 500 };
-	case 'M':
-		return Token{ c, 1000 };
+		//case 'L':
+		//	return Token{ c, 50 };
+		//case 'C':
+		//	return Token{ c, 100 };
+		//case 'D':
+		//	return Token{ c, 500 };
+		//case 'M':
+		//	return Token{ c, 1000 };
 	default:
 		std::cout << "sorry " << c << " is not a valid roman numeral...\n";
 		throw Token::Invalid{};

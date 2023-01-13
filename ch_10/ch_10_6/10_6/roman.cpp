@@ -34,6 +34,10 @@ Roman_int::Roman_int(const std::string& symbols)
 						std::cerr << t.roman_letters << " cannot repeat...\n";
 						throw Roman_int::Invalid{};
 					}
+					if (Util::next_value(roman_code, i + 2)) {
+						std::cerr << "oops roman numeral after " << t.roman_letters << " is invalid...\n";
+						throw Roman_int::Invalid{};
+					}
 					if (left && left < t.val) {
 						std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
 						throw Roman_int::Invalid{};
@@ -44,6 +48,14 @@ Roman_int::Roman_int(const std::string& symbols)
 				}
 				else if (roman_code[i + 1] == 'X') {
 					t = { "IX",9 };
+					if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
+						std::cerr << t.roman_letters << " cannot repeat...\n";
+						throw Roman_int::Invalid{};
+					}
+					if (Util::next_value(roman_code, i + 2)) {
+						std::cerr << "oops roman numeral after " << t.roman_letters << " is invalid...\n";
+						throw Roman_int::Invalid{};
+					}
 					if (left && left < t.val) {
 						std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
 						throw Roman_int::Invalid{};
