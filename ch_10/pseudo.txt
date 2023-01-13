@@ -22,7 +22,7 @@
 what if the stream is empty...
 expression
 
-PARSE XIIIV
+PARSE I
 int Expression :         
 primary
 expression "<"  primary  (-)
@@ -64,3 +64,10 @@ IIII
 VVV
 VV
 XXXX
+
+
+
+
+
+CASE I OK 
+CASE I,V OK 
