@@ -30,7 +30,7 @@ Roman_int::Roman_int(const std::string& symbols)
 			if (Util::next_value(roman_code, i + 1)) {
 				if (roman_code[i + 1] == 'V') {
 					t = { "IV",4 };
-					if (roman_code.find(t.roman_letters)) {
+					if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
 						std::cerr << t.roman_letters << " cannot repeat...\n";
 						throw Roman_int::Invalid{};
 					}
