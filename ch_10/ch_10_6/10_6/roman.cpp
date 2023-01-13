@@ -12,7 +12,6 @@ Roman_int::Roman_int()
 Roman_int::Roman_int(const std::string& symbols)
 	: roman_code{ symbols },
 	value{}{
-	Place_value p;
 	for (int i = 0; i < roman_code.size(); ++i) {
 		if (islower(roman_code[i])) {
 			roman_code[i] = toupper(roman_code[i]);
@@ -26,16 +25,20 @@ Roman_int::Roman_int(const std::string& symbols)
 		{
 			if (Util::find_duplicates(roman_code, roman_code[i]) > repeat_limit) {
 				std::cerr << "oops " << roman_code[i] << " can only repeat " << repeat_limit << " times\n";
-				throw Invalid{};
+				throw Roman_int::Invalid{};
 			}
 			if (Util::next_value(roman_code, i + 1)) {
 				if (roman_code[i + 1] == 'V') {
 					t = { "IV",4 };
+					if (roman_code.find(t.roman_letters)) {
+						std::cerr << t.roman_letters << " cannot repeat...\n";
+						throw Roman_int::Invalid{};
+					}
 					if (left && left < t.val) {
 						std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
-						throw Invalid{};
+						throw Roman_int::Invalid{};
 					}
-					p.ones += t.val;
+					left += t.val;
 					++i;
 					break;
 				}
@@ -43,59 +46,34 @@ Roman_int::Roman_int(const std::string& symbols)
 					t = { "IX",9 };
 					if (left && left < t.val) {
 						std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
-						throw Invalid{};
+						throw Roman_int::Invalid{};
 					}
-					p.ones += t.val;
+					left += t.val;
 					++i;
 					break;
 				}
 			}
 		}
-		++p.ones;
-		left += t.val; //test
+		left += t.val;
 		break;
 		case'V':
 		{
 			if (Util::find_duplicates(roman_code, roman_code[i]) > 1) {
 				std::cerr << "oops " << roman_code[i] << " cannot repeat...\n";
-				throw Invalid{};
+				throw Roman_int::Invalid{};
 			}
 			if (Util::next_value(roman_code, i + 1)) {
 				if (roman_code[i + 1] != 'I') {
 					std::cerr << "Sorry V cannot be subtracted...\n";
-					throw Invalid{};
+					throw Roman_int::Invalid{};
 				}
 			}
 		}
-		p.ones += t.val;
-		left += t.val;			// test
+		left += t.val;
 		break;
-		/*	case'X': {
-				if (Util::find_duplicates(roman_code, roman_code[i]) > repeat_limit) {
-					std::cerr << "oops " << roman_code[i] << " can only repeat " << repeat_limit << " times\n";
-					throw Invalid{};
-				}
-				++p.tens;
-				left += 10;
-				break;
-			}
-			default:
-				break;
-			}*/
 		}
 	}
-	if (p.thousands) {
-		value += (Place_value::Multiplier::thousand * p.thousands);
-	}
-	if (p.hundreds) {
-		value += (Place_value::Multiplier::hundred * p.hundreds);
-	}
-	if (p.tens) {
-		value += (Place_value::Multiplier::ten * p.tens);
-	}
-	if (p.ones) {
-		value += (p.ones);
-	}
+	value = left;
 }
 int Roman_int::as_int() const {
 	return value;
