@@ -23,7 +23,7 @@ Roman_int::Roman_int(const std::string& symbols)
 		switch (t.roman_letter) {
 		case'I':
 		{
-			if (Util::find_duplicates(roman_code, roman_code[i]) > repeat_limit) {
+			if (Util::repeats(roman_code, roman_code[i])) {
 				std::cerr << "oops " << roman_code[i] << " can only repeat " << repeat_limit << " times\n";
 				throw Roman_int::Invalid{};
 			}
@@ -85,7 +85,7 @@ Roman_int::Roman_int(const std::string& symbols)
 		break;
 		case 'X':
 			if (Util::repeats(roman_code, roman_code[i])) {
-				std::cerr << "oops " << roman_code[i] << " cannot repeat...\n";
+				std::cerr << "oops " << roman_code[i] << " can only repeat " << repeat_limit << " times\n";
 				throw Roman_int::Invalid{};
 			}
 			left += t.val;
