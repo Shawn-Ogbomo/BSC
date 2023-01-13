@@ -19,10 +19,8 @@
 9*  While writing Roman numbers first write the largest numeral. Then put smaller     numerals to the right (for addition) or left (for subtraction)
 
 
-what if the stream is empty...
 expression
 
-PARSE I
 int Expression :         
 primary
 expression "<"  primary  (-)
@@ -31,17 +29,28 @@ expression ">"  primary  (+)
 primary - roman numeral
 primary + roman numeral
 
-int primary:                           
+int primary:        get next token                      
 roman numeral
-get next token 
+
 
 int roman numeral:                      
 "I",1{		// get next token 
 
  The symbol I can be repeated in succession up to 3 times.  
-  "I" -"V"		
-  "I" - "X"	
+ "I" -"V"	{
+  Cannot subtract from "IV"
+  "IV" cannot repeat...
+   "IV" cannot have another roman numeral after it
 }
+
+	
+  "I" - "X"	
+  Cannot subtract from "IX"
+  "IX" cannot repeat...
+   "IX" cannot have another roman numeral after it	
+}
+
+
 "V",5{
 The symbol V cannot be repeated 
   or subtracted. 
@@ -53,21 +62,3 @@ The symbol V cannot be repeated
  The symbol X can be repeated in succession up to 3 times.  
 
 }
-"L",50
-"C",100
-"D",500
-"M",1000
-
-
-Test cases
-IIII
-VVV
-VV
-XXXX
-
-
-
-
-
-CASE I OK 
-CASE I,V OK 
