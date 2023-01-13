@@ -3,84 +3,64 @@
 
 2*  A symbol cannot repeat more than 3 times in susccession
 
-
 3*  The symbol I, X, C and M can be repeated in succession up to 3 times only in         writing a number.  
 
-4*  The symbol I can be used for subtraction from V and X only.
+4*  The symbol I can be used for subtraction from V and X only. DONE
 
 5*  The symbol X can be subtracted only from L and C.
 
 6*  The symbol V cannot be repeated 
-    or subtracted. 
+    or subtracted. DONE
 
-7*  do not repeat V twice to get 10. We already have a symbol for 10. So VV for     writing 10 is not correct. 
+7*  do not repeat V twice to get 10. We already have a symbol for 10. So VV for     writing 10 is not correct. DONE
 
 8*  The symbol V,L and D are not repeated to form a bigger number. 
 
 9*  While writing Roman numbers first write the largest numeral. Then put smaller     numerals to the right (for addition) or left (for subtraction)
 
 
+what if the stream is empty...
+expression
 
+PARSE XIIIV
+int Expression :         
+primary
+expression "<"  primary  (-)
+expression "==" primary  (+)
+expression ">"  primary  (+)
+primary - roman numeral
+primary + roman numeral
 
-
-
-//return appropriate int for series of roman characters 
-Expression :
-symbol
-expression == next symbol (+)
-expression < next symbol  (-)
-expression > next symbol  (+)
-
-symbol:
+int primary:                           
 roman numeral
+get next token 
 
-roman numeral:
-<character , int pair> 
+int roman numeral:                      
+"I",1{		// get next token 
 
-
-
-//toks could be the stream?
-
-Token Expression(){
-while(true){
-  token t = ts.get()
-  t = <X,10>
-if sz == 1 return val
-else 
-  // get next token
-  token t2 = ts.get()
-  t2 = <I,1>
-  char sign {}
-  if (t1 is greater t2 or same){
-    sign =  '+'
-  }
-
- else if (t1 is less than t2){
-	sign = '-'	
- }
-
-  switch(sign){
-	case '+':
-	get next token 
-	if (no token) 
-	  -do the addition between the two tokens and return the result 
-	  else 
-	   -get token 
-        go back to top of expression 
-	
-
-	case '-':
-	get next token 
-	if(no token)
-	minus tokens and return result
-	else
-	-get next token 
-	go back to top of expression 
-
-
-	result = <IV,4>
-	remove 2 tokens X remains use erase member function for vector to remove 		specific toks.
-	}
-
- }
+ The symbol I can be repeated in succession up to 3 times.  
+  "I" -"V"		
+  "I" - "X"	
 }
+"V",5{
+The symbol V cannot be repeated 
+  or subtracted. 
+}
+
+"X",10{
+ "X" - "L"
+  "X" - "C"
+ The symbol X can be repeated in succession up to 3 times.  
+
+}
+"L",50
+"C",100
+"D",500
+"M",1000
+
+
+Test cases
+IIII
+VVV
+VV
+XXXX
