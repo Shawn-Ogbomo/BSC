@@ -23,8 +23,9 @@ bool Util::duplicate_substrs(const std::string& target_string, const std::string
 	if (target_string.size() < 4) {
 		throw std::length_error("cant find duplicate sub-strings with a length less than 4...\n");
 	}
-	if (int pos = target_string.find(sub_str) != std::string::npos) {
-		if (int pos2 = target_string.find(sub_str, (pos + 2))) {
+	if (target_string.find(sub_str) != std::string::npos) {
+		int pos = target_string.find(sub_str);
+		if (int pos2 = target_string.find(sub_str, (pos + sub_str.size()))) {
 			return true;
 		}
 	}
