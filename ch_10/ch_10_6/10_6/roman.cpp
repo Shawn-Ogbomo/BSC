@@ -85,7 +85,8 @@ Roman_int::Roman_int(const std::string& symbols)
 				throw Roman_int::Invalid{};
 			}
 			if (Util::next_value(roman_code, i + 1)) {
-				if (roman_code[i + 1] != 'I') {
+				Token t2 = ts.get(roman_code[i + 1]);
+				if (t2.roman_letter != 'I') {
 					std::cerr << "Sorry V cannot be subtracted...\n";
 					throw Roman_int::Invalid{};
 				}
