@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include "util.h"
 #pragma once
 bool Util::next_value(const std::string& target, const int index) {

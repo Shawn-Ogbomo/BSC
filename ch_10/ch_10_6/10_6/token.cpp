@@ -19,8 +19,8 @@ Token Token_stream::get(const char c) {
 		return Token{ c, 50 };
 	case 'C':
 		return Token{ c, 100 };
-		//case 'D':
-		//	return Token{ c, 500 };
+	case 'D':
+		return Token{ c, 500 };
 		//case 'M':
 		//	return Token{ c, 1000 };
 	default:
