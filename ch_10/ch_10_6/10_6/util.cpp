@@ -38,14 +38,15 @@ bool Util::repeats(std::string& target_string, char c) {
 		int count = 1;
 		for (int i = 0; i < target_string.size(); ++i) {
 			for (int j = i + 1; j < target_string.size(); ++j) {
-				if (target_string[j] == target_string[i]) {
+				if (target_string[i] == target_string[j]) {
 					++count;
 					if (count > repeat_limit) {
 						return true;
 					}
 				}
-				else if (target_string[j] != target_string[i]) {
+				else if (target_string[i] != target_string[j]) {
 					count = 0;
+					j = target_string.size();
 				}
 			}
 		}
