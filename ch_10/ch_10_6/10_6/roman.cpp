@@ -213,6 +213,30 @@ Roman_int::Roman_int(const std::string& symbols)
 					++i;
 					break;
 				}
+				if (roman_code[i + 1] == 'M') {
+					t = { "CM",900 };
+					if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
+						std::cerr << t.roman_letters << " cannot repeat...\n";
+						throw Roman_int::Invalid{};
+					}
+					if (Util::next_value(roman_code, i + 2)) {
+						Token t2 = ts.get(roman_code[i + 2]);
+						if (t2.roman_letter != 'I' && t2.roman_letter != 'V' && t2.roman_letter != 'X' && t2.roman_letter != 'L') {
+							std::cerr << t2.roman_letter << " cannot proceed " << t.roman_letters << "...\n";
+							throw Roman_int::Invalid{};
+						}
+					}
+					if (Util::previous_value(i - 1)) {
+						Token t2 = ts.get(roman_code[i - 1]);
+						if (t2.val < t.val) {
+							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
+							throw Roman_int::Invalid{};
+						}
+					}
+					left += t.val;
+					++i;
+					break;
+				}
 			}
 			left += t.val;
 			break;
@@ -223,6 +247,22 @@ Roman_int::Roman_int(const std::string& symbols)
 				std::cerr << "oops " << roman_code[i] << " cannot repeat...\n";
 				throw Roman_int::Invalid{};
 			}
+			if (Util::previous_value(i - 1)) {
+				Token t2 = ts.get(roman_code[i - 1]);
+				if (t2.val < t.val) {
+					std::cerr << "oops cannot subtract " << t2.roman_letter << " from " << t.roman_letter << " ...\n";
+					throw Roman_int::Invalid{};
+				}
+			}
+			if (Util::next_value(roman_code, i + 1)) {
+				Token t2 = ts.get(roman_code[i + 1]);
+				if (t2.val > t.val) {
+					std::cerr << "Sorry " << t.roman_letter << " cannot be subtracted...\n";
+					throw Roman_int::Invalid{};
+				}
+			}
+			left += t.val;
+			break;
 		}
 		}
 	}

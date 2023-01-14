@@ -3,18 +3,18 @@
 
 2*  A symbol cannot repeat more than 3 times in susccession
 
-3*  The symbol I*, X*, C and M can be repeated in succession up to 3 times only in         writing a number.  
+3*  The symbol I*, X*, C* and M can be repeated in succession up to 3 times only in         writing a number.  
 
 4*  The symbol I can be used for subtraction from V and X only. DONE
 
-5*  The symbol X can be subtracted only from L and C.
+5*  The symbol X can be subtracted only from L and C. DONE
 
 6*  The symbol V cannot be repeated 
     or subtracted. DONE
 
 7*  do not repeat V twice to get 10. We already have a symbol for 10. So VV for     writing 10 is not correct. DONE
 
-8*  The symbol V,L and D are not repeated to form a bigger number. 
+8*  The symbol V*,L* and D* are not repeated to form a bigger number. DONE
 
 9*  While writing Roman numbers first write the largest numeral. Then put smaller     numerals to the right (for addition) or left (for subtraction)
 
