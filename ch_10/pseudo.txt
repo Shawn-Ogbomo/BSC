@@ -1,9 +1,9 @@
 1*  The numbers 2, 3, 4, 6, 7, 8 and 9 don’t have symbols in Roman System.
     They are got by the method of addition or subtraction. DONE
 
-2*  A symbol cannot repeat more than 3 times in susccession
+2*  A symbol cannot repeat more than 3 times in susccession DONE
 
-3*  The symbol I*, X*, C* and M can be repeated in succession up to 3 times only in         writing a number.  
+3*  The symbol I*, X*, C* and M* can be repeated in succession up to 3 times only in         writing a number.  DONE
 
 4*  The symbol I can be used for subtraction from V and X only. DONE
 

@@ -264,6 +264,22 @@ Roman_int::Roman_int(const std::string& symbols)
 			left += t.val;
 			break;
 		}
+		case 'M':
+		{
+			if (Util::repeats(roman_code, roman_code[i])) {
+				std::cerr << "Invalid syntax...\n";
+				throw Roman_int::Invalid{};
+			}
+			if (Util::previous_value(i - 1)) {
+				Token t2 = ts.get(roman_code[i - 1]);
+				if (t2.val < t.val) {
+					std::cerr << "oops cannot subtract " << t2.roman_letter << " from " << t.roman_letter << " ...\n";
+					throw Roman_int::Invalid{};
+				}
+			}
+			left += t.val;
+			break;
+		}
 		}
 	}
 	value = left;

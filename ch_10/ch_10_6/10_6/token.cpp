@@ -21,8 +21,8 @@ Token Token_stream::get(const char c) {
 		return Token{ c, 100 };
 	case 'D':
 		return Token{ c, 500 };
-		//case 'M':
-		//	return Token{ c, 1000 };
+	case 'M':
+		return Token{ c, 1000 };
 	default:
 		std::cout << "sorry " << c << " is not a valid roman numeral...\n";
 		throw Token::Invalid{};
