@@ -197,7 +197,7 @@ Roman_int::Roman_int(const std::string& symbols)
 					}
 					if (Util::next_value(roman_code, i + 2)) {
 						Token t2 = ts.get(roman_code[i + 2]);
-						if (t2.roman_letter != 'I' && t2.roman_letter != 'V' && t2.roman_letter != 'X') {
+						if (t2.roman_letter != 'I' && t2.roman_letter != 'V' && t2.roman_letter != 'X' && t2.roman_letter != 'L') {
 							std::cerr << t2.roman_letter << " cannot proceed " << t.roman_letters << "...\n";
 							throw Roman_int::Invalid{};
 						}
