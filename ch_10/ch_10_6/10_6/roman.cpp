@@ -217,6 +217,13 @@ Roman_int::Roman_int(const std::string& symbols)
 			left += t.val;
 			break;
 		}
+		case 'D':
+		{
+			if (Util::find_duplicates(roman_code, roman_code[i]) > 1) {
+				std::cerr << "oops " << roman_code[i] << " cannot repeat...\n";
+				throw Roman_int::Invalid{};
+			}
+		}
 		}
 	}
 	value = left;
