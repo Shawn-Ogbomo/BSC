@@ -8,8 +8,8 @@ bool Util::next_value(const std::string& target, const int index) {
 	return false;
 }
 
-bool Util::previous_value(const std::string& target, const int index) {
-	if (target[index]) {
+bool Util::previous_value(const int index) {
+	if (index != -1) {
 		return true;
 	}
 	return false;
