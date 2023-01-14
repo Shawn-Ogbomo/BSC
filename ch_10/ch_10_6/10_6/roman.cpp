@@ -37,9 +37,12 @@ Roman_int::Roman_int(const std::string& symbols)
 						std::cerr << "oops roman numeral after " << t.roman_letters << " is invalid...\n";
 						throw Roman_int::Invalid{};
 					}
-					if (left && left < t.val) {
-						std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
-						throw Roman_int::Invalid{};
+					if (Util::previous_value(roman_code, i - 1)) {
+						Token t2 = ts.get(roman_code[i - 1]);
+						if (t2.val < t.val) {
+							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
+							throw Roman_int::Invalid{};
+						}
 					}
 					left += t.val;
 					++i;
@@ -55,9 +58,12 @@ Roman_int::Roman_int(const std::string& symbols)
 						std::cerr << "oops roman numeral after " << t.roman_letters << " is invalid...\n";
 						throw Roman_int::Invalid{};
 					}
-					if (left && left < t.val) {
-						std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
-						throw Roman_int::Invalid{};
+					if (Util::previous_value(roman_code, i - 1)) {
+						Token t2 = ts.get(roman_code[i - 1]);
+						if (t2.val < t.val) {
+							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
+							throw Roman_int::Invalid{};
+						}
 					}
 					left += t.val;
 					++i;
