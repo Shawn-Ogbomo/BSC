@@ -3,7 +3,7 @@
 
 2*  A symbol cannot repeat more than 3 times in susccession
 
-3*  The symbol I, X, C and M can be repeated in succession up to 3 times only in         writing a number.  
+3*  The symbol I*, X*, C and M can be repeated in succession up to 3 times only in         writing a number.  
 
 4*  The symbol I can be used for subtraction from V and X only. DONE
 
