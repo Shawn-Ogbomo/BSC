@@ -10,15 +10,15 @@ Roman_int::Roman_int()
 Roman_int::Roman_int(const std::string& symbols)
 	: roman_code{ symbols },
 	value{}{
-	for (int i = 0; i < roman_code.size(); ++i) {
-		if (islower(roman_code[i])) {
-			roman_code[i] = toupper(roman_code[i]);
-		}
-	}
 	if (!roman_code.size()) {
 		roman_code = "nulla";
 		value = 0;
 		return;
+	}
+	for (int i = 0; i < roman_code.size(); ++i) {
+		if (islower(roman_code[i])) {
+			roman_code[i] = toupper(roman_code[i]);
+		}
 	}
 	int left{};
 	for (int i = 0; i < roman_code.size(); ++i) {
@@ -295,4 +295,11 @@ std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 }
 
 std::istream& operator>>(std::istream& is, Roman_int& r) {
+	std::string s;
+	is >> s;
+	if (!is) {
+		return is;
+	}
+	r = Roman_int(s);
+	return is;
 }
