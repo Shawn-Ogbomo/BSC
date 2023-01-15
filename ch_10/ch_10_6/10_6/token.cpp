@@ -1,13 +1,6 @@
 #include <iostream>
 #include "token.h"
-Token_stream::Token_stream() :buffer{},
-full{ false } {
-}
-Token Token_stream::get(const char c) {
-	if (full) {
-		full = false;
-		return buffer;
-	}
+Token get(const char c) {
 	switch (c) {
 	case 'I':
 		return Token{ c,1 };
@@ -28,16 +21,6 @@ Token Token_stream::get(const char c) {
 		throw Token::Invalid{};
 	}
 }
-
-void Token_stream::put_back(Token t) {
-	if (full) {
-		std::cerr << "cannot put a token into a stream that is already full...\n";
-		throw Token::Invalid{};
-	}
-	buffer = t;
-	full = true;
-}
-
 Token::Token()
 	:roman_letter{},
 	val{},

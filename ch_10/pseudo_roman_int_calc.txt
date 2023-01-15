@@ -1,0 +1,33 @@
+Roman_int expression(Token_stream &ts){
+Roman_int left{} = term  //call term
+while(true){
+// get next token  to fulfil  expression rule 
+   switch(token){
+	case '+'
+		left += term
+	case '-'
+		left -= term 
+	default 
+	//put token back into stream 
+	// exit  	
+  }
+ }
+}
+
+
+// Need Token class to store 
+"+"
+"-"
+"/"
+"*"
+"^"
+"sqrt"
+"("
+")"
+"roman_int"
+//Token_stream can hold
+//a roman int 
+//a character .
+//putback 
+//get 
+//clean_up_mess

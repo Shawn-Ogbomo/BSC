@@ -8,12 +8,4 @@ struct Token {
 	Token(char c, int v);
 	Token(const std::string& s, int v);
 };
-class Token_stream {
-public:
-	Token_stream();
-	Token get(const char c);
-	void put_back(Token t);
-private:
-	Token buffer;
-	bool full;
-};
+Token get(const char c);
