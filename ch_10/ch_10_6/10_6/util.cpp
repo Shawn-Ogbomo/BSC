@@ -10,7 +10,7 @@ bool Util::next_value(const std::string& target, const int index) {
 }
 
 bool Util::previous_value(const int index) {
-	if (index != -1) {
+	if (index != std::string::npos) {
 		return true;
 	}
 	return false;
