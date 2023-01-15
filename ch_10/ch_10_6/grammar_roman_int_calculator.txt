@@ -1,0 +1,22 @@
+//Grammar calculator roman ints 
+
+Expression:        //Returns a roman int
+Term
+Expression "+" Term //addition
+Expression "-" Term //subtraction
+
+Term:
+primary
+Term "*" Primary
+Term "/" Primary
+Term "^" Primary
+Term "%" Primary
+Term "sqrt" 
+
+Primary:
+Roman numeral
+"(" Expression ")"
+
+Roman numeral:
+<string,int>
+<char,int>
