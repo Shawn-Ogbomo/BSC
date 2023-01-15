@@ -293,3 +293,6 @@ std::string Roman_int::as_string() const {
 std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 	return os << r.as_string();
 }
+
+std::istream& operator>>(std::istream& is, Roman_int& r) {
+}

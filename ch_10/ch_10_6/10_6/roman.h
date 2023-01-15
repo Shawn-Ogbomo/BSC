@@ -13,3 +13,4 @@ private:
 	int value;
 };
 std::ostream& operator<< (std::ostream& os, const Roman_int& r);
+std::istream& operator>>(std::istream& is, Roman_int& r);
