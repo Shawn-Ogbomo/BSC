@@ -2,7 +2,7 @@
 // Sun Jan 15 2023
 //Simple calculator v1
 //revision history
-//added helper function roman_letter() to prevent putting multiple characters back into the input stream
+//added function roman_letter() to prevent putting multiple characters back into the input stream
 //
 // works on Roman_ints only
 //This program implements a basic expression calculator.
@@ -80,14 +80,14 @@ Token Token_stream::get() {
 	switch (c) {
 	case '+':
 	case '-':
-	case '*':
-	case '$':
-	case '/':
-	case '%':
-	case '(':
-	case ')':
-	case ';':
-	case '=':
+		/*case '*':
+		case '$':
+		case '/':
+		case '%':
+		case '(':
+		case ')':
+		case ';':
+		case '=':*/
 		return Token(c);
 	case '0':
 	case '1':
@@ -130,7 +130,7 @@ Token Token_stream::get() {
 				return Token(quit);
 			}
 		}
-		if (isalpha(c)) {
+		if (!isspace(c)) {
 			Roman_int r;
 			std::cin >> r;
 			return Token(r);
@@ -175,13 +175,6 @@ Roman_int expression(Token_stream& ts) {
 int main() {
 	try {
 		Token_stream ts{ std::cin };
-		Token t = ts.get();
-		while (t.kind == print) {			//ignore prints
-			t = ts.get();
-		}
-		if (t.kind == quit) {
-			throw std::runtime_error("Exiting...");
-		}
 		calculate(ts);
 	}
 
