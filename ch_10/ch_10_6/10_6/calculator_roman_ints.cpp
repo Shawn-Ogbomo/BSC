@@ -57,8 +57,11 @@ private:
 	bool full;
 	Token buffer;
 };
-constexpr char print = ';';
-
+const char print = ';';
+const char prompt = '>';
+const char  quit = 'q';
+const char  help = 'h';
+const std::string exit = "exit";
 Token Token_stream::get() {
 	if (full) {
 		full = false;
