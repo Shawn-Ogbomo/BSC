@@ -32,6 +32,8 @@
 //<char, int>
 #include <iostream>
 #include <cctype>
+#include <vector>
+#include <algorithm>
 #include "roman.h"
 #include "token.h"
 #include "util.h"
@@ -66,12 +68,13 @@ const char print = ';';
 const char  quit = 'q';
 const char  help = 'h';
 const std::string ex_key = "exit";
-const char underscore = '_';
-bool roman_letter(char c) { //checks if the target character is a roman letter.					//fix this... Severity	Code	Description	Project	File	Line	Suppression State
-	//Warning	C4805	'!=': unsafe mix of type 'int' and type 'bool' in operation	10_6	D : \bsc_github\BSC\ch_10\ch_10_6\10_6\calculator_roman_ints.cpp	122
-
-	return (c == 'I' || c == 'V' || c == 'X' || c == 'L' || c == 'D' || c == 'M'
-		|| c == 'i' || c == 'v' || c == 'l' || c == 'd' || c == 'm');
+bool roman_letter(char c) {					//fix this....
+	static std::vector<char>valids = { 'I','V','X','L','C','D','M','i','v','l','c','d','m' };
+	auto result1 = std::find(begin(valids), end(valids), c);
+	if (result1 != std::end(valids)) {
+		return true;
+	}
+	return false;
 }
 Token Token_stream::get() {
 	if (full) {
@@ -123,10 +126,10 @@ Token Token_stream::get() {
 			}
 			std::cin.unget();
 		}
-		else if (isalpha(c) && std::cin.peek() != roman_letter(c)) {
+		else if (isalpha(c) && (!roman_letter(std::cin.peek()))) {
 			std::cin.unget();
 			std::string s;
-			while (std::cin.get(c) && isalpha(c)) {
+			while (std::cin.get(c) && !isspace(c)) {
 				s += c;
 			}
 			std::cin.unget();
@@ -136,8 +139,11 @@ Token Token_stream::get() {
 			std::cerr << s << " is invalid...\n";
 			throw std::runtime_error("Invalid input...\nPress ; to continue");
 		}
-		Util::end_of_loop(std::cin, print, "opps couldn't find the terminating character");
-		if (!isspace(c)) {
+		else {
+			std::cin.unget();
+		}
+		Util::end_of_loop(std::cin, print, "oops couldn't find the terminating character");
+		if (!isspace(c)) {					//fix this...
 			Roman_int r;
 			std::cin >> r;
 			return Token(r);
