@@ -21,7 +21,7 @@ Roman_int::Roman_int(const std::string& symbols)
 	}
 	int left{};
 	for (int i = 0; i < roman_code.size(); ++i) {
-		Token t = get(roman_code[i]);
+		Token_gen::Token t = Token_gen::get(roman_code[i]);
 		switch (t.roman_letter) {
 		case'I':
 		{
@@ -41,7 +41,7 @@ Roman_int::Roman_int(const std::string& symbols)
 						throw Roman_int::Invalid{};
 					}
 					if (Util::previous_value(i - 1)) {
-						Token t2 = get(roman_code[i - 1]);
+						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
 							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
 							throw Roman_int::Invalid{};
@@ -62,7 +62,7 @@ Roman_int::Roman_int(const std::string& symbols)
 						throw Roman_int::Invalid{};
 					}
 					if (Util::previous_value(i - 1)) {
-						Token t2 = get(roman_code[i - 1]);
+						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
 							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
 							throw Roman_int::Invalid{};
@@ -83,7 +83,7 @@ Roman_int::Roman_int(const std::string& symbols)
 				throw Roman_int::Invalid{};
 			}
 			if (Util::next_value(roman_code, i + 1)) {
-				Token t2 = get(roman_code[i + 1]);
+				Token_gen::Token t2 = Token_gen::get(roman_code[i + 1]);
 				if (t2.roman_letter != 'I') {
 					std::cerr << "Sorry V cannot be subtracted...\n";
 					throw Roman_int::Invalid{};
@@ -106,14 +106,14 @@ Roman_int::Roman_int(const std::string& symbols)
 						throw Roman_int::Invalid{};
 					}
 					if (Util::next_value(roman_code, i + 2)) {
-						Token t2 = get(roman_code[i + 2]);
+						Token_gen::Token t2 = Token_gen::get(roman_code[i + 2]);
 						if (t2.roman_letter != 'I' && t2.roman_letter != 'V') {
 							std::cerr << t2.roman_letter << " cannot proceed " << t.roman_letters << "...\n";
 							throw Roman_int::Invalid{};
 						}
 					}
 					if (Util::previous_value(i - 1)) {
-						Token t2 = get(roman_code[i - 1]);
+						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
 							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
 							throw Roman_int::Invalid{};
@@ -130,14 +130,14 @@ Roman_int::Roman_int(const std::string& symbols)
 						throw Roman_int::Invalid{};
 					}
 					if (Util::next_value(roman_code, i + 2)) {
-						Token t2 = get(roman_code[i + 2]);
+						Token_gen::Token t2 = Token_gen::get(roman_code[i + 2]);
 						if (t2.roman_letter != 'I' && t2.roman_letter != 'V') {
 							std::cerr << t2.roman_letter << " cannot proceed " << t.roman_letters << "...\n";
 							throw Roman_int::Invalid{};
 						}
 					}
 					if (Util::previous_value(i - 1)) {
-						Token t2 = get(roman_code[i - 1]);
+						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
 							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
 							throw Roman_int::Invalid{};
@@ -158,14 +158,14 @@ Roman_int::Roman_int(const std::string& symbols)
 				throw Roman_int::Invalid{};
 			}
 			if (Util::previous_value(i - 1)) {
-				Token t2 = get(roman_code[i - 1]);
+				Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 				if (t2.val < t.val) {
 					std::cerr << "oops cannot subtract from " << t.roman_letter << " ...\n";
 					throw Roman_int::Invalid{};
 				}
 			}
 			if (Util::next_value(roman_code, i + 1)) {
-				Token t2 = get(roman_code[i + 1]);
+				Token_gen::Token t2 = Token_gen::get(roman_code[i + 1]);
 				if (t2.val > t.val) {
 					std::cerr << "Sorry " << t.roman_letter << " cannot be subtracted...\n";
 					throw Roman_int::Invalid{};
@@ -181,7 +181,7 @@ Roman_int::Roman_int(const std::string& symbols)
 				throw Roman_int::Invalid{};
 			}
 			if (Util::previous_value(i - 1)) {
-				Token t2 = get(roman_code[i - 1]);
+				Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 				if (t2.val < t.val) {
 					std::cerr << "oops cannot subtract " << t2.roman_letter << " from " << t.roman_letter << " ...\n";
 					throw Roman_int::Invalid{};
@@ -195,14 +195,14 @@ Roman_int::Roman_int(const std::string& symbols)
 						throw Roman_int::Invalid{};
 					}
 					if (Util::next_value(roman_code, i + 2)) {
-						Token t2 = get(roman_code[i + 2]);
+						Token_gen::Token t2 = Token_gen::get(roman_code[i + 2]);
 						if (t2.roman_letter != 'I' && t2.roman_letter != 'V' && t2.roman_letter != 'X' && t2.roman_letter != 'L') {
 							std::cerr << t2.roman_letter << " cannot proceed " << t.roman_letters << "...\n";
 							throw Roman_int::Invalid{};
 						}
 					}
 					if (Util::previous_value(i - 1)) {
-						Token t2 = get(roman_code[i - 1]);
+						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
 							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
 							throw Roman_int::Invalid{};
@@ -219,14 +219,14 @@ Roman_int::Roman_int(const std::string& symbols)
 						throw Roman_int::Invalid{};
 					}
 					if (Util::next_value(roman_code, i + 2)) {
-						Token t2 = get(roman_code[i + 2]);
+						Token_gen::Token t2 = Token_gen::get(roman_code[i + 2]);
 						if (t2.roman_letter != 'I' && t2.roman_letter != 'V' && t2.roman_letter != 'X' && t2.roman_letter != 'L') {
 							std::cerr << t2.roman_letter << " cannot proceed " << t.roman_letters << "...\n";
 							throw Roman_int::Invalid{};
 						}
 					}
 					if (Util::previous_value(i - 1)) {
-						Token t2 = get(roman_code[i - 1]);
+						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
 							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
 							throw Roman_int::Invalid{};
@@ -247,14 +247,14 @@ Roman_int::Roman_int(const std::string& symbols)
 				throw Roman_int::Invalid{};
 			}
 			if (Util::previous_value(i - 1)) {
-				Token t2 = get(roman_code[i - 1]);
+				Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 				if (t2.val < t.val) {
 					std::cerr << "oops cannot subtract " << t2.roman_letter << " from " << t.roman_letter << " ...\n";
 					throw Roman_int::Invalid{};
 				}
 			}
 			if (Util::next_value(roman_code, i + 1)) {
-				Token t2 = get(roman_code[i + 1]);
+				Token_gen::Token t2 = Token_gen::get(roman_code[i + 1]);
 				if (t2.val > t.val) {
 					std::cerr << "Sorry " << t.roman_letter << " cannot be subtracted...\n";
 					throw Roman_int::Invalid{};
@@ -270,7 +270,7 @@ Roman_int::Roman_int(const std::string& symbols)
 				throw Roman_int::Invalid{};
 			}
 			if (Util::previous_value(i - 1)) {
-				Token t2 = get(roman_code[i - 1]);
+				Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 				if (t2.val < t.val) {
 					std::cerr << "oops cannot subtract " << t2.roman_letter << " from " << t.roman_letter << " ...\n";
 					throw Roman_int::Invalid{};
@@ -294,8 +294,10 @@ std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 }
 
 std::istream& operator>>(std::istream& is, Roman_int& r) {
+	char c{};
 	std::string s;
-	is >> s;
+	while (std::cin.get(c) && isalpha(c)) s += c;
+	std::cin.unget();
 	if (!is) {
 		return is;
 	}

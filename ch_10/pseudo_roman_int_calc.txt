@@ -25,9 +25,44 @@ while(true){
 "("
 ")"
 "roman_int"
+
 //Token_stream can hold
 //a roman int 
-//a character .
+//a character
 //putback 
 //get 
 //clean_up_mess
+
+//std::is_alpha() with iteration 
+to get characters from cin and stop before operator is encountered eg "+'
+try to build a roman int from the sequence of characters before the operator 
+then proceed as usual.
+use switch case...
+
+
+
+oken Token_stream::get() {
+	if (full) {
+		full = false;
+		return buffer;
+	}
+	char c{};
+	std::cin >> c;
+	switch (c) {
+	case '+':
+	case '-':
+	case '*':
+	case '$':
+	case '/':
+	case '%':
+	case '(':
+	case ')':
+		return Token(c);
+	default: 
+	if its in the alphabet
+	 -put it back into the stream and try to build a roman int...
+	call operator >> for Roman_int type
+	if its not throw an error stating that this calulator is for roman ints only 
+	
+	}
+}
