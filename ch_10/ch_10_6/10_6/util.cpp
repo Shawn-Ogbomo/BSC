@@ -62,3 +62,21 @@ bool Util::repeats(std::string& target_string, char c) {
 	}
 	throw std::length_error("oops, the string is empty...\n");
 }
+
+void Util::end_of_loop(std::istream& ist, char term, const std::string& message) {
+	if (ist.eof()) {
+		throw Invalid{};
+	}
+	if (ist.bad()) {
+		std::cerr << "The stream has been corrupted...\n";
+		ist.exceptions(ist.exceptions() | std::ios_base::badbit);
+	}
+	if (ist.fail()) {
+		ist.clear();
+		char ch{};
+		if (ist >> ch && ch == term) {
+			return;
+		}
+		throw std::runtime_error(message);
+	}
+}
