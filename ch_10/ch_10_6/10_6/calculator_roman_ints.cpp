@@ -2,6 +2,8 @@
 // Sun Jan 15 2023
 //Simple calculator v1
 //revision history
+//
+//
 // works on Roman_ints only
 //This program implements a basic expression calculator.
 //Input from cin; output to cout.
@@ -29,9 +31,11 @@
 //<string, int>
 //<char, int>
 #include <iostream>
+#include <cctype>
 #include "roman.h"
 #include "token.h"
 struct Token {
+	class Invalid {};
 	Token() :kind{}, value{}, letters{} {}
 	Token(char c) :kind{ c }, letters{}, value{} {}
 	Token(const Roman_int& r) :letters{ r.as_string() }, value{ r.as_int() }, kind{} {}
@@ -61,6 +65,7 @@ const char print = ';';
 const char  quit = 'q';
 const char  help = 'h';
 const std::string ex_key = "exit";
+const char underscore = '_';
 Token Token_stream::get() {
 	if (full) {
 		full = false;
@@ -90,35 +95,46 @@ Token Token_stream::get() {
 	case '7':
 	case '8':
 	case '9':
+	case '.':
 	{
 		std::cin.unget();
 		double d{};
 		std::cin >> d;
-		std::cerr << "oops " << d << " will not work with this calculator. Roman numerals only please...\n";
-		throw Invalid{};
+		std::cerr << "oops " << d << " will not work with this calculator. \nRoman numerals only.\n";
+		throw Token::Invalid{};
 	}
 	default:
+		if (isalpha(c) && std::cin.peek() == '\n') {
+			if (c == quit) {
+				return Token(quit);
+			}
+			if (c == help) {
+				//display help menu
+			}
+		}
+		if (isalpha(c) && std::cin.peek() != '\n') {
+			std::string s;
+			std::cin.unget();
+			while (std::cin.get(c) && isalpha(c)) {
+				s += c;
+			}
+			std::cin.unget();
+			if (s == ex_key) {
+				return Token(quit);
+			}
+		}
 		if (isalpha(c)) {
 			std::cin.unget();
 			Roman_int r;
 			std::cin >> r;
 			return Token(r);
 		}
-		if (isalpha(c) && std::cin.peek() == '\n') {
-			if (c == quit) {
-				return Token(c);
-			}
-			if (c == help) {
-				//display help menu
-			}
-		}
 		std::cerr << "\nBad token: " << c << "\n";
 		throw std::runtime_error("Invalid input...\nPress ; to continue");
 	}
 }
 Roman_int expression(Token_stream& ts);
-void Token_stream::ignore(char c)																												// ignores print characters ';'
-{
+void Token_stream::ignore(char c) {	// ignores print characters ';'
 	if (full && c == buffer.kind) {
 		full = false;
 		return;
@@ -128,8 +144,7 @@ void Token_stream::ignore(char c)																												// ignores print ch
 	while (std::cin >> ch)
 		if (ch == c) return;
 }
-void clean_up_mess(Token_stream& ts)
-{
+void clean_up_mess(Token_stream& ts) {
 	ts.ignore(print);
 }
 const char prompt = '>';
@@ -154,6 +169,13 @@ Roman_int expression(Token_stream& ts) {
 int main() {
 	try {
 		Token_stream ts{ std::cin };
+		Token t = ts.get();
+		while (t.kind == print) {			//ignore prints
+			t = ts.get();
+		}
+		if (t.kind == quit) {
+			throw std::runtime_error("Exiting...");
+		}
 		calculate(ts);
 	}
 
@@ -162,7 +184,7 @@ int main() {
 		return 1;
 	}
 	catch (...) {
-		std::cerr << "Something went wrong...\n";
+		std::cerr << "Something went wrong...";
 		return 2;
 	}
 }
