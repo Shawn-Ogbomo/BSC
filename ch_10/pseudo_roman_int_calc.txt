@@ -59,10 +59,79 @@ oken Token_stream::get() {
 	case ')':
 		return Token(c);
 	default: 
+	
+
+
 	if its in the alphabet
 	 -put it back into the stream and try to build a roman int...
 	call operator >> for Roman_int type
 	if its not throw an error stating that this calulator is for roman ints only 
 	
 	}
+}
+
+
+
+
+
+
+void calculate(Token_stream& ts) {
+	while (true)try {
+		std::cout << prompt << " ";
+		Token t = ts.get();
+		std::cout << expression(ts);
+	}
+	catch (const std::exception& e) {
+		std::cerr << e.what() << "\n";
+		clean_up_mess(ts);
+	}
+}
+
+
+
+
+
+		main
+		Token_stream ts{ std::cin };			//get token 
+		Token t = ts.get();
+		while (t.kind == print) {			//ignore prints 
+			t = ts.get();
+		}
+		if t.kind is a quit token or exit
+			-exit the program...
+
+		calculate(ts);
+
+
+if (isalpha(c) && std::cin.peek() != '\n' and the character is not a roman numeral) {
+			std::string s;
+			//put the character back into the input stream...
+			while( c is an alphabet)
+				s+= c;
+			put the next character back into the input stream...
+			if s is equal to "exit"
+				return a quit token....
+		}
+
+
+void Util::end_of_loop(std::istream& ist, char term, std::string& message) {
+	if (ist.fail()) {
+		ist.clear();
+			char ch{};
+			while (ist >> ch ) {
+				if ch is a term return
+				else set the stream to failbit and return  
+			}
+	}
+}
+
+char roman_letter(char c) { //checks if the target character is a roman letter.		
+
+	create a vector of chars to hold valid roman numerals 
+	evaluate target character against each index in the vector 
+	if target character is in the vector 
+		- true
+
+	else 
+	return a false
 }
