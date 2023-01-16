@@ -84,13 +84,14 @@ Token Token_stream::get() {
 	case '+':
 	case '-':
 	case '=':
+	case ';':
+
 		//case '*':
 		//case '$':
 		//case '/':
 		//case '%':
 		//case '(':
 		//case ')':
-		//case ';':
 		return Token(c);
 	case '0':
 	case '1':
@@ -111,7 +112,7 @@ Token Token_stream::get() {
 		throw std::runtime_error("Press ; to continue");
 	}
 	default:
-		if (isalpha(c) && std::cin.peek() == '\n') {
+		if ((isalpha(c) || ispunct(c)) && std::cin.peek() == '\n') {
 			if (c == quit) {
 				return Token(quit);
 			}
