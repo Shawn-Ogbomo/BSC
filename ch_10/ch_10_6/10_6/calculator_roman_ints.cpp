@@ -58,10 +58,9 @@ private:
 	Token buffer;
 };
 const char print = ';';
-const char prompt = '>';
 const char  quit = 'q';
 const char  help = 'h';
-const std::string exit = "exit";
+const std::string ex_key = "exit";
 Token Token_stream::get() {
 	if (full) {
 		full = false;
@@ -78,13 +77,34 @@ Token Token_stream::get() {
 	case '%':
 	case '(':
 	case ')':
+	case ';':
+	case '=':
 		return Token(c);
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+		throw Invalid{};
 	default:
 		if (isalpha(c)) {
 			std::cin.unget();
 			Roman_int r;
 			std::cin >> r;
 			return Token(r);
+		}
+		if (isalpha(c) && std::cin.peek() == '\n') {
+			if (c == quit) {
+				return Token(c);
+			}
+			if (c == help) {
+				//display help menu
+			}
 		}
 		std::cerr << "\nBad token: " << c << "\n";
 		throw std::runtime_error("Invalid input...\nPress ; to continue");
@@ -106,13 +126,24 @@ void clean_up_mess(Token_stream& ts)
 {
 	ts.ignore(print);
 }
+const char prompt = '>';
+const char result = '=';
 void calculate(Token_stream& ts) {
-	try {
+	while (true)try {
+		std::cout << prompt << " ";
+		Token t = ts.get();
+		while (t.kind == print) t = ts.get();
+		if (t.kind == quit) return;
+		ts.unget(t);
+		std::cout << expression(ts) << std::endl;
 	}
 	catch (const std::exception& e) {
 		std::cerr << e.what() << "\n";
 		clean_up_mess(ts);
 	}
+}
+Roman_int expression(Token_stream& ts) {
+	return Roman_int{};
 }
 int main() {
 	try {
@@ -128,7 +159,4 @@ int main() {
 		std::cerr << "Something went wrong...\n";
 		return 2;
 	}
-}
-Roman_int expression(Token_stream& ts) {
-	return Roman_int{};
 }
