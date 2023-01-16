@@ -129,6 +129,8 @@ Token Token_stream::get() {
 			if (s == ex_key) {
 				return Token(quit);
 			}
+			std::cerr << s << " is invalid...\n";
+			throw std::runtime_error("Invalid input...\nPress ; to continue");
 		}
 		if (!isspace(c)) {
 			Roman_int r;
