@@ -120,9 +120,11 @@ Token Token_stream::get() {
 				return Token(quit);
 			}
 			if (c == help) {
-				//display help menu
-				//flush the input stream...
-				//run get again...
+				std::cout << "Calculator application...\n\n"
+					<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included...\n";
+				//<< "The calculator is also capable of creating variables and constants; calculations are possible on such expressions.\n"
+					//<< "Functions... \n\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n#to declare a variable and #const to declare a constant\nh key to display instructions...\n";
+				throw std::runtime_error("Press ; to continue");
 			}
 			std::cin.unget();
 		}
