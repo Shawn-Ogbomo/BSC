@@ -90,7 +90,13 @@ Token Token_stream::get() {
 	case '7':
 	case '8':
 	case '9':
+	{
+		std::cin.unget();
+		double d{};
+		std::cin >> d;
+		std::cerr << "oops " << d << " will not work with this calculator. Roman numerals only please...\n";
 		throw Invalid{};
+	}
 	default:
 		if (isalpha(c)) {
 			std::cin.unget();
