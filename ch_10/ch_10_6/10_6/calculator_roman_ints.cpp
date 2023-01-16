@@ -2,7 +2,7 @@
 // Sun Jan 15 2023
 //Simple calculator v1
 //revision history
-//
+//added helper function roman_letter() to prevent putting multiple characters back into the input stream
 //
 // works on Roman_ints only
 //This program implements a basic expression calculator.
@@ -66,6 +66,10 @@ const char  quit = 'q';
 const char  help = 'h';
 const std::string ex_key = "exit";
 const char underscore = '_';
+bool roman_letter(char c) { //checks if the target character is a roman letter.
+	return (c == 'I' || c == 'V' || c == 'X' || c == 'L' || c == 'D' || c == 'M'
+		|| c == 'i' || c == 'v' || c == 'l' || c == 'd' || c == 'm');
+}
 Token Token_stream::get() {
 	if (full) {
 		full = false;
@@ -110,11 +114,14 @@ Token Token_stream::get() {
 			}
 			if (c == help) {
 				//display help menu
+				//flush the input stream...
+				//run get again...
 			}
-		}
-		if (isalpha(c) && std::cin.peek() != '\n') {
-			std::string s;
 			std::cin.unget();
+		}
+		else if (isalpha(c) && std::cin.peek() != roman_letter(c)) {
+			std::cin.unget();
+			std::string s;
 			while (std::cin.get(c) && isalpha(c)) {
 				s += c;
 			}
@@ -124,7 +131,6 @@ Token Token_stream::get() {
 			}
 		}
 		if (isalpha(c)) {
-			std::cin.unget();
 			Roman_int r;
 			std::cin >> r;
 			return Token(r);
