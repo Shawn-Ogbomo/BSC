@@ -68,7 +68,7 @@ const char print = ';';
 const char  quit = 'q';
 const char  help = 'h';
 const std::string ex_key = "exit";
-bool roman_letter(char c) {					//fix this....
+bool roman_letter(char c) {
 	static std::vector<char>valids = { 'I','V','X','L','C','D','M','i','v','l','c','d','m' };
 	auto result1 = std::find(begin(valids), end(valids), c);
 	if (result1 != std::end(valids)) {
@@ -143,7 +143,7 @@ Token Token_stream::get() {
 			std::cin.unget();
 		}
 		Util::end_of_loop(std::cin, print, "oops couldn't find the terminating character");
-		if (!isspace(c)) {					//fix this...
+		if (!isspace(c)) {					//
 			Roman_int r;
 			std::cin >> r;
 			return Token(r);
