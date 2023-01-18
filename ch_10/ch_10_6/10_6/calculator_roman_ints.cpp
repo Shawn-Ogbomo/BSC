@@ -109,10 +109,8 @@ Token Token_stream::get() {
 	case '.':
 	{
 		std::cin.unget();
-		double d{};
-		std::cin >> d;
-		std::cerr << "oops " << d << " will not work with this calculator. \nRoman numerals only.\n";
-		throw std::runtime_error("Press ; to continue");
+		std::cout << "No numbers. Roman ints only please...\n";
+		throw Token::Invalid{};
 	}
 	default:
 		if (isalpha(c) && std::cin.peek() == '\n') {
@@ -124,7 +122,7 @@ Token Token_stream::get() {
 					<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included...\n";
 				//<< "The calculator is also capable of creating variables and constants; calculations are possible on such expressions.\n"
 					//<< "Functions... \n\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n#to declare a variable and #const to declare a constant\nh key to display instructions...\n";
-				throw std::runtime_error("Press ; to continue");
+				throw Token::Invalid{};
 			}
 			std::cin.unget();
 		}
@@ -138,14 +136,14 @@ Token Token_stream::get() {
 			if (s == ex_key) {
 				return Token(quit);
 			}
-			std::cerr << s << " is invalid...\n";
-			throw std::runtime_error("Invalid input...\nPress ; to continue");
+			std::cout << "Error: " << s << " is invalid...\n";
+			throw Token::Invalid{};
 		}
 		else {
 			std::cin.unget();
 		}
 		Util::end_of_loop(std::cin, print, "oops couldn't find the terminating character");
-		if (!isspace(c)) {					//
+		if (!isspace(c)) {
 			Roman_int r;
 			std::cin >> r;
 			return Token(r);
@@ -158,6 +156,7 @@ void Token_stream::ignore(char c) {	// ignores print characters ';'
 		full = false;
 		return;
 	}
+	std::cout << "Press; to continue...\n";
 	full = false;
 	char ch;
 	while (std::cin >> ch)
@@ -179,6 +178,15 @@ void calculate(Token_stream& ts) {
 	}
 	catch (const std::exception& e) {
 		std::cerr << e.what() << "\n";
+		clean_up_mess(ts);
+	}
+	catch (Token::Invalid) {
+		clean_up_mess(ts);
+	}
+	catch (Token_gen::Token::Invalid) {
+		clean_up_mess(ts);
+	}
+	catch (Roman_int::Invalid) {
 		clean_up_mess(ts);
 	}
 }

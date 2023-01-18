@@ -4,6 +4,7 @@
 #include "util.h"
 Roman_int::Roman_int()
 	:roman_code{ "nulla" },
+	roman_character{},
 	value{}{
 }
 Roman_int::Roman_int(const char letter)
