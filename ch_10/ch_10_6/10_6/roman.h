@@ -5,11 +5,13 @@ class Roman_int {
 public:
 	class Invalid {};
 	Roman_int();
-	Roman_int(const std::string& symbols);
+	Roman_int(const std::string& letters);
+	Roman_int(const char letter);
 	int as_int() const;
 	std::string as_string() const;
 private:
 	std::string roman_code;
+	char roman_character;
 	int value;
 };
 std::ostream& operator<< (std::ostream& os, const Roman_int& r);
