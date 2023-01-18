@@ -192,6 +192,12 @@ void calculate(Token_stream& ts) {
 Roman_int expression(Token_stream& ts) {
 	return Roman_int{};
 }
+Roman_int term(Token_stream& ts) {
+	return Roman_int{};
+}
+Roman_int primary(Token_stream& ts) {
+	return Roman_int{};
+}
 int main() {
 	try {
 		Token_stream ts{ std::cin };
