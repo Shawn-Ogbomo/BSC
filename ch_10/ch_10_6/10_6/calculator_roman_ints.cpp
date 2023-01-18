@@ -83,12 +83,12 @@ Token Token_stream::get() {
 	}
 	char c{};
 	std::cin >> c;
+	Util::check_stream(std::cin, print, "oops couldn't find the terminating character");
 	switch (c) {
 	case '+':
 	case '-':
 	case '=':
 	case ';':
-
 		//case '*':
 		//case '$':
 		//case '/':
@@ -142,7 +142,6 @@ Token Token_stream::get() {
 		else {
 			std::cin.unget();
 		}
-		Util::end_of_loop(std::cin, print, "oops couldn't find the terminating character");
 		if (!isspace(c)) {
 			Roman_int r;
 			std::cin >> r;

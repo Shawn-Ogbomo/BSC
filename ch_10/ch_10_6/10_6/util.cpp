@@ -63,7 +63,7 @@ bool Util::repeats(std::string& target_string, char c) {
 	throw std::length_error("oops, the string is empty...\n");
 }
 
-void Util::end_of_loop(std::istream& ist, char term, const std::string& message) {
+void Util::check_stream(std::istream& ist, char term, const std::string& message) {
 	if (ist.eof()) {
 		throw Invalid{};
 	}
@@ -77,6 +77,7 @@ void Util::end_of_loop(std::istream& ist, char term, const std::string& message)
 		if (ist >> ch && ch == term) {
 			return;
 		}
-		throw std::runtime_error(message);
+		std::cout << message;
+		throw Invalid{};
 	}
 }
