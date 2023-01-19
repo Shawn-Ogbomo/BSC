@@ -38,6 +38,13 @@
 #include "token.h"
 #include "util.h"
 struct Token {
+	class Invalid {
+	public:
+		Invalid(const std::string& err) :error_message{ err } {}
+		std::string what() { return error_message; }
+	private:
+		std::string error_message;
+	};
 	Token() :kind{}, value{}, letters{} {}
 	Token(char c) :kind{ c }, letters{}, value{} {}
 	Token(const Roman_int& r) :letters{ r.as_string() }, value{ r.as_int() }, kind{} {}
@@ -121,7 +128,7 @@ Token Token_stream::get() {
 					<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included...\n";
 				//<< "The calculator is also capable of creating variables and constants; calculations are possible on such expressions.\n"
 					//<< "Functions... \n\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n#to declare a variable and #const to declare a constant\nh key to display instructions...\n";
-			//	throw Token::Invalid{};
+				throw Token::Invalid{ "invalid token..." };
 			}
 			std::cin.unget();
 		}
@@ -135,8 +142,7 @@ Token Token_stream::get() {
 			if (s == ex_key) {
 				return Token(quit);
 			}
-			std::cout << "Error: " << s << " is invalid...\n";
-			//	throw Token::Invalid{};
+			throw Token::Invalid{ s + " is invalid..." };
 		}
 		else {
 			std::cin.unget();
@@ -167,7 +173,6 @@ const char prompt = '>';
 const char result = '=';
 void calculate(Token_stream& ts) {
 	while (true)try {
-		Roman_int test{ "vx" };
 		std::cout << prompt << " ";
 		Token t = ts.get();
 		while (t.kind == print) t = ts.get();

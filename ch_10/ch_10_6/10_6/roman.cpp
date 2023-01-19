@@ -233,7 +233,7 @@ Roman_int::Roman_int(const std::string& letters)
 			if (Util::previous_value(i - 1)) {
 				Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 				if (t2.val < t.val) {
-					throw Roman_int::Parse_error{ "oops cannot subtract " + std::string{t2.roman_letter} + " from " + std::string{t.roman_letter} + "..." };
+					throw Roman_int::Parse_error{ "oops cannot subtract " + std::string{t2.roman_letter} + " from " + t.roman_letter + "..." };
 				}
 			}
 			if (Util::next_value(roman_code, i + 1)) {
