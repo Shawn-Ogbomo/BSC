@@ -38,25 +38,21 @@ Roman_int::Roman_int(const std::string& letters)
 		case'I':
 		{
 			if (Util::repeats(roman_code, roman_code[i])) {
-				std::cerr << "oops " << roman_code[i] << " can only repeat " << repeat_limit << " times\n";
-				throw Roman_int::Invalid{};
+				throw Roman_int::Parse_error{ "oops " + std::string{roman_code[i]} + " can only repeat " + std::to_string(repeat_limit) + " times" };
 			}
 			if (Util::next_value(roman_code, i + 1)) {
 				if (roman_code[i + 1] == 'V') {
 					t = { "IV",4 };
 					if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
-						std::cerr << t.roman_letters << " cannot repeat...\n";
-						throw Roman_int::Invalid{};
+						throw Roman_int::Parse_error{ t.roman_letters + " cannot repeat..." };
 					}
 					if (Util::next_value(roman_code, i + 2)) {
-						std::cerr << "oops roman numeral after " << t.roman_letters << " is invalid...\n";
-						throw Roman_int::Invalid{};
+						throw Roman_int::Parse_error{ "oops roman numeral after " + t.roman_letters + " is invalid..." };
 					}
 					if (Util::previous_value(i - 1)) {
 						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
-							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
-							throw Roman_int::Invalid{};
+							throw Roman_int::Parse_error{ "oops cannot subtract from " + t.roman_letters + "..." };
 						}
 					}
 					left += t.val;
@@ -66,18 +62,15 @@ Roman_int::Roman_int(const std::string& letters)
 				else if (roman_code[i + 1] == 'X') {
 					t = { "IX",9 };
 					if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
-						std::cerr << t.roman_letters << " cannot repeat...\n";
-						throw Roman_int::Invalid{};
+						throw Roman_int::Parse_error{ t.roman_letters + " cannot repeat..." };
 					}
 					if (Util::next_value(roman_code, i + 2)) {
-						std::cerr << "oops roman numeral after " << t.roman_letters << " is invalid...\n";
-						throw Roman_int::Invalid{};
+						throw Roman_int::Parse_error{ "oops roman numeral after " + t.roman_letters + " is invalid..." };
 					}
 					if (Util::previous_value(i - 1)) {
 						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
-							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
-							throw Roman_int::Invalid{};
+							throw Roman_int::Parse_error{ "oops cannot subtract from " + t.roman_letters + " ..." };
 						}
 					}
 					left += t.val;
@@ -91,14 +84,12 @@ Roman_int::Roman_int(const std::string& letters)
 		case'V':
 		{
 			if (Util::find_duplicates(roman_code, roman_code[i]) > 1) {
-				std::cerr << "oops " << roman_code[i] << " cannot repeat...\n";
-				throw Roman_int::Invalid{};
+				throw Roman_int::Parse_error{ "oops " + std::string{roman_code[i]} + " cannot repeat..." };
 			}
 			if (Util::next_value(roman_code, i + 1)) {
 				Token_gen::Token t2 = Token_gen::get(roman_code[i + 1]);
 				if (t2.roman_letter != 'I') {
-					std::cerr << "Sorry V cannot be subtracted...\n";
-					throw Roman_int::Invalid{};
+					throw Roman_int::Parse_error{ "Sorry " + std::string{t.roman_letter} + " cannot be subtracted..." };
 				}
 			}
 		}
@@ -107,28 +98,24 @@ Roman_int::Roman_int(const std::string& letters)
 		case 'X':
 		{
 			if (Util::repeats(roman_code, roman_code[i])) {
-				std::cerr << "oops " << roman_code[i] << " can only repeat " << repeat_limit << " times\n";
-				throw Roman_int::Invalid{};
+				throw Roman_int::Parse_error{ "oops " + std::string{roman_code[i]} + " can only repeat " + std::to_string(repeat_limit) + " times\n" };
 			}
 			if (Util::next_value(roman_code, i + 1)) {
 				if (roman_code[i + 1] == 'L') {
 					t = { "XL",40 };
 					if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
-						std::cerr << t.roman_letters << " cannot repeat...\n";
-						throw Roman_int::Invalid{};
+						throw Roman_int::Parse_error{ t.roman_letters + " cannot repeat...\n" };
 					}
 					if (Util::next_value(roman_code, i + 2)) {
 						Token_gen::Token t2 = Token_gen::get(roman_code[i + 2]);
 						if (t2.roman_letter != 'I' && t2.roman_letter != 'V') {
-							std::cerr << t2.roman_letter << " cannot proceed " << t.roman_letters << "...\n";
-							throw Roman_int::Invalid{};
+							throw Roman_int::Parse_error{ std::string{t2.roman_letter} + " cannot proceed " + t.roman_letters + "..." };
 						}
 					}
 					if (Util::previous_value(i - 1)) {
 						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
-							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
-							throw Roman_int::Invalid{};
+							throw Roman_int::Parse_error{ "oops cannot subtract from " + t.roman_letters + " ..." };
 						}
 					}
 					left += t.val;
@@ -138,21 +125,18 @@ Roman_int::Roman_int(const std::string& letters)
 				else if (roman_code[i + 1] == 'C') {
 					t = { "XC",90 };
 					if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
-						std::cerr << t.roman_letters << " cannot repeat...\n";
-						throw Roman_int::Invalid{};
+						throw Roman_int::Parse_error{ t.roman_letters + " cannot repeat..." };
 					}
 					if (Util::next_value(roman_code, i + 2)) {
 						Token_gen::Token t2 = Token_gen::get(roman_code[i + 2]);
 						if (t2.roman_letter != 'I' && t2.roman_letter != 'V') {
-							std::cerr << t2.roman_letter << " cannot proceed " << t.roman_letters << "...\n";
-							throw Roman_int::Invalid{};
+							throw Roman_int::Parse_error{ std::string{t2.roman_letter} + " cannot proceed " + t.roman_letters + "..." };
 						}
 					}
 					if (Util::previous_value(i - 1)) {
 						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
-							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
-							throw Roman_int::Invalid{};
+							throw Roman_int::Parse_error{ "oops cannot subtract from " + t.roman_letters + "..." };
 						}
 					}
 					left += t.val;
@@ -166,21 +150,18 @@ Roman_int::Roman_int(const std::string& letters)
 		case 'L':
 		{
 			if (Util::find_duplicates(roman_code, roman_code[i]) > 1) {
-				std::cerr << "oops " << roman_code[i] << " cannot repeat...\n";
-				throw Roman_int::Invalid{};
+				throw Roman_int::Parse_error{ "oops " + std::string{roman_code[i]} + " cannot repeat..." };
 			}
 			if (Util::previous_value(i - 1)) {
 				Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 				if (t2.val < t.val) {
-					std::cerr << "oops cannot subtract from " << t.roman_letter << " ...\n";
-					throw Roman_int::Invalid{};
+					throw Roman_int::Parse_error{ "oops cannot subtract from " + std::string{t.roman_letter} + "..." };
 				}
 			}
 			if (Util::next_value(roman_code, i + 1)) {
 				Token_gen::Token t2 = Token_gen::get(roman_code[i + 1]);
 				if (t2.val > t.val) {
-					std::cerr << "Sorry " << t.roman_letter << " cannot be subtracted...\n";
-					throw Roman_int::Invalid{};
+					throw Roman_int::Parse_error{ "Sorry " + std::to_string(t.roman_letter) + " cannot be subtracted...\n" };
 				}
 			}
 			left += t.val;
@@ -189,35 +170,30 @@ Roman_int::Roman_int(const std::string& letters)
 		case 'C':
 		{
 			if (Util::repeats(roman_code, roman_code[i])) {
-				std::cerr << "Invalid syntax...\n";
-				throw Roman_int::Invalid{};
+				throw Roman_int::Parse_error{ "Invalid syntax..." };
 			}
 			if (Util::previous_value(i - 1)) {
 				Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 				if (t2.val < t.val) {
-					std::cerr << "oops cannot subtract " << t2.roman_letter << " from " << t.roman_letter << " ...\n";
-					throw Roman_int::Invalid{};
+					throw Roman_int::Parse_error{ "oops cannot subtract " + std::string{t2.roman_letter} + " from " + t.roman_letter + "..." };
 				}
 			}
 			if (Util::next_value(roman_code, i + 1)) {
 				if (roman_code[i + 1] == 'D') {
 					t = { "CD",400 };
 					if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
-						std::cerr << t.roman_letters << " cannot repeat...\n";
-						throw Roman_int::Invalid{};
+						throw Roman_int::Parse_error{ t.roman_letters + " cannot repeat...\n" };
 					}
 					if (Util::next_value(roman_code, i + 2)) {
 						Token_gen::Token t2 = Token_gen::get(roman_code[i + 2]);
 						if (t2.roman_letter != 'I' && t2.roman_letter != 'V' && t2.roman_letter != 'X' && t2.roman_letter != 'L') {
-							std::cerr << t2.roman_letter << " cannot proceed " << t.roman_letters << "...\n";
-							throw Roman_int::Invalid{};
+							throw Roman_int::Parse_error{ std::string{t2.roman_letter} + " cannot proceed " + t.roman_letters + "..." };
 						}
 					}
 					if (Util::previous_value(i - 1)) {
 						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
-							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
-							throw Roman_int::Invalid{};
+							throw Roman_int::Parse_error{ "oops cannot subtract from " + t.roman_letters + "..." };
 						}
 					}
 					left += t.val;
@@ -227,21 +203,18 @@ Roman_int::Roman_int(const std::string& letters)
 				if (roman_code[i + 1] == 'M') {
 					t = { "CM",900 };
 					if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
-						std::cerr << t.roman_letters << " cannot repeat...\n";
-						throw Roman_int::Invalid{};
+						throw Roman_int::Parse_error{ t.roman_letters + " cannot repeat..." };
 					}
 					if (Util::next_value(roman_code, i + 2)) {
 						Token_gen::Token t2 = Token_gen::get(roman_code[i + 2]);
 						if (t2.roman_letter != 'I' && t2.roman_letter != 'V' && t2.roman_letter != 'X' && t2.roman_letter != 'L') {
-							std::cerr << t2.roman_letter << " cannot proceed " << t.roman_letters << "...\n";
-							throw Roman_int::Invalid{};
+							throw Roman_int::Parse_error{ std::string{ t2.roman_letter} + " cannot proceed " + t.roman_letters + "..." };
 						}
 					}
 					if (Util::previous_value(i - 1)) {
 						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 						if (t2.val < t.val) {
-							std::cerr << "oops cannot subtract from " << t.roman_letters << " ...\n";
-							throw Roman_int::Invalid{};
+							throw Roman_int::Parse_error{ "oops cannot subtract from " + t.roman_letters + "..." };
 						}
 					}
 					left += t.val;
@@ -255,21 +228,18 @@ Roman_int::Roman_int(const std::string& letters)
 		case 'D':
 		{
 			if (Util::find_duplicates(roman_code, roman_code[i]) > 1) {
-				std::cerr << "oops " << roman_code[i] << " cannot repeat...\n";
-				throw Roman_int::Invalid{};
+				throw Roman_int::Parse_error{ "oops " + std::string{roman_code[i]} + " cannot repeat..." };
 			}
 			if (Util::previous_value(i - 1)) {
 				Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 				if (t2.val < t.val) {
-					std::cerr << "oops cannot subtract " << t2.roman_letter << " from " << t.roman_letter << " ...\n";
-					throw Roman_int::Invalid{};
+					throw Roman_int::Parse_error{ "oops cannot subtract " + std::string{t2.roman_letter} + " from " + std::string{t.roman_letter} + "..." };
 				}
 			}
 			if (Util::next_value(roman_code, i + 1)) {
 				Token_gen::Token t2 = Token_gen::get(roman_code[i + 1]);
 				if (t2.val > t.val) {
-					std::cerr << "Sorry " << t.roman_letter << " cannot be subtracted...\n";
-					throw Roman_int::Invalid{};
+					throw Roman_int::Parse_error{ "Sorry " + std::string{t.roman_letter} + " cannot be subtracted..." };
 				}
 			}
 			left += t.val;
@@ -278,14 +248,12 @@ Roman_int::Roman_int(const std::string& letters)
 		case 'M':
 		{
 			if (Util::repeats(roman_code, roman_code[i])) {
-				std::cerr << "Invalid syntax...\n";
-				throw Roman_int::Invalid{};
+				throw Roman_int::Parse_error{ "Invalid syntax..." };
 			}
 			if (Util::previous_value(i - 1)) {
 				Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
 				if (t2.val < t.val) {
-					std::cerr << "oops cannot subtract " << t2.roman_letter << " from " << t.roman_letter << " ...\n";
-					throw Roman_int::Invalid{};
+					throw Roman_int::Parse_error{ "oops cannot subtract " + std::string{t2.roman_letter} + " from " + t.roman_letter + "..." };
 				}
 			}
 			left += t.val;
@@ -295,6 +263,7 @@ Roman_int::Roman_int(const std::string& letters)
 	}
 	value = left;
 }
+
 int Roman_int::as_int() const {
 	return value;
 }

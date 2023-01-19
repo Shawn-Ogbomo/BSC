@@ -38,7 +38,6 @@
 #include "token.h"
 #include "util.h"
 struct Token {
-	class Invalid {};
 	Token() :kind{}, value{}, letters{} {}
 	Token(char c) :kind{ c }, letters{}, value{} {}
 	Token(const Roman_int& r) :letters{ r.as_string() }, value{ r.as_int() }, kind{} {}
@@ -89,13 +88,14 @@ Token Token_stream::get() {
 	case '-':
 	case '=':
 	case ';':
-		//case '*':
-		//case '$':
-		//case '/':
-		//case '%':
-		//case '(':
-		//case ')':
-		return Token(c);
+	case '(':
+	case ')':
+		return Token(c)
+			//case '*':
+			//case '$':
+			//case '/':
+			//case '%':
+			;
 	case '0':
 	case '1':
 	case '2':
@@ -109,8 +109,7 @@ Token Token_stream::get() {
 	case '.':
 	{
 		std::cin.unget();
-		std::cout << "No numbers. Roman ints only please...\n";
-		throw Token::Invalid{};
+		throw Token_gen::Token::Invalid{ "No numbers. Roman ints only please...\n" };
 	}
 	default:
 		if (isalpha(c) && std::cin.peek() == '\n') {
@@ -122,7 +121,7 @@ Token Token_stream::get() {
 					<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included...\n";
 				//<< "The calculator is also capable of creating variables and constants; calculations are possible on such expressions.\n"
 					//<< "Functions... \n\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n#to declare a variable and #const to declare a constant\nh key to display instructions...\n";
-				throw Token::Invalid{};
+			//	throw Token::Invalid{};
 			}
 			std::cin.unget();
 		}
@@ -137,7 +136,7 @@ Token Token_stream::get() {
 				return Token(quit);
 			}
 			std::cout << "Error: " << s << " is invalid...\n";
-			throw Token::Invalid{};
+			//	throw Token::Invalid{};
 		}
 		else {
 			std::cin.unget();
@@ -149,7 +148,7 @@ Token Token_stream::get() {
 		}
 	}
 }
-Roman_int expression(Token_stream& ts);
+//Roman_int expression(Token_stream& ts);
 void Token_stream::ignore(char c) {	// ignores print characters ';'
 	if (full && c == buffer.kind) {
 		full = false;
@@ -168,36 +167,45 @@ const char prompt = '>';
 const char result = '=';
 void calculate(Token_stream& ts) {
 	while (true)try {
+		Roman_int test{ "vx" };
 		std::cout << prompt << " ";
 		Token t = ts.get();
 		while (t.kind == print) t = ts.get();
 		if (t.kind == quit) return;
 		ts.unget(t);
-		std::cout << expression(ts) << std::endl;
+		//std::cout << expression(ts) << std::endl;
 	}
 	catch (const std::exception& e) {
 		std::cerr << e.what() << "\n";
 		clean_up_mess(ts);
 	}
-	catch (Token::Invalid) {
+	catch (Token_gen::Token::Invalid& e) {
+		std::cerr << e.what() << "\n";
 		clean_up_mess(ts);
 	}
-	catch (Token_gen::Token::Invalid) {
+	catch (Roman_int::Parse_error& e) {
+		std::cerr << e.what() << "\n";
 		clean_up_mess(ts);
 	}
-	catch (Roman_int::Invalid) {
-		clean_up_mess(ts);
-	}
 }
-Roman_int expression(Token_stream& ts) {
-	return Roman_int{};
-}
-Roman_int term(Token_stream& ts) {
-	return Roman_int{};
-}
-Roman_int primary(Token_stream& ts) {
-	return Roman_int{};
-}
+//Roman_int expression(Token_stream& ts) {
+//	Roman_int left = term(ts);
+//	Token t2 = ts.get();
+//	switch (t2.kind) {
+//	case '+':
+//		return left + term(ts);
+//	case '-':
+//		return left - term(ts);
+//	default:
+//		break;
+//	}
+//}
+//Roman_int term(Token_stream& ts) {
+//	return Roman_int{};
+//}
+//Roman_int primary(Token_stream& ts) {
+//	return Roman_int{};
+//}
 int main() {
 	try {
 		Token_stream ts{ std::cin };

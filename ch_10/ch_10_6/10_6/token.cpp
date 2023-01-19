@@ -17,8 +17,7 @@ Token_gen::Token Token_gen::get(const char c) {
 	case 'M':
 		return Token_gen::Token{ c, 1000 };
 	default:
-		std::cout << c << " is not a valid roman numeral..\n";
-		throw Token_gen::Token::Invalid{};
+		throw Token_gen::Token::Invalid{ std::string{c} + " is not a valid roman numeral...\n" };
 	}
 }
 Token_gen::Token::Token()

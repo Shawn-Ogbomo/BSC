@@ -1,7 +1,13 @@
 #pragma once
 namespace Token_gen {
 	struct Token {
-		class Invalid {};
+		class Invalid {
+		public:
+			Invalid(const std::string& err) :error_message{ err } {}
+			std::string what() { return error_message; }
+		private:
+			std::string error_message;
+		};
 		char roman_letter;
 		int val;
 		std::string roman_letters;
