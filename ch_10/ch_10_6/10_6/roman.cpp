@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "roman.h"
 #include "token.h"
 #include "place_value.h"
@@ -292,9 +293,12 @@ std::string integer_to_roman_code(int& val) {
 	Place_value p;
 	std::string roman_notation;
 	int result{};
+	std::vector<Token_gen::Token> toks = { {"IV",4}, {'V',5},{"IX",9},{"XL",40},{"L",50},{"XC",90}, {"CD",500},{"CM",900} };
 	if (result = val / Place_value::Multiplier::thousand) {
 		p.thousands = result;
-		roman_notation += 'M';
+		for (int i{}; i < p.thousands; ++i) {
+			roman_notation += 'M';
+		}
 		val - (p.thousands * Place_value::Multiplier::thousand);
 	}
 	if (result = val / Place_value::Multiplier::hundred) {
