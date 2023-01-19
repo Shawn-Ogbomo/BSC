@@ -1,6 +1,7 @@
 #include <iostream>
 #include "roman.h"
 #include "token.h"
+#include "place_value.h"
 #include "util.h"
 Roman_int::Roman_int()
 	:roman_code{ "nulla" },
@@ -263,7 +264,6 @@ Roman_int::Roman_int(const std::string& letters)
 	}
 	value = left;
 }
-
 int Roman_int::as_int() const {
 	return value;
 }
@@ -273,7 +273,6 @@ std::string Roman_int::as_string() const {
 std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 	return os << r.as_string();
 }
-
 std::istream& operator>>(std::istream& is, Roman_int& r) {
 	char c{};
 	std::string s;
@@ -285,3 +284,30 @@ std::istream& operator>>(std::istream& is, Roman_int& r) {
 	r = Roman_int(s);
 	return is;
 }
+std::string integer_to_roman_code(int& val) {
+	constexpr int max_value = 3999;
+	if (val > max_value || val < 0) {
+		throw std::invalid_argument{ "cannot represent " + std::to_string(val) + " as a roman numeral..." };
+	}
+	Place_value p;
+	std::string roman_notation;
+	int result{};
+	if (result = val / Place_value::Multiplier::thousand) {
+		p.thousands = result;
+		roman_notation += 'M';
+		val - (p.thousands * Place_value::Multiplier::thousand);
+	}
+	if (result = val / Place_value::Multiplier::hundred) {
+		p.hundreds = result;
+		val - (p.hundreds * Place_value::Multiplier::hundred);
+	}
+	if (result = val / Place_value::Multiplier::ten) {
+		p.tens = result;
+		val - (p.tens * Place_value::Multiplier::ten);
+	}
+	p.ones = result;
+	return roman_notation;
+}
+//Roman_int operator+(const Roman_int& left, const Roman_int& right) {
+//	return Roman_int{ ,left.as_int() + right.as_int() };
+//}

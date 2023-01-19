@@ -135,3 +135,84 @@ char roman_letter(char c) { //checks if the target character is a roman letter.
 	else 
 	return a false
 }
+
+Roman_int::Roman_int(const char letter)   //test
+	: roman_character{ letter },
+	value{},
+	roman_code{} {
+	if (islower(roman_character)) {
+		roman_character = toupper(roman_character);
+	}
+	
+
+
+}
+
+std::string integer_to_roman_code(int val) {		//parse string from int
+
+	if 1000 can fit into val evenly 
+		- assign the amount of times 1000 can go into val
+	  	to thousands 
+	 	-then minus 1000* multiplier from value 
+		assign M to string up to amount of times 1000 can go into the target 		int
+
+
+	-if 100 can fit into val evenly
+	  -assign the amount of times 100 can go into val to hundreds 
+	  -then minus 100* multiplier from value 
+		assign C to string up to amount of times 100 can go into the target 			int
+
+	if 10 can fit into val evenly 
+		-assign the amount oftimes 10 can go into val to tens 
+		then minus 10* multiplier from value 
+	assign X to string up to amount of times 10 can go into the target 			int
+
+	if 5 can go in 
+	....
+
+
+	 - assign the amount of times 1 can go into val to ones 	
+	 -then minus 1* multiplier from value 
+	assign I up to amount of times 1 can go into target int 
+	//store the value in Place_value object
+
+	
+	if thousands 
+	- store 'M' to the amount of thousands in string 
+
+INVARIANT can handle  > 3M
+
+problems with C 
+ok till 300
+400 CD
+500 D
+600 DC
+700 DCC
+800 DCCC
+900 CM
+
+Problems with X 
+ok till 30 
+40 XL
+50 L 
+60 LX
+70 LXX
+80 LXXX
+90 XC
+
+}
+
+Problems with I
+{
+  ok till 3 III
+  4 IV
+  5 V 
+  6 VI 
+  7 VII
+  8 VIII
+ 9  IX 
+}
+thousands  2 
+hundreds    1 
+tens 	  7
+ones     2
