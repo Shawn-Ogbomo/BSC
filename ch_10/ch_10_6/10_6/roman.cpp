@@ -330,8 +330,28 @@ std::string integer_to_roman_code(int val) {
 	}
 	if (result = val / Place_value::Multiplier::ten) {
 		p.tens = result;
-		for (int i{}; i < p.tens; ++i) {
-			roman_notation += 'X';
+		if (p.tens > repeat_limit) {
+			Token_gen::Token fourty = { "XL",40 };
+			Token_gen::Token fifty = { 'L',50 };
+			Token_gen::Token ninety = { "XC",90 };
+			if ((p.tens * Place_value::Multiplier::ten) == fourty.val) {
+				roman_notation += fourty.roman_letters;
+			}
+			else if ((p.tens * Place_value::Multiplier::ten) > fourty.val && (p.tens * Place_value::Multiplier::ten) < ninety.val) {
+				roman_notation += fifty.roman_letter;
+				for (int i{}, place_value_tens_cpy = p.tens; i < ((place_value_tens_cpy * Place_value::Multiplier::ten) - fifty.val); ++i) {
+					roman_notation += 'X';
+					--place_value_tens_cpy;
+				}
+			}
+			else if (p.tens * Place_value::Multiplier::ten == ninety.val) {
+				roman_notation += ninety.roman_letters;
+			}
+		}
+		else {
+			for (int i{}; i < p.tens; ++i) {
+				roman_notation += 'X';
+			}
 		}
 		val -= (p.tens * Place_value::Multiplier::ten);
 	}
