@@ -285,7 +285,7 @@ std::istream& operator>>(std::istream& is, Roman_int& r) {
 	r = Roman_int(s);
 	return is;
 }
-std::string integer_to_roman_code(int& val) {
+std::string integer_to_roman_code(int val) {
 	constexpr int max_value = 3999;
 	if (val > max_value || val < 0) {
 		throw std::invalid_argument{ "cannot represent " + std::to_string(val) + " as a roman numeral..." };
@@ -293,23 +293,53 @@ std::string integer_to_roman_code(int& val) {
 	Place_value p;
 	std::string roman_notation;
 	int result{};
-	std::vector<Token_gen::Token> toks = { {"IV",4}, {'V',5},{"IX",9},{"XL",40},{"L",50},{"XC",90}, {"CD",500},{"CM",900} };
+	constexpr int repeat_limit = 3;
 	if (result = val / Place_value::Multiplier::thousand) {
 		p.thousands = result;
 		for (int i{}; i < p.thousands; ++i) {
 			roman_notation += 'M';
 		}
-		val - (p.thousands * Place_value::Multiplier::thousand);
+		val -= (p.thousands * Place_value::Multiplier::thousand);
 	}
 	if (result = val / Place_value::Multiplier::hundred) {
 		p.hundreds = result;
-		val - (p.hundreds * Place_value::Multiplier::hundred);
+		Token_gen::Token four_hundred = { "CD",400 };
+		Token_gen::Token five_hundred = { 'D',500 };
+		Token_gen::Token nine_hundred = { "CM",900 };
+		if (p.hundreds > repeat_limit) {
+			if (p.hundreds * Place_value::Multiplier::hundred == four_hundred.val) {
+				roman_notation += four_hundred.roman_letters;
+			}
+			else if (p.hundreds * Place_value::Multiplier::hundred > four_hundred.val && p.hundreds < nine_hundred.val) {
+				roman_notation += five_hundred.roman_letter;
+				for (int i{}; i < (p.hundreds - five_hundred.val); ++i) {
+					roman_notation += 'C';
+				}
+			}
+			else if (p.hundreds * Place_value::Multiplier::hundred == nine_hundred.val) {
+				roman_notation += nine_hundred.roman_letters;
+			}
+		}
+		else {
+			for (int i{}; i < p.hundreds; ++i) {
+				roman_notation += 'C';
+			}
+		}
+		val -= (p.hundreds * Place_value::Multiplier::hundred);
 	}
 	if (result = val / Place_value::Multiplier::ten) {
 		p.tens = result;
-		val - (p.tens * Place_value::Multiplier::ten);
+		for (int i{}; i < p.tens; ++i) {
+			roman_notation += 'X';
+		}
+		val -= (p.tens * Place_value::Multiplier::ten);
 	}
-	p.ones = result;
+	if (val) {
+		p.ones = val;
+		for (int i{}; i < p.ones; ++i) {
+			roman_notation += 'I';
+		}
+	}
 	return roman_notation;
 }
 //Roman_int operator+(const Roman_int& left, const Roman_int& right) {

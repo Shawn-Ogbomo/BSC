@@ -173,7 +173,7 @@ const char prompt = '>';
 const char result = '=';
 void calculate(Token_stream& ts) {
 	while (true)try {
-		int v = 2172;
+		int v = 500;
 		integer_to_roman_code(v);
 		std::cout << prompt << " ";
 		Token t = ts.get();
