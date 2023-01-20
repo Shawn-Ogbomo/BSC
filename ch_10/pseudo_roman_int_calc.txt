@@ -237,11 +237,11 @@ std::string integer_to_roman_code(int& val) {
 	if (result = val / Place_value::Multiplier::hundred) {
 		p.hundreds = result;
 		if (p.hundreds > repeat_limit) {
-			//create token for c,100
-			//cd
-			//cm
-			//d
-			// represent 400-900 as a string
+			if hundreds > 400 and less then 900
+			 - handle 500 - 800
+			 -string += D 
+			 then get the number of c's 
+			
 		}
 	}
 	for (int i{}; i < p.hundreds; ++i) {
@@ -252,6 +252,15 @@ std::string integer_to_roman_code(int& val) {
 		p.tens = result;
 		for (int i{}; i < p.tens; ++i) {
 			roman_notation += 'X';
+	if (p.tens > repeat_limit) {
+			if tens is 4 
+			 string += "XL"
+			if tens > 4 and less then 9
+			 - handle 40 - 90
+			 
+			if tens is 9 
+			assign the appropriate roman code to the string		
+		}
 		}
 		val -= (p.tens * Place_value::Multiplier::ten);
 	}
