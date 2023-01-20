@@ -303,17 +303,18 @@ std::string integer_to_roman_code(int val) {
 	}
 	if (result = val / Place_value::Multiplier::hundred) {
 		p.hundreds = result;
-		Token_gen::Token four_hundred = { "CD",400 };
-		Token_gen::Token five_hundred = { 'D',500 };
-		Token_gen::Token nine_hundred = { "CM",900 };
 		if (p.hundreds > repeat_limit) {
+			Token_gen::Token four_hundred = { "CD",400 };
+			Token_gen::Token five_hundred = { 'D',500 };
+			Token_gen::Token nine_hundred = { "CM",900 };
 			if (p.hundreds * Place_value::Multiplier::hundred == four_hundred.val) {
 				roman_notation += four_hundred.roman_letters;
 			}
-			else if (p.hundreds * Place_value::Multiplier::hundred > four_hundred.val && p.hundreds < nine_hundred.val) {
+			else if ((p.hundreds * Place_value::Multiplier::hundred) > four_hundred.val && (p.hundreds * Place_value::Multiplier::hundred) < nine_hundred.val) {
 				roman_notation += five_hundred.roman_letter;
-				for (int i{}; i < (p.hundreds - five_hundred.val); ++i) {
+				for (int i{}, place_value_hundreds_cpy = p.hundreds; i < ((place_value_hundreds_cpy * Place_value::Multiplier::hundred) - five_hundred.val); ++i) {
 					roman_notation += 'C';
+					--place_value_hundreds_cpy;
 				}
 			}
 			else if (p.hundreds * Place_value::Multiplier::hundred == nine_hundred.val) {
