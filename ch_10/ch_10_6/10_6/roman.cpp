@@ -357,11 +357,30 @@ std::string integer_to_roman_code(int val) {
 	}
 	if (val) {
 		p.ones = val;
-		for (int i{}; i < p.ones; ++i) {
-			roman_notation += 'I';
+		if (p.ones > repeat_limit) {
+			Token_gen::Token four = { "IV",4 };
+			Token_gen::Token five = { 'V',5 };
+			Token_gen::Token nine = { "IX",9 };
+			if (p.ones == four.val) {
+				roman_notation += four.roman_letters;
+			}
+			else if ((p.ones > four.val && p.ones < nine.val)) {
+				roman_notation += five.roman_letter;
+				for (int i{}, place_value_ones_cpy = p.ones; i < (place_value_ones_cpy - five.val); ++i) {
+					roman_notation += 'I';
+				}
+			}
+			else if (p.ones == nine.val) {
+				roman_notation += nine.roman_letters;
+			}
 		}
+		else {
+			for (int i{}; i < p.ones; ++i) {
+				roman_notation += 'I';
+			}
+		}
+		return roman_notation;
 	}
-	return roman_notation;
 }
 //Roman_int operator+(const Roman_int& left, const Roman_int& right) {
 //	return Roman_int{ ,left.as_int() + right.as_int() };
