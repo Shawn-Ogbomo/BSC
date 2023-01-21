@@ -392,3 +392,11 @@ std::string integer_to_roman_code(int val) {
 Roman_int operator+(const Roman_int& left, const Roman_int& right) {
 	return Roman_int{ integer_to_roman_code(left.as_int() + right.as_int()) };
 }
+
+Roman_int operator-(const Roman_int& left, const Roman_int& right) {
+	return Roman_int{ integer_to_roman_code(left.as_int() - right.as_int()) };
+}
+
+Roman_int operator*(const Roman_int& left, const Roman_int& right) {
+	return Roman_int{ integer_to_roman_code(left.as_int() * right.as_int()) };
+}

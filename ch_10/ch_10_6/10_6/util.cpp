@@ -77,6 +77,7 @@ void Util::check_stream(std::istream& ist, char term, const std::string& message
 		if (ist >> ch && ch == term) {
 			return;
 		}
+		std::cerr << message;
 		ist.clear(std::ios_base::failbit);
 	}
 }
