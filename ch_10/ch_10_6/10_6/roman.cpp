@@ -42,43 +42,43 @@ Roman_int::Roman_int(const std::string& letters)
 			if (Util::repeats(roman_code, roman_code[i])) {
 				throw Roman_int::Parse_error{ "oops " + std::string{roman_code[i]} + " can only repeat " + std::to_string(repeat_limit) + " times" };
 			}
-			if (Util::next_value(roman_code, i + 1)) {
-				if (roman_code[i + 1] == 'V') {
-					t = { "IV",4 };
-					if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
-						throw Roman_int::Parse_error{ t.roman_letters + " cannot repeat..." };
-					}
-					if (Util::next_value(roman_code, i + 2)) {
-						throw Roman_int::Parse_error{ "oops roman numeral after " + t.roman_letters + " is invalid..." };
-					}
-					if (Util::previous_value(i - 1)) {
-						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
-						if (t2.val < t.val) {
-							throw Roman_int::Parse_error{ "oops cannot subtract from " + t.roman_letters + "..." };
-						}
-					}
-					left += t.val;
-					++i;
-					break;
+		}
+		if (Util::next_value(roman_code, i + 1)) {
+			if (roman_code[i + 1] == 'V') {
+				t = { "IV",4 };
+				if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
+					throw Roman_int::Parse_error{ t.roman_letters + " cannot repeat..." };
 				}
-				else if (roman_code[i + 1] == 'X') {
-					t = { "IX",9 };
-					if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
-						throw Roman_int::Parse_error{ t.roman_letters + " cannot repeat..." };
-					}
-					if (Util::next_value(roman_code, i + 2)) {
-						throw Roman_int::Parse_error{ "oops roman numeral after " + t.roman_letters + " is invalid..." };
-					}
-					if (Util::previous_value(i - 1)) {
-						Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
-						if (t2.val < t.val) {
-							throw Roman_int::Parse_error{ "oops cannot subtract from " + t.roman_letters + " ..." };
-						}
-					}
-					left += t.val;
-					++i;
-					break;
+				if (Util::next_value(roman_code, i + 2)) {
+					throw Roman_int::Parse_error{ "oops roman numeral after " + t.roman_letters + " is invalid..." };
 				}
+				if (Util::previous_value(i - 1)) {
+					Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
+					if (t2.val < t.val) {
+						throw Roman_int::Parse_error{ "oops cannot subtract from " + t.roman_letters + "..." };
+					}
+				}
+				left += t.val;
+				++i;
+				break;
+			}
+			else if (roman_code[i + 1] == 'X') {
+				t = { "IX",9 };
+				if (Util::duplicate_substrs(roman_code, t.roman_letters)) {
+					throw Roman_int::Parse_error{ t.roman_letters + " cannot repeat..." };
+				}
+				if (Util::next_value(roman_code, i + 2)) {
+					throw Roman_int::Parse_error{ "oops roman numeral after " + t.roman_letters + " is invalid..." };
+				}
+				if (Util::previous_value(i - 1)) {
+					Token_gen::Token t2 = Token_gen::get(roman_code[i - 1]);
+					if (t2.val < t.val) {
+						throw Roman_int::Parse_error{ "oops cannot subtract from " + t.roman_letters + " ..." };
+					}
+				}
+				left += t.val;
+				++i;
+				break;
 			}
 		}
 		left += t.val;
@@ -262,9 +262,10 @@ Roman_int::Roman_int(const std::string& letters)
 			break;
 		}
 		}
+		value = left;
 	}
-	value = left;
 }
+
 int Roman_int::as_int() const {
 	return value;
 }

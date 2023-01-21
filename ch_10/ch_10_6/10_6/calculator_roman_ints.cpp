@@ -173,7 +173,7 @@ const char prompt = '>';
 const char result = '=';
 void calculate(Token_stream& ts) {
 	while (true)try {
-		Roman_int x = { "" };
+		Roman_int x = { "iiii" };
 		Roman_int y = { "" };
 		Roman_int z = x + y;
 		std::cout << prompt << " ";
@@ -183,11 +183,7 @@ void calculate(Token_stream& ts) {
 		ts.unget(t);
 		//std::cout << expression(ts) << std::endl;
 	}
-	catch (const std::exception& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
-	}
-	catch (Token_gen::Token::Invalid& e) {
+	catch (std::exception& e) {
 		std::cerr << e.what() << "\n";
 		clean_up_mess(ts);
 	}
@@ -196,6 +192,10 @@ void calculate(Token_stream& ts) {
 		clean_up_mess(ts);
 	}
 	catch (Roman_int::Invalid& e) {
+		std::cerr << e.what() << "\n";
+		clean_up_mess(ts);
+	}
+	catch (Token::Invalid& e) {
 		std::cerr << e.what() << "\n";
 		clean_up_mess(ts);
 	}
