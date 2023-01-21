@@ -34,6 +34,7 @@
 #include <cctype>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 #include "roman.h"
 #include "token.h"
 #include "util.h"
@@ -47,7 +48,7 @@ struct Token {
 	};
 	Token() :kind{}, value{}, letters{} {}
 	Token(char c) :kind{ c }, letters{}, value{} {}
-	Token(const Roman_int& r) :letters{ r.as_string() }, value{ r.as_int() }, kind{} {}
+	Token(const Roman_int& r) :letters{ r.as_string() }, value{ r.as_int() }, kind{ 'r' } {}
 	char kind;
 	std::string letters;
 	int value;
@@ -73,6 +74,7 @@ private:
 const char print = ';';
 const char  quit = 'q';
 const char  help = 'h';
+const char roman_numeral = 'r';
 const std::string ex_key = "exit";
 bool roman_letter(char c) {
 	static std::vector<char>valids = { 'I','V','X','L','C','D','M','i','v','l','c','d','m' };
@@ -93,16 +95,16 @@ Token Token_stream::get() {
 	switch (c) {
 	case '+':
 	case '-':
+	case '*':
+	case '/':
 	case '=':
 	case ';':
 	case '(':
 	case ')':
-		return Token(c)
-			//case '*':
-			//case '$':
-			//case '/':
-			//case '%':
-			;
+	case '$':
+	case '%':
+	case '^':
+		return Token(c);
 	case '0':
 	case '1':
 	case '2':
@@ -154,7 +156,7 @@ Token Token_stream::get() {
 		}
 	}
 }
-//Roman_int expression(Token_stream& ts);
+Roman_int expression(Token_stream& ts);
 void Token_stream::ignore(char c) {	// ignores print characters ';'
 	if (full && c == buffer.kind) {
 		full = false;
@@ -178,7 +180,7 @@ void calculate(Token_stream& ts) {
 		while (t.kind == print) t = ts.get(); // add "=" here...
 		if (t.kind == quit) return;
 		ts.unget(t);
-		//std::cout << expression(ts) << std::endl;
+		std::cout << expression(ts) << std::endl;
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << "\n";
@@ -197,24 +199,64 @@ void calculate(Token_stream& ts) {
 		clean_up_mess(ts);
 	}
 }
-//Roman_int expression(Token_stream& ts) {
-//	Roman_int left = term(ts);
-//	Token t2 = ts.get();
-//	switch (t2.kind) {
-//	case '+':
-//		return left + term(ts);
-//	case '-':
-//		return left - term(ts);
-//	default:
-//		break;
-//	}
-//}
-//Roman_int term(Token_stream& ts) {
-//	return Roman_int{};
-//}
-//Roman_int primary(Token_stream& ts) {
-//	return Roman_int{};
-//}
+Roman_int primary(Token_stream& ts) {
+	Token t = ts.get();
+	while (true) {
+		switch (t.kind) {
+		case '(':
+		{
+			expression(ts);
+			t = ts.get();
+			if (t.kind != ')') {
+				std::cerr << "Expected a ')' to end the expression\n";
+				return t.value;
+			}
+		}
+		case roman_numeral:
+			return Roman_int{ t.letters };
+		default:
+			break;
+		}
+	}
+}
+Roman_int term(Token_stream& ts) {
+	Roman_int left = primary(ts);
+	Token t2 = ts.get();
+	while (true) {
+		switch (t2.kind) {
+		case '*':
+		{
+			left* term(ts);
+			t2 = ts.get();
+		}
+		case '/':
+		{
+			left / term(ts);
+			t2 = ts.get();
+		}
+		default:
+			ts.unget(t2);
+			return left;
+		}
+	}
+}
+Roman_int expression(Token_stream& ts) {
+	Roman_int left = term(ts);
+	Token t2 = ts.get();
+	while (true) {
+		switch (t2.kind) {
+		case '+':
+			left + term(ts);
+			t2 = ts.get();
+		case '-':
+			left - term(ts);
+			t2 = ts.get();
+		default:
+			break;
+		}
+	}
+}
+
 int main() {
 	try {
 		Token_stream ts{ std::cin };

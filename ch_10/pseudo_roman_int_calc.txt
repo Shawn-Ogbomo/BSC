@@ -279,11 +279,24 @@ std::string integer_to_roman_code(int& val) {
 	}
 	return roman_notation;
 }
-
-Roman_int operator+(const Roman_int& left, const Roman_int& right) {
-	//annex another constructor in roman_int that takes a string and an in 	parameter
-	
-
-	int sum = left.as_int() + right.as_int();
-	return Roman_int{ integer_to_roman_code(sum),sum };
+Roman_int expression(Token_stream& ts) {
+	Roman_int left = term(ts);
+	Token t2 = ts.get();
+	// while true 
+	switch (t2.kind) {
+	case '+':
+		left + term(ts);
+		assign the value to a result of roman int
+		//get the next token to add across
+		// break
+	case '-':
+		
+		 left - term(ts);
+		assign the value to a result of roman int
+		//get the next token to add across
+		// break
+	default:
+		//unget the token 
+		return left
+	}
 }
