@@ -32,3 +32,4 @@ std::istream& operator>>(std::istream& is, Roman_int& r);
 Roman_int operator +(const Roman_int& left, const Roman_int& right);
 Roman_int operator -(const Roman_int& left, const Roman_int& right);
 Roman_int operator *(const Roman_int& left, const Roman_int& right);
+Roman_int operator /(const Roman_int& left, const Roman_int& right);

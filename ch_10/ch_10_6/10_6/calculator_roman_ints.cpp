@@ -173,9 +173,9 @@ const char prompt = '>';
 const char result = '=';
 void calculate(Token_stream& ts) {
 	while (true)try {
-		Roman_int x = { "x" };
-		Roman_int y = { "ix" };
-		Roman_int z = x * y;
+		Roman_int x = { "X" };
+		Roman_int y = { "C" };
+		Roman_int z = x / y;
 		std::cout << prompt << " ";
 		Token t = ts.get();
 		while (t.kind == print) t = ts.get(); // add "=" here...
