@@ -23,7 +23,7 @@ Roman_int::Roman_int(const std::string& letters)
 	: roman_code{ letters },
 	roman_character{},
 	value{}{
-	if (!roman_code.size()) {
+	if (!roman_code.size() || letters == "nulla") {
 		roman_code = "nulla";
 		value = 0;
 		return;
@@ -287,101 +287,107 @@ std::istream& operator>>(std::istream& is, Roman_int& r) {
 }
 std::string integer_to_roman_code(int val) {
 	constexpr int max_value = 3999;
-	if (val > max_value || val < 0) {
-		throw std::invalid_argument{ "cannot represent " + std::to_string(val) + " as a roman numeral..." };
-	}
-	Place_value p;
-	std::string roman_notation;
-	int result{};
-	constexpr int repeat_limit = 3;
-	if (result = val / Place_value::Multiplier::thousand) {
-		p.thousands = result;
-		for (int i{}; i < p.thousands; ++i) {
-			roman_notation += 'M';
-		}
-		val -= (p.thousands * Place_value::Multiplier::thousand);
-	}
-	if (result = val / Place_value::Multiplier::hundred) {
-		p.hundreds = result;
-		if (p.hundreds > repeat_limit) {
-			Token_gen::Token four_hundred = { "CD",400 };
-			Token_gen::Token five_hundred = { 'D',500 };
-			Token_gen::Token nine_hundred = { "CM",900 };
-			if (p.hundreds * Place_value::Multiplier::hundred == four_hundred.val) {
-				roman_notation += four_hundred.roman_letters;
+	if (val > 0 && val <= max_value) {
+		Place_value p;
+		std::string roman_notation;
+		int result{};
+		constexpr int repeat_limit = 3;
+		if (result = val / Place_value::Multiplier::thousand) {
+			p.thousands = result;
+			for (int i{}; i < p.thousands; ++i) {
+				roman_notation += 'M';
 			}
-			else if ((p.hundreds * Place_value::Multiplier::hundred) > four_hundred.val && (p.hundreds * Place_value::Multiplier::hundred) < nine_hundred.val) {
-				roman_notation += five_hundred.roman_letter;
-				for (int i{}, place_value_hundreds_cpy = p.hundreds; i < ((place_value_hundreds_cpy * Place_value::Multiplier::hundred) - five_hundred.val); ++i) {
+			val -= (p.thousands * Place_value::Multiplier::thousand);
+		}
+		if (result = val / Place_value::Multiplier::hundred) {
+			p.hundreds = result;
+			if (p.hundreds > repeat_limit) {
+				Token_gen::Token four_hundred = { "CD",400 };
+				Token_gen::Token five_hundred = { 'D',500 };
+				Token_gen::Token nine_hundred = { "CM",900 };
+				if (p.hundreds * Place_value::Multiplier::hundred == four_hundred.val) {
+					roman_notation += four_hundred.roman_letters;
+				}
+				else if ((p.hundreds * Place_value::Multiplier::hundred) > four_hundred.val && (p.hundreds * Place_value::Multiplier::hundred) < nine_hundred.val) {
+					roman_notation += five_hundred.roman_letter;
+					for (int i{}, place_value_hundreds_cpy = p.hundreds; i < ((place_value_hundreds_cpy * Place_value::Multiplier::hundred) - five_hundred.val); ++i) {
+						roman_notation += 'C';
+						--place_value_hundreds_cpy;
+					}
+				}
+				else if (p.hundreds * Place_value::Multiplier::hundred == nine_hundred.val) {
+					roman_notation += nine_hundred.roman_letters;
+				}
+			}
+			else {
+				for (int i{}; i < p.hundreds; ++i) {
 					roman_notation += 'C';
-					--place_value_hundreds_cpy;
 				}
 			}
-			else if (p.hundreds * Place_value::Multiplier::hundred == nine_hundred.val) {
-				roman_notation += nine_hundred.roman_letters;
-			}
+			val -= (p.hundreds * Place_value::Multiplier::hundred);
 		}
-		else {
-			for (int i{}; i < p.hundreds; ++i) {
-				roman_notation += 'C';
+		if (result = val / Place_value::Multiplier::ten) {
+			p.tens = result;
+			if (p.tens > repeat_limit) {
+				Token_gen::Token fourty = { "XL",40 };
+				Token_gen::Token fifty = { 'L',50 };
+				Token_gen::Token ninety = { "XC",90 };
+				if ((p.tens * Place_value::Multiplier::ten) == fourty.val) {
+					roman_notation += fourty.roman_letters;
+				}
+				else if ((p.tens * Place_value::Multiplier::ten) > fourty.val && (p.tens * Place_value::Multiplier::ten) < ninety.val) {
+					roman_notation += fifty.roman_letter;
+					for (int i{}, place_value_tens_cpy = p.tens; i < ((place_value_tens_cpy * Place_value::Multiplier::ten) - fifty.val); ++i) {
+						roman_notation += 'X';
+						--place_value_tens_cpy;
+					}
+				}
+				else if (p.tens * Place_value::Multiplier::ten == ninety.val) {
+					roman_notation += ninety.roman_letters;
+				}
 			}
-		}
-		val -= (p.hundreds * Place_value::Multiplier::hundred);
-	}
-	if (result = val / Place_value::Multiplier::ten) {
-		p.tens = result;
-		if (p.tens > repeat_limit) {
-			Token_gen::Token fourty = { "XL",40 };
-			Token_gen::Token fifty = { 'L',50 };
-			Token_gen::Token ninety = { "XC",90 };
-			if ((p.tens * Place_value::Multiplier::ten) == fourty.val) {
-				roman_notation += fourty.roman_letters;
-			}
-			else if ((p.tens * Place_value::Multiplier::ten) > fourty.val && (p.tens * Place_value::Multiplier::ten) < ninety.val) {
-				roman_notation += fifty.roman_letter;
-				for (int i{}, place_value_tens_cpy = p.tens; i < ((place_value_tens_cpy * Place_value::Multiplier::ten) - fifty.val); ++i) {
+			else {
+				for (int i{}; i < p.tens; ++i) {
 					roman_notation += 'X';
-					--place_value_tens_cpy;
 				}
 			}
-			else if (p.tens * Place_value::Multiplier::ten == ninety.val) {
-				roman_notation += ninety.roman_letters;
-			}
+			val -= (p.tens * Place_value::Multiplier::ten);
 		}
-		else {
-			for (int i{}; i < p.tens; ++i) {
-				roman_notation += 'X';
+		if (val) {
+			p.ones = val;
+			if (p.ones > repeat_limit) {
+				Token_gen::Token four = { "IV",4 };
+				Token_gen::Token five = { 'V',5 };
+				Token_gen::Token nine = { "IX",9 };
+				if (p.ones == four.val) {
+					roman_notation += four.roman_letters;
+				}
+				else if ((p.ones > four.val && p.ones < nine.val)) {
+					roman_notation += five.roman_letter;
+					for (int i{}, place_value_ones_cpy = p.ones; i < (place_value_ones_cpy - five.val); ++i) {
+						roman_notation += 'I';
+					}
+				}
+				else if (p.ones == nine.val) {
+					roman_notation += nine.roman_letters;
+				}
 			}
-		}
-		val -= (p.tens * Place_value::Multiplier::ten);
-	}
-	if (val) {
-		p.ones = val;
-		if (p.ones > repeat_limit) {
-			Token_gen::Token four = { "IV",4 };
-			Token_gen::Token five = { 'V',5 };
-			Token_gen::Token nine = { "IX",9 };
-			if (p.ones == four.val) {
-				roman_notation += four.roman_letters;
-			}
-			else if ((p.ones > four.val && p.ones < nine.val)) {
-				roman_notation += five.roman_letter;
-				for (int i{}, place_value_ones_cpy = p.ones; i < (place_value_ones_cpy - five.val); ++i) {
+			else {
+				for (int i{}; i < p.ones; ++i) {
 					roman_notation += 'I';
 				}
 			}
-			else if (p.ones == nine.val) {
-				roman_notation += nine.roman_letters;
-			}
+			return roman_notation;
 		}
-		else {
-			for (int i{}; i < p.ones; ++i) {
-				roman_notation += 'I';
-			}
-		}
-		return roman_notation;
 	}
+	if (!val) {
+		return std::string{ "nulla" };
+	}
+	if (val > max_value || val < 0) {
+		throw Roman_int::Invalid{ "cannot represent " + std::to_string(val) + " as a roman numeral..." };
+	}
+	throw Roman_int::Invalid("oops, something went wrong...");
 }
 Roman_int operator+(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ ,left.as_int() + right.as_int() };
+	return Roman_int{ integer_to_roman_code(left.as_int() + right.as_int()) };
 }
