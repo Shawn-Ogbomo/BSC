@@ -353,6 +353,9 @@ std::string integer_to_roman_code(int val) {
 				}
 			}
 			val -= (p.tens * Place_value::Multiplier::ten);
+			if (!val) {
+				return roman_notation;
+			}
 		}
 		if (val) {
 			p.ones = val;

@@ -32,6 +32,13 @@ while(true){
 //putback 
 //get 
 //clean_up_mess
+//ignore 
+
+
+convert newline to print token to handle an expression such as XIX + XIV 
+ignore "="
+to prevent and expression such as =5+2
+
 
 //std::is_alpha() with iteration 
 to get characters from cin and stop before operator is encountered eg "+'
@@ -271,4 +278,12 @@ std::string integer_to_roman_code(int& val) {
 		}
 	}
 	return roman_notation;
+}
+
+Roman_int operator+(const Roman_int& left, const Roman_int& right) {
+	//annex another constructor in roman_int that takes a string and an in 	parameter
+	
+
+	int sum = left.as_int() + right.as_int();
+	return Roman_int{ integer_to_roman_code(sum),sum };
 }
