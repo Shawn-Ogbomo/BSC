@@ -6,22 +6,10 @@
 #include "util.h"
 Roman_int::Roman_int()
 	:roman_code{ "nulla" },
-	roman_character{},
 	value{}{
-}
-Roman_int::Roman_int(const char letter)
-	: roman_character{ letter },
-	value{},
-	roman_code{} {
-	if (islower(roman_character)) {
-		roman_character = toupper(roman_character);
-	}
-	Token_gen::Token t = Token_gen::get(roman_character);
-	value = t.val;
 }
 Roman_int::Roman_int(const std::string& letters)
 	: roman_code{ letters },
-	roman_character{},
 	value{}{
 	if (!roman_code.size() || letters == "nulla") {
 		roman_code = "nulla";
