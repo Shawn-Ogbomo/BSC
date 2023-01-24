@@ -266,7 +266,9 @@ std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 std::istream& operator>>(std::istream& is, Roman_int& r) {
 	char c{};
 	std::string s;
-	while (std::cin.get(c) && (isalpha(c) || ispunct(c))) s += c;
+	while ((std::cin.get(c)) && (!ispunct(c)) && (!isspace(c))) {
+		s += c;
+	}
 	std::cin.unget();
 	if (!is) {
 		return is;
