@@ -89,8 +89,8 @@ Token Token_stream::get() {
 		full = false;
 		return buffer;
 	}
-	char c{};
-	std::cin >> c;
+	char c;
+	std::cin.get(c);
 	Util::check_stream(std::cin, print, "oops couldn't find the terminating character");
 	switch (c) {
 	case '+':
@@ -117,10 +117,12 @@ Token Token_stream::get() {
 	case '9':
 	case '.':
 	{
-		std::cin.unget();
 		throw Token_gen::Token::Invalid{ "No numbers. Roman ints only please...\n" };
 	}
 	default:
+		if (isspace(c)) {
+			return Token(print);
+		}
 		if (isalpha(c) && std::cin.peek() == '\n') {
 			if (c == quit) {
 				return Token(quit);
@@ -132,9 +134,8 @@ Token Token_stream::get() {
 					//<< "Functions... \n\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n#to declare a variable and #const to declare a constant\nh key to display instructions...\n";
 				throw Token::Invalid{ "invalid token..." };
 			}
-			std::cin.unget();
 		}
-		else if (isalpha(c) && (!roman_letter(std::cin.peek()))) {
+		else if (isalpha(c) && (!roman_letter(std::cin.peek())) && (!ispunct(std::cin.peek()))) {
 			std::cin.unget();
 			std::string s;
 			while (std::cin.get(c) && !isspace(c)) {
@@ -146,14 +147,10 @@ Token Token_stream::get() {
 			}
 			throw Token::Invalid{ s + " is invalid..." };
 		}
-		else {
-			std::cin.unget();
-		}
-		if (!isspace(c)) {
-			Roman_int r;
-			std::cin >> r;
-			return Token(r);
-		}
+		std::cin.unget();
+		Roman_int r;
+		std::cin >> r;
+		return Token(r);
 	}
 }
 Roman_int expression(Token_stream& ts);
@@ -177,7 +174,7 @@ void calculate(Token_stream& ts) {
 	while (true)try {
 		std::cout << prompt << " ";
 		Token t = ts.get();
-		while (t.kind == print) t = ts.get(); // add "=" here...
+		while (t.kind == print) t = ts.get();
 		if (t.kind == quit) return;
 		ts.unget(t);
 		std::cout << expression(ts) << std::endl;
@@ -198,6 +195,10 @@ void calculate(Token_stream& ts) {
 		std::cerr << e.what() << "\n";
 		clean_up_mess(ts);
 	}
+	catch (Token_gen::Token::Invalid& e) {
+		std::cerr << e.what() << "\n";
+		//clean_up_mess(ts);
+	}
 }
 Roman_int primary(Token_stream& ts) {
 	Token t = ts.get();
@@ -209,13 +210,13 @@ Roman_int primary(Token_stream& ts) {
 			t = ts.get();
 			if (t.kind != ')') {
 				std::cerr << "Expected a ')' to end the expression\n";
-				return t.value;
+				//return t.value;
 			}
 		}
 		case roman_numeral:
 			return Roman_int{ t.letters };
 		default:
-			break;
+			throw Roman_int::Parse_error{ "\nan expression cannot start with " + std::string{t.kind} };
 		}
 	}
 }
@@ -226,12 +227,12 @@ Roman_int term(Token_stream& ts) {
 		switch (t2.kind) {
 		case '*':
 		{
-			left* term(ts);
+			left* primary(ts);
 			t2 = ts.get();
 		}
 		case '/':
 		{
-			left / term(ts);
+			left / primary(ts);
 			t2 = ts.get();
 		}
 		default:
@@ -246,10 +247,10 @@ Roman_int expression(Token_stream& ts) {
 	while (true) {
 		switch (t2.kind) {
 		case '+':
-			left + term(ts);
+			left = left + term(ts);
 			t2 = ts.get();
 		case '-':
-			left - term(ts);
+			left = left - term(ts);
 			t2 = ts.get();
 		default:
 			break;
