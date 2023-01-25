@@ -244,14 +244,15 @@ Roman_int expression(Token_stream& ts) {
 	while (true) {
 		switch (t2.kind) {
 		case '+':
-			return left = left + term(ts);
+			left = left + term(ts);
+			t2 = ts.get();
+			break;
 		case '-':
-			return left = left - term(ts);
+			left = left - term(ts);
+			t2 = ts.get();
+			break;
 		default:
-			//if (t2.kind == print) {
 			return left;
-			//}
-		//	break;
 		}
 	}
 }
