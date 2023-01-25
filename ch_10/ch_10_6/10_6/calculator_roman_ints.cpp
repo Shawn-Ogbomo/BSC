@@ -116,7 +116,7 @@ Token Token_stream::get() {
 	case '9':
 	case '.':
 	{
-		throw Token_gen::Token::Invalid{ "No numbers. Roman ints only please...\n" };
+		throw Token::Invalid{ "No numbers. Roman ints only please..." };
 	}
 	default:
 		if (isspace(c)) {
