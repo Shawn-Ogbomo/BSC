@@ -227,13 +227,11 @@ Roman_int term(Token_stream& ts) {
 		switch (t2.kind) {
 		case '*':
 		{
-			left* primary(ts);
-			t2 = ts.get();
+			return left * primary(ts);
 		}
 		case '/':
 		{
-			left / primary(ts);
-			t2 = ts.get();
+			return left / primary(ts);
 		}
 		default:
 			ts.unget(t2);
@@ -247,11 +245,9 @@ Roman_int expression(Token_stream& ts) {
 	while (true) {
 		switch (t2.kind) {
 		case '+':
-			left = left + term(ts);
-			t2 = ts.get();
+			return left = left + term(ts);
 		case '-':
-			left = left - term(ts);
-			t2 = ts.get();
+			return left = left - term(ts);
 		default:
 			break;
 		}
