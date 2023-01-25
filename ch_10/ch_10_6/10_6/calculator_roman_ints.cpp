@@ -226,11 +226,15 @@ Roman_int term(Token_stream& ts) {
 		switch (t2.kind) {
 		case '*':
 		{
-			return left = left * primary(ts);
+			left = left * primary(ts);
+			t2 = ts.get();
+			break;
 		}
 		case '/':
 		{
-			return left = left / primary(ts);
+			left = left / primary(ts);
+			t2 = ts.get();
+			break;
 		}
 		default:
 			ts.unget(t2);
