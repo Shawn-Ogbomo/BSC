@@ -297,6 +297,9 @@ std::string integer_to_roman_code(int val) {
 				roman_notation += 'M';
 			}
 			val -= (p.thousands * Place_value::Multiplier::thousand);
+			if (!val) {
+				return roman_notation;
+			}
 		}
 		if (result = val / Place_value::Multiplier::hundred) {
 			p.hundreds = result;
@@ -324,6 +327,9 @@ std::string integer_to_roman_code(int val) {
 				}
 			}
 			val -= (p.hundreds * Place_value::Multiplier::hundred);
+			if (!val) {
+				return roman_notation;
+			}
 		}
 		if (result = val / Place_value::Multiplier::ten) {
 			p.tens = result;
@@ -388,7 +394,7 @@ std::string integer_to_roman_code(int val) {
 	if (val > max_value || val < 0) {
 		throw Roman_int::Invalid{ "cannot represent " + std::to_string(val) + " as a roman numeral..." };
 	}
-	throw Roman_int::Invalid("oops, something went wrong...");
+	throw Roman_int::Invalid("oops something went wrong...");
 }
 Roman_int operator+(const Roman_int& left, const Roman_int& right) {
 	return Roman_int{ integer_to_roman_code(left.as_int() + right.as_int()) };

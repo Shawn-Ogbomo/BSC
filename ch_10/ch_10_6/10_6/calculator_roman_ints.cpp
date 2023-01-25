@@ -29,7 +29,6 @@
 //
 //Roman numeral :
 //<string, int>
-//<char, int>
 #include <iostream>
 #include <cctype>
 #include <vector>
@@ -77,7 +76,7 @@ const char  help = 'h';
 const char roman_numeral = 'r';
 const std::string ex_key = "exit";
 bool roman_letter(char c) {
-	static std::vector<char>valids = { 'I','V','X','L','C','D','M','i','v','l','c','d','m' };
+	static std::vector<char>valids = { 'I','V','X','L','C','D','M','i','v','x','l','c','d','m' };
 	auto result1 = std::find(begin(valids), end(valids), c);
 	if (result1 != std::end(valids)) {
 		return true;
@@ -177,7 +176,7 @@ void calculate(Token_stream& ts) {
 		while (t.kind == print) t = ts.get();
 		if (t.kind == quit) return;
 		ts.unget(t);
-		std::cout << expression(ts) << std::endl;
+		std::cout << result << " " << expression(ts) << std::endl;
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << "\n";
@@ -227,11 +226,11 @@ Roman_int term(Token_stream& ts) {
 		switch (t2.kind) {
 		case '*':
 		{
-			return left * primary(ts);
+			return left = left * primary(ts);
 		}
 		case '/':
 		{
-			return left / primary(ts);
+			return left = left / primary(ts);
 		}
 		default:
 			ts.unget(t2);
@@ -249,7 +248,10 @@ Roman_int expression(Token_stream& ts) {
 		case '-':
 			return left = left - term(ts);
 		default:
-			break;
+			//if (t2.kind == print) {
+			return left;
+			//}
+		//	break;
 		}
 	}
 }
