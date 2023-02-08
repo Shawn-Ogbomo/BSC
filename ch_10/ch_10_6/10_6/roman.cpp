@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include "roman.h"
 #include "token.h"
 #include "place_value.h"
@@ -286,6 +287,9 @@ std::istream& operator>>(std::istream& is, Roman_int& r) {
 }
 std::string integer_to_roman_code(int val) {
 	constexpr int max_value = 3999;
+	if (std::fmod(val, static_cast<int>(val))) {
+		throw Roman_int::Invalid{ "oops cannot represent " + std::to_string(val) + " as a roman numeral..." };
+	}
 	if (val > 0 && val <= max_value) {
 		Place_value p;
 		std::string roman_notation;
@@ -397,29 +401,29 @@ std::string integer_to_roman_code(int val) {
 	throw Roman_int::Invalid("oops something went wrong...");
 }
 Roman_int operator+(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(left.as_int() + right.as_int()) };
+	return Roman_int{ integer_to_roman_code((left.as_int() + right.as_int())) };
 }
 
 Roman_int operator-(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(left.as_int() - right.as_int()) };
+	return Roman_int{ integer_to_roman_code((left.as_int() - right.as_int())) };
 }
 Roman_int operator*(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(left.as_int() * right.as_int()) };
+	return Roman_int{ integer_to_roman_code((left.as_int() * right.as_int())) };
 }
 Roman_int operator/(const Roman_int& left, const Roman_int& right) {
 	if (!right.as_int()) {
 		throw Roman_int::Invalid{ "Cannot divide by zero..." };
 	}
-	return Roman_int{ integer_to_roman_code(left.as_int() / right.as_int()) };
+	return Roman_int{ integer_to_roman_code((left.as_int() / right.as_int())) };
 }
 
 Roman_int operator^(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(std::pow(left.as_int(),right.as_int())) };
+	return Roman_int{ integer_to_roman_code((std::pow(left.as_int(),right.as_int()))) };
 }
 
 Roman_int operator%(const Roman_int& left, const Roman_int& right) {
 	if (!right.as_int()) {
 		throw Roman_int::Invalid{ "Cannot mod by " + std::string{std::to_string(right.as_int())} + "..." };
 	}
-	return Roman_int{ integer_to_roman_code(left.as_int() % right.as_int()) };
+	return Roman_int{ integer_to_roman_code((left.as_int() % right.as_int())) };
 }

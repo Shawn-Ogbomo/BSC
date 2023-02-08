@@ -5,6 +5,7 @@
 //added function roman_letter() to prevent putting multiple characters back into the input stream
 //added end_of_loop() to handle stream fail, eof , and bad
 // works on Roman_ints only
+// computations resulting in fractional values yield erroneous results
 //This program implements a basic expression calculator.
 //Input from cin; output to cout.
 //The grammar for input is:
@@ -200,7 +201,7 @@ void calculate(Token_stream& ts) {
 	}
 	catch (Token_gen::Token::Invalid& e) {
 		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);						//this was commented previously. If the program is generating erroneous results											comment this line out again.
+		clean_up_mess(ts);
 	}
 }
 Roman_int primary(Token_stream& ts) {
@@ -228,6 +229,12 @@ Roman_int term(Token_stream& ts) {
 	Token t2 = ts.get();
 	while (true) {
 		switch (t2.kind) {
+		case '$':
+		{
+			left = Roman_int{ integer_to_roman_code(std::sqrt(left.as_int())) };
+			t2 = ts.get();
+			break;
+		}
 		case'^':
 		{
 			left = left ^ primary(ts);
