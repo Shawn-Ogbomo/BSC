@@ -228,6 +228,12 @@ Roman_int term(Token_stream& ts) {
 	Token t2 = ts.get();
 	while (true) {
 		switch (t2.kind) {
+		case'^':
+		{
+			left = Roman_int{ integer_to_roman_code(std::pow(left.as_int(),primary(ts).as_int())) };
+			t2 = ts.get();
+			break;
+		}
 		case '*':
 		{
 			left = left * primary(ts);
