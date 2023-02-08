@@ -75,6 +75,7 @@ const char  quit = 'q';
 const char  help = 'h';
 const char roman_numeral = 'r';
 const std::string ex_key = "exit";
+const std::string nulla = "nulla";
 bool roman_letter(char c) {
 	static std::vector<char>valids = { 'I','V','X','L','C','D','M','i','v','x','l','c','d','m' };
 	auto result1 = std::find(begin(valids), end(valids), c);
@@ -137,12 +138,15 @@ Token Token_stream::get() {
 		else if (isalpha(c) && (!roman_letter(std::cin.peek())) && (!ispunct(std::cin.peek()))) {
 			std::cin.unget();
 			std::string s;
-			while (std::cin.get(c) && !isspace(c)) {
+			while (std::cin.get(c) && !isspace(c) && !ispunct(c)) {
 				s += c;
 			}
 			std::cin.unget();
 			if (s == ex_key) {
 				return Token(quit);
+			}
+			if (s == nulla) {
+				return Token(s);
 			}
 			throw Token::Invalid{ s + " is invalid..." };
 		}
@@ -196,7 +200,7 @@ void calculate(Token_stream& ts) {
 	}
 	catch (Token_gen::Token::Invalid& e) {
 		std::cerr << e.what() << "\n";
-		//clean_up_mess(ts);
+		clean_up_mess(ts);						//this was commented previously. If the program is generating erroneous results											comment this line out again.
 	}
 }
 Roman_int primary(Token_stream& ts) {
