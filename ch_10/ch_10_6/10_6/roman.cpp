@@ -412,3 +412,14 @@ Roman_int operator/(const Roman_int& left, const Roman_int& right) {
 	}
 	return Roman_int{ integer_to_roman_code(left.as_int() / right.as_int()) };
 }
+
+Roman_int operator^(const Roman_int& left, const Roman_int& right) {
+	return Roman_int{ integer_to_roman_code(std::pow(left.as_int(),right.as_int())) };
+}
+
+Roman_int operator%(const Roman_int& left, const Roman_int& right) {
+	if (!right.as_int()) {
+		throw Roman_int::Invalid{ "Cannot mod by " + std::string{std::to_string(right.as_int())} + "..." };
+	}
+	return Roman_int{ integer_to_roman_code(left.as_int() % right.as_int()) };
+}

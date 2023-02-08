@@ -32,3 +32,5 @@ Roman_int operator +(const Roman_int& left, const Roman_int& right);
 Roman_int operator -(const Roman_int& left, const Roman_int& right);
 Roman_int operator *(const Roman_int& left, const Roman_int& right);
 Roman_int operator /(const Roman_int& left, const Roman_int& right);
+Roman_int operator ^(const Roman_int& left, const Roman_int& right);
+Roman_int operator %(const Roman_int& left, const Roman_int& right);

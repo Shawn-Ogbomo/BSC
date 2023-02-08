@@ -230,7 +230,13 @@ Roman_int term(Token_stream& ts) {
 		switch (t2.kind) {
 		case'^':
 		{
-			left = Roman_int{ integer_to_roman_code(std::pow(left.as_int(),primary(ts).as_int())) };
+			left = left ^ primary(ts);
+			t2 = ts.get();
+			break;
+		}
+		case '/':
+		{
+			left = left / primary(ts);
 			t2 = ts.get();
 			break;
 		}
@@ -240,9 +246,9 @@ Roman_int term(Token_stream& ts) {
 			t2 = ts.get();
 			break;
 		}
-		case '/':
+		case '%':
 		{
-			left = left / primary(ts);
+			left = left % primary(ts);
 			t2 = ts.get();
 			break;
 		}
