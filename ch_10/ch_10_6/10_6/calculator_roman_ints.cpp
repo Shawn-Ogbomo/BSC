@@ -210,12 +210,12 @@ Roman_int primary(Token_stream& ts) {
 		switch (t.kind) {
 		case '(':
 		{
-			expression(ts);
+			Roman_int left = expression(ts);
 			t = ts.get();
 			if (t.kind != ')') {
-				std::cerr << "Expected a ')' to end the expression\n";
-				//return t.value;
+				throw Roman_int::Parse_error{ "Expected a ')' to end the expression\n" };
 			}
+			return left;
 		}
 		case roman_numeral:
 			return Roman_int{ t.letters };
@@ -279,6 +279,7 @@ Roman_int expression(Token_stream& ts) {
 			t2 = ts.get();
 			break;
 		default:
+			ts.unget(t2);
 			return left;
 		}
 	}
