@@ -215,6 +215,14 @@ Roman_int primary(Token_stream& ts) {
 			if (t.kind != ')') {
 				throw Roman_int::Parse_error{ "Expected a ')' to end the expression\n" };
 			}
+			while (std::cin.peek() == '(') {
+				t = ts.get();
+				left = left * expression(ts);
+				t = ts.get();
+				if (t.kind != ')') {
+					throw Roman_int::Parse_error{ "Expected a ')' to end the expression\n" };
+				}
+			}
 			return left;
 		}
 		case roman_numeral:
