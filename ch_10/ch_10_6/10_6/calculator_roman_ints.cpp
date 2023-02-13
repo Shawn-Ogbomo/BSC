@@ -41,24 +41,24 @@
 struct Token {
 	class Invalid {
 	public:
-		Invalid(const std::string& err) :error_message{ err } {}
-		std::string what() { return error_message; }
+		explicit Invalid(const std::string& err) :error_message{ err } {}
+		std::string what() const { return error_message; }
 	private:
 		std::string error_message;
 	};
-	Token() :kind{}, value{}, letters{} {}
-	Token(char c) :kind{ c }, letters{}, value{} {}
-	Token(const Roman_int& r) :letters{ r.as_string() }, value{ r.as_int() }, kind{ 'r' } {}
+	Token() :kind{} {}
+	explicit Token(char c) :kind{ c } {}
+	explicit Token(const Roman_int& r) : kind{ 'r' }, letters{ r.as_string() }, value{ r.as_int() } {}
 	char kind;
 	std::string letters;
-	int value;
+	int value{};
 };
 class Token_stream {
 public:
 	class Invalid {};
-	Token_stream(std::istream&) :full{ false }, buffer{}{}
+	explicit Token_stream(std::istream const&) {}
 	Token get();
-	void unget(Token t) {
+	void unget(Token const& t) {
 		if (full) {
 			std::cerr << "cannot put token into full stream...\n";
 			throw Token_stream::Invalid{};
@@ -68,8 +68,8 @@ public:
 	}
 	void ignore(char c);
 private:
-	bool full;
-	Token buffer;
+	bool full{};
+	Token buffer{};
 };
 const char print = ';';
 const char  quit = 'q';
@@ -147,7 +147,7 @@ Token Token_stream::get() {
 				return Token(quit);
 			}
 			if (s == nulla) {
-				return Token(s);
+				return Token(static_cast<Roman_int>(s));
 			}
 			throw Token::Invalid{ s + " is invalid..." };
 		}
@@ -206,30 +206,28 @@ void calculate(Token_stream& ts) {
 }
 Roman_int primary(Token_stream& ts) {
 	Token t = ts.get();
-	while (true) {
-		switch (t.kind) {
-		case '(':
-		{
-			Roman_int left = expression(ts);
+	switch (t.kind) {
+	case '(':
+	{
+		Roman_int left = expression(ts);
+		t = ts.get();
+		if (t.kind != ')') {
+			throw Roman_int::Parse_error{ "Expected a ')' to end the expression\n" };
+		}
+		while (std::cin.peek() == '(') {			//fix this...
+			t = ts.get();
+			left = left * expression(ts);
 			t = ts.get();
 			if (t.kind != ')') {
 				throw Roman_int::Parse_error{ "Expected a ')' to end the expression\n" };
 			}
-			while (std::cin.peek() == '(') {
-				t = ts.get();
-				left = left * expression(ts);
-				t = ts.get();
-				if (t.kind != ')') {
-					throw Roman_int::Parse_error{ "Expected a ')' to end the expression\n" };
-				}
-			}
-			return left;
 		}
-		case roman_numeral:
-			return Roman_int{ t.letters };
-		default:
-			throw Roman_int::Parse_error{ "\nan expression cannot start with " + std::string{t.kind} };
-		}
+		return left;
+	}
+	case roman_numeral:
+		return Roman_int{ t.letters };
+	default:
+		throw Roman_int::Parse_error{ "\nan expression cannot start with " + std::string{t.kind} };
 	}
 }
 Roman_int term(Token_stream& ts) {

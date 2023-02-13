@@ -41,8 +41,8 @@ bool Util::duplicate_substrs(const std::string& target_string, const std::string
 }
 
 bool Util::repeats(std::string& target_string, char c) {
-	constexpr int repeat_limit = 3;
 	if (target_string.size()) {
+		constexpr int repeat_limit = 3;
 		for (int i = 0; i < target_string.size(); ++i) {
 			int count = 1;
 			for (int j = i + 1; j < target_string.size(); ++j) {
@@ -53,8 +53,7 @@ bool Util::repeats(std::string& target_string, char c) {
 					}
 				}
 				else if (target_string[i] != target_string[j]) {
-					count = 0;
-					j = target_string.size();
+					break;
 				}
 			}
 		}

@@ -5,25 +5,25 @@ class Roman_int {
 public:
 	class Invalid {
 	public:
-		Invalid(const std::string& err) :error_message{ err } {}
-		std::string what() { return error_message; }
+		explicit Invalid(const std::string& err) :error_message{ err } {}
+		std::string what() const { return error_message; }
 	private:
 		std::string error_message;
 	};
 	class Parse_error {
 	public:
-		Parse_error(const std::string& err) :error_message{ err } {}
-		std::string what() { return error_message; }
+		explicit Parse_error(const std::string& err) :error_message{ err } {}
+		std::string what() const { return error_message; }
 	private:
 		std::string error_message;
 	};
 	Roman_int();
-	Roman_int(const std::string& letters);
+	explicit Roman_int(const std::string& letters);
 	int as_int() const;
 	std::string as_string() const;
 private:
 	std::string roman_code;
-	int value;
+	int value{};
 };
 std::string integer_to_roman_code(int val);
 std::ostream& operator<< (std::ostream& os, const Roman_int& r);

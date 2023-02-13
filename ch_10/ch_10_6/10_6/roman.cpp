@@ -6,24 +6,20 @@
 #include "place_value.h"
 #include "util.h"
 Roman_int::Roman_int()
-	:roman_code{ "nulla" },
-	value{}{
+	:roman_code{ "nulla" } {
 }
 Roman_int::Roman_int(const std::string& letters)
-	: roman_code{ letters },
-	value{}{
+	: roman_code{ letters } {
 	if (!roman_code.size() || letters == "nulla") {
 		roman_code = "nulla";
 		value = 0;
 		return;
 	}
-	for (int i = 0; i < roman_code.size(); ++i) {
-		if (islower(roman_code[i])) {
-			roman_code[i] = toupper(roman_code[i]);
-		}
+	for (auto& target : roman_code) {
+		target = std::toupper(target);
 	}
 	int left{};
-	for (int i = 0; i < roman_code.size(); ++i) {
+	for (unsigned i = 0; i < roman_code.size(); ++i) {
 		Token_gen::Token t = Token_gen::get(roman_code[i]);
 		switch (t.roman_letter) {
 		case'I':
@@ -250,6 +246,8 @@ Roman_int::Roman_int(const std::string& letters)
 			left += t.val;
 			break;
 		}
+		default:
+			break;
 		}
 		value = left;
 	}
@@ -374,7 +372,7 @@ std::string integer_to_roman_code(int val) {
 				if (p.ones == four.val) {
 					roman_notation += four.roman_letters;
 				}
-				else if ((p.ones > four.val && p.ones < nine.val)) {
+				else if (p.ones > four.val && p.ones < nine.val) {
 					roman_notation += five.roman_letter;
 					for (int i{}, place_value_ones_cpy = p.ones; i < (place_value_ones_cpy - five.val); ++i) {
 						roman_notation += 'I';
@@ -401,20 +399,20 @@ std::string integer_to_roman_code(int val) {
 	throw Roman_int::Invalid("oops something went wrong...");
 }
 Roman_int operator+(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code((left.as_int() + right.as_int())) };
+	return Roman_int{ integer_to_roman_code(left.as_int() + right.as_int()) };
 }
 
 Roman_int operator-(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code((left.as_int() - right.as_int())) };
+	return Roman_int{ integer_to_roman_code(left.as_int() - right.as_int()) };
 }
 Roman_int operator*(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code((left.as_int() * right.as_int())) };
+	return Roman_int{ integer_to_roman_code(left.as_int() * right.as_int()) };
 }
 Roman_int operator/(const Roman_int& left, const Roman_int& right) {
 	if (!right.as_int()) {
 		throw Roman_int::Invalid{ "Cannot divide by zero..." };
 	}
-	return Roman_int{ integer_to_roman_code((left.as_int() / right.as_int())) };
+	return Roman_int{ integer_to_roman_code(left.as_int() / right.as_int()) };
 }
 
 Roman_int operator^(const Roman_int& left, const Roman_int& right) {
@@ -425,5 +423,5 @@ Roman_int operator%(const Roman_int& left, const Roman_int& right) {
 	if (!right.as_int()) {
 		throw Roman_int::Invalid{ "Cannot mod by " + std::string{std::to_string(right.as_int())} + "..." };
 	}
-	return Roman_int{ integer_to_roman_code((left.as_int() % right.as_int())) };
+	return Roman_int{ integer_to_roman_code(left.as_int() % right.as_int()) };
 }
