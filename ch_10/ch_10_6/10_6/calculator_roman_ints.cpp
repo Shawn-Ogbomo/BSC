@@ -6,6 +6,7 @@
 //added end_of_loop() to handle stream fail, eof , and bad
 // works on Roman_ints only
 // computations resulting in fractional values yield erroneous results
+// inputing the character 'x' semds output to file 'X' represents the number 10
 //This program implements a basic expression calculator.
 //Input from cin; output to cout.
 //The grammar for input is:
@@ -38,6 +39,7 @@
 #include "roman.h"
 #include "token.h"
 #include "util.h"
+
 struct Token {
 	class Invalid {
 	public:
@@ -53,6 +55,7 @@ struct Token {
 	std::string letters;
 	int value{};
 };
+
 class Token_stream {
 public:
 	class Invalid {};
@@ -71,12 +74,14 @@ private:
 	bool full{};
 	Token buffer{};
 };
+
 const char print = ';';
 const char  quit = 'q';
 const char  help = 'h';
 const char roman_numeral = 'r';
 const std::string ex_key = "exit";
 const std::string nulla = "nulla";
+
 bool roman_letter(char c) {
 	static std::vector<char>valids = { 'I','V','X','L','C','D','M','i','v','x','l','c','d','m' };
 	auto result1 = std::find(begin(valids), end(valids), c);
@@ -85,6 +90,7 @@ bool roman_letter(char c) {
 	}
 	return false;
 }
+
 Token Token_stream::get() {
 	if (full) {
 		full = false;
@@ -157,6 +163,7 @@ Token Token_stream::get() {
 		return Token(r);
 	}
 }
+
 Roman_int expression(Token_stream& ts);
 void Token_stream::ignore(char c) {	// ignores print characters ';'
 	if (full && c == buffer.kind) {
@@ -169,11 +176,14 @@ void Token_stream::ignore(char c) {	// ignores print characters ';'
 	while (std::cin >> ch)
 		if (ch == c) return;
 }
+
 void clean_up_mess(Token_stream& ts) {
 	ts.ignore(print);
 }
+
 const char prompt = '>';
 const char result = '=';
+
 void calculate(Token_stream& ts) {
 	while (true)try {
 		std::cout << prompt << " ";
@@ -183,7 +193,7 @@ void calculate(Token_stream& ts) {
 		ts.unget(t);
 		std::cout << result << " " << expression(ts) << std::endl;
 	}
-	catch (std::exception& e) {
+	catch (std::length_error& e) {
 		std::cerr << e.what() << "\n";
 		clean_up_mess(ts);
 	}
@@ -204,6 +214,7 @@ void calculate(Token_stream& ts) {
 		clean_up_mess(ts);
 	}
 }
+
 Roman_int primary(Token_stream& ts) {
 	Token t = ts.get();
 	switch (t.kind) {
@@ -230,6 +241,7 @@ Roman_int primary(Token_stream& ts) {
 		throw Roman_int::Parse_error{ "\nan expression cannot start with " + std::string{t.kind} };
 	}
 }
+
 Roman_int term(Token_stream& ts) {
 	Roman_int left = primary(ts);
 	Token t2 = ts.get();
@@ -271,6 +283,7 @@ Roman_int term(Token_stream& ts) {
 		}
 	}
 }
+
 Roman_int expression(Token_stream& ts) {
 	Roman_int left = term(ts);
 	Token t2 = ts.get();

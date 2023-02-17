@@ -20,15 +20,14 @@ Token_gen::Token Token_gen::get(const char c) {
 		throw Token_gen::Token::Invalid{ std::string{c} + " is not a valid roman numeral..." };
 	}
 }
-Token_gen::Token::Token() {
-}
+Token_gen::Token::Token() = default;
 
 Token_gen::Token::Token(char c, int v)
 	: roman_letter{ c },
 	val{ v }{
 }
 
-Token_gen::Token::Token(const std::string& s, int v)
+Token_gen::Token::Token(const std::string & s, int v)
 	: val{ v },
 	roman_letters{ s }{
 }

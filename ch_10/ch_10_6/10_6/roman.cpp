@@ -5,9 +5,11 @@
 #include "token.h"
 #include "place_value.h"
 #include "util.h"
+
 Roman_int::Roman_int()
 	:roman_code{ "nulla" } {
 }
+
 Roman_int::Roman_int(const std::string& letters)
 	: roman_code{ letters } {
 	if (!roman_code.size() || letters == "nulla") {
@@ -15,16 +17,18 @@ Roman_int::Roman_int(const std::string& letters)
 		value = 0;
 		return;
 	}
+
 	for (auto& target : roman_code) {
 		target = std::toupper(target);
 	}
+
 	int left{};
 	for (unsigned i = 0; i < roman_code.size(); ++i) {
 		Token_gen::Token t = Token_gen::get(roman_code[i]);
 		switch (t.roman_letter) {
 		case'I':
 		{
-			if (Util::repeats(roman_code, roman_code[i])) {
+			if (Util::repeats(roman_code, roman_code[i], i)) {
 				throw Roman_int::Parse_error{ "oops " + std::string{roman_code[i]} + " can only repeat " + std::to_string(repeat_limit) + " times" };
 			}
 		}
@@ -84,7 +88,7 @@ Roman_int::Roman_int(const std::string& letters)
 		break;
 		case 'X':
 		{
-			if (Util::repeats(roman_code, roman_code[i])) {
+			if (Util::repeats(roman_code, roman_code[i], i)) {
 				throw Roman_int::Parse_error{ "oops " + std::string{roman_code[i]} + " can only repeat " + std::to_string(repeat_limit) + " times\n" };
 			}
 			if (Util::next_value(roman_code, i + 1)) {
@@ -156,7 +160,7 @@ Roman_int::Roman_int(const std::string& letters)
 		}
 		case 'C':
 		{
-			if (Util::repeats(roman_code, roman_code[i])) {
+			if (Util::repeats(roman_code, roman_code[i], i)) {
 				throw Roman_int::Parse_error{ "Invalid syntax..." };
 			}
 			if (Util::previous_value(i - 1)) {
@@ -234,7 +238,7 @@ Roman_int::Roman_int(const std::string& letters)
 		}
 		case 'M':
 		{
-			if (Util::repeats(roman_code, roman_code[i])) {
+			if (Util::repeats(roman_code, roman_code[i], i)) {
 				throw Roman_int::Parse_error{ "Invalid syntax..." };
 			}
 			if (Util::previous_value(i - 1)) {
@@ -256,9 +260,11 @@ Roman_int::Roman_int(const std::string& letters)
 int Roman_int::as_int() const {
 	return value;
 }
+
 std::string Roman_int::as_string() const {
 	return roman_code;
 }
+
 std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 	return os << r.as_string();
 }
@@ -270,6 +276,7 @@ bool is_not_token(char c) {
 	}
 	return false;
 }
+
 std::istream& operator>>(std::istream& is, Roman_int& r) {
 	char c{};
 	std::string s;
@@ -283,6 +290,7 @@ std::istream& operator>>(std::istream& is, Roman_int& r) {
 	r = Roman_int(s);
 	return is;
 }
+
 std::string integer_to_roman_code(int val) {
 	constexpr int max_value = 3999;
 	if (std::fmod(val, static_cast<int>(val))) {
@@ -393,11 +401,14 @@ std::string integer_to_roman_code(int val) {
 	if (!val) {
 		return std::string{ "nulla" };
 	}
+
 	if (val > max_value || val < 0) {
 		throw Roman_int::Invalid{ "cannot represent " + std::to_string(val) + " as a roman numeral..." };
 	}
+
 	throw Roman_int::Invalid("oops something went wrong...");
 }
+
 Roman_int operator+(const Roman_int& left, const Roman_int& right) {
 	return Roman_int{ integer_to_roman_code(left.as_int() + right.as_int()) };
 }
@@ -405,9 +416,11 @@ Roman_int operator+(const Roman_int& left, const Roman_int& right) {
 Roman_int operator-(const Roman_int& left, const Roman_int& right) {
 	return Roman_int{ integer_to_roman_code(left.as_int() - right.as_int()) };
 }
+
 Roman_int operator*(const Roman_int& left, const Roman_int& right) {
 	return Roman_int{ integer_to_roman_code(left.as_int() * right.as_int()) };
 }
+
 Roman_int operator/(const Roman_int& left, const Roman_int& right) {
 	if (!right.as_int()) {
 		throw Roman_int::Invalid{ "Cannot divide by zero..." };
