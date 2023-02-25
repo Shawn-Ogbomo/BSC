@@ -39,7 +39,7 @@ bool Util::duplicate_substrs(const std::string& target_string, const std::string
 	return false;
 }
 
-bool Util::repeats(std::string& target_string, char c, unsigned pos) {
+bool Util::repeats(const std::string& target_string, char c, unsigned pos) {
 	if (!target_string.empty()) {
 		constexpr auto repeat_limit = 3;
 		const auto max_size = target_string.size();

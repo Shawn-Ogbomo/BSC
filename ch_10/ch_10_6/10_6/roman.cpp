@@ -293,9 +293,7 @@ std::istream& operator>>(std::istream& is, Roman_int& r) {
 
 std::string integer_to_roman_code(int val) {
 	constexpr int max_value = 3999;
-	if (std::fmod(val, static_cast<int>(val))) {
-		throw Roman_int::Invalid{ "oops cannot represent " + std::to_string(val) + " as a roman numeral..." };
-	}
+
 	if (val > 0 && val <= max_value) {
 		Place_value p;
 		std::string roman_notation;
