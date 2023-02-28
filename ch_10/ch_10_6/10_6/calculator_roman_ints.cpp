@@ -40,6 +40,22 @@
 #include "token.h"
 #include "util.h"
 
+class Variable {
+public:
+	Variable() = default;
+	explicit  Variable(const std::string& name, const Roman_int& val, bool qualifier = false)
+		:n{ name },
+		v{ val },
+		state{ qualifier } {}
+	Roman_int value() const { return v; }
+	std::string name() const { return n; }
+	bool is_const() const { return state; }
+private:
+	std::string n;
+	Roman_int v;
+	bool state{};
+};
+
 struct Token {
 	class Invalid {
 	public:
@@ -48,12 +64,21 @@ struct Token {
 	private:
 		std::string error_message;
 	};
-	Token() :kind{} {}
+	Token() = default;
 	explicit Token(char c) :kind{ c } {}
-	explicit Token(const Roman_int& r) : kind{ 'r' }, letters{ r.as_string() }, value{ r.as_int() } {}
-	char kind;
-	std::string letters;
+	explicit Token(const Roman_int& r) : kind{ 'r' }, rmn_letters{ r.as_string() }, value{ r.as_int() } {}
+	explicit Token(const Variable& v)
+		: kind{ '#' },
+		name{ v.name() },
+		rmn_letters{ v.value().as_string() },
+		value{ v.value().as_int() },
+		state{ v.is_const() }
+	{}
+	char kind{};
+	std::string name;
+	std::string rmn_letters;
 	int value{};
+	bool state{};
 };
 
 class Token_stream {
@@ -78,6 +103,7 @@ private:
 const char print = ';';
 const char  quit = 'q';
 const char  help = 'h';
+const char delare = '#';
 const char roman_numeral = 'r';
 const std::string ex_key = "exit";
 const std::string nulla = "nulla";
@@ -111,6 +137,7 @@ Token Token_stream::get() {
 	case '$':
 	case '%':
 	case '^':
+	case '#':
 		return Token(c);
 	case '0':
 	case '1':
@@ -235,7 +262,7 @@ Roman_int primary(Token_stream& ts) {
 		return left;
 	}
 	case roman_numeral:
-		return Roman_int{ t.letters };
+		return Roman_int{ t.rmn_letters };
 	default:
 		throw Roman_int::Parse_error{ "\nExpected term..." };
 	}
