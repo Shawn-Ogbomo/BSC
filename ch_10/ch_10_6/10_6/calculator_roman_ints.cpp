@@ -66,6 +66,9 @@ struct Token {
 	};
 	Token() = default;
 	explicit Token(char c) :kind{ c } {}
+	explicit Token(const std::string& name)
+		: kind{ '~' },
+		name{ name } {}
 	explicit Token(const Roman_int& r) : kind{ 'r' }, rmn_letters{ r.as_string() }, value{ r.as_int() } {}
 	explicit Token(const Variable& v)
 		: kind{ '#' },
@@ -103,7 +106,11 @@ private:
 const char print = ';';
 const char  quit = 'q';
 const char  help = 'h';
-const char delare = '#';
+const char let = '#';
+const char name = '~';
+const char underscore = '_';
+const char permanent = 'k';
+const std::string constant = "const";
 const char roman_numeral = 'r';
 const std::string ex_key = "exit";
 const std::string nulla = "nulla";
@@ -151,7 +158,7 @@ Token Token_stream::get() {
 	case '9':
 	case '.':
 	{
-		throw Token::Invalid{ "No numbers. Roman ints only please..." };
+		throw Token::Invalid{ "Roman numerals only." };
 	}
 	default:
 		if (isspace(c)) {
@@ -171,7 +178,7 @@ Token Token_stream::get() {
 		else if (isalpha(c) && (!roman_letter(std::cin.peek())) && (!ispunct(std::cin.peek()))) {
 			std::cin.unget();
 			std::string s;
-			while (std::cin.get(c) && !isspace(c) && !ispunct(c)) {
+			while (std::cin.get(c) && (isalpha(c) || isdigit(c) || c == underscore)) {
 				s += c;
 			}
 			std::cin.unget();
@@ -181,7 +188,11 @@ Token Token_stream::get() {
 			if (s == nulla) {
 				return Token(static_cast<Roman_int>(s));
 			}
-			throw Token::Invalid{ s + " is invalid..." };
+			if (s == constant) {
+				return Token(permanent);
+			}
+			return Token(s);
+			//throw Token::Invalid{ s + " is invalid..." };
 		}
 		std::cin.unget();
 		Roman_int r;
@@ -190,6 +201,7 @@ Token Token_stream::get() {
 	}
 }
 
+Roman_int statement(Token_stream& ts);
 Roman_int expression(Token_stream& ts);
 void Token_stream::ignore(char c) {	// ignores print characters ';'
 	if (full && c == buffer.kind) {
@@ -217,7 +229,8 @@ void calculate(Token_stream& ts) {
 		while (t.kind == print) t = ts.get();
 		if (t.kind == quit) return;
 		ts.unget(t);
-		std::cout << result << " " << expression(ts) << std::endl;
+		//std::cout << result << " " << expression(ts) << std::endl;
+		std::cout << result << " " << statement(ts) << std::endl;
 	}
 	catch (std::length_error& e) {
 		std::cerr << e.what() << "\n";
@@ -240,7 +253,46 @@ void calculate(Token_stream& ts) {
 		clean_up_mess(ts);
 	}
 }
+Roman_int statement(Token_stream& ts) {
+	Token t = ts.get();
+	while (true) {
+		switch (t.kind) {
+		case let:
+		{
+			/*	if  it is not declared
+					- build the variable object and push it back to vector of variables
+				get the next token
+				else if it is declared*/
+				// display appropriate message
+			break;
+		}
+		case permanent:
+		{
+			//if (name is in the vector of variables)
+			//	get the next token
 
+			//else  display the appropriate message
+				// if it is not const
+				// re-assign the value of the name with the target value
+				//if it is const display the appropriate message
+				// get next token
+			break;
+		}
+		case name:
+		{
+			//check if the name is in the vector of variables
+			// if it is return the value
+			// get the next token
+			// if it is not display the appropriate error message
+			// throw
+			break;
+		}
+		default:
+			ts.unget(t);
+			return expression(ts);
+		}
+	}
+}
 Roman_int primary(Token_stream& ts) {
 	Token t = ts.get();
 	switch (t.kind) {
