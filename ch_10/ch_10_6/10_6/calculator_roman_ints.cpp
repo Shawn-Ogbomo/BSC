@@ -4,9 +4,9 @@
 //revision history
 //added function roman_letter() to prevent putting multiple characters back into the input stream
 //added end_of_loop() to handle stream fail, eof , and bad
-// works on Roman_ints only
+// works on Roman numerals
 // computations resulting in fractional values yield erroneous results
-// inputing the character 'x' semds output to file 'X' represents the number 10
+// inputting the character 'x' sends output to file 'X' represents the number 10
 //This program implements a basic expression calculator.
 //Input from cin; output to cout.
 //The grammar for input is:
@@ -136,9 +136,8 @@ Token Token_stream::get() {
 			}
 			if (c == help) {
 				std::cout << "Calculator application...\n\n"
-					<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included...\n";
-				//<< "The calculator is also capable of creating variables and constants; calculations are possible on such expressions.\n"
-					//<< "Functions... \n\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n#to declare a variable and #const to declare a constant\nh key to display instructions...\n";
+					<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included.\n"
+					<< "The calculator is also capable of creating variables and constants.\n" << "Functions... \n\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n#to declare a variable and #const to declare a constant\nh key to display instructions...\n";
 				throw Token::Invalid{ "invalid token..." };
 			}
 		}
@@ -223,14 +222,14 @@ Roman_int primary(Token_stream& ts) {
 		Roman_int left = expression(ts);
 		t = ts.get();
 		if (t.kind != ')') {
-			throw Roman_int::Parse_error{ "Expected a ')' to end the expression\n" };
+			throw Roman_int::Parse_error{ "')' expected\n" };
 		}
-		while (std::cin.peek() == '(') {			//fix this...
+		while (std::cin.peek() == '(') {
 			t = ts.get();
 			left = left * expression(ts);
 			t = ts.get();
 			if (t.kind != ')') {
-				throw Roman_int::Parse_error{ "Expected a ')' to end the expression\n" };
+				throw Roman_int::Parse_error{ "')' expected\n" };
 			}
 		}
 		return left;
@@ -238,7 +237,7 @@ Roman_int primary(Token_stream& ts) {
 	case roman_numeral:
 		return Roman_int{ t.letters };
 	default:
-		throw Roman_int::Parse_error{ "\nan expression cannot start with " + std::string{t.kind} };
+		throw Roman_int::Parse_error{ "\nExpected term..." };
 	}
 }
 
