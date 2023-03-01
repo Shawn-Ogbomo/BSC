@@ -40,22 +40,6 @@
 #include "token.h"
 #include "util.h"
 
-class Variable {
-public:
-	Variable() = default;
-	explicit  Variable(const std::string& name, const Roman_int& val, bool qualifier = false)
-		:n{ name },
-		v{ val },
-		state{ qualifier } {}
-	Roman_int value() const { return v; }
-	std::string name() const { return n; }
-	bool is_const() const { return state; }
-private:
-	std::string n;
-	Roman_int v;
-	bool state{};
-};
-
 struct Token {
 	class Invalid {
 	public:
@@ -70,18 +54,10 @@ struct Token {
 		: kind{ '~' },
 		name{ name } {}
 	explicit Token(const Roman_int& r) : kind{ 'r' }, rmn_letters{ r.as_string() }, value{ r.as_int() } {}
-	explicit Token(const Variable& v)
-		: kind{ '#' },
-		name{ v.name() },
-		rmn_letters{ v.value().as_string() },
-		value{ v.value().as_int() },
-		state{ v.is_const() }
-	{}
 	char kind{};
 	std::string name;
 	std::string rmn_letters;
 	int value{};
-	bool state{};
 };
 
 class Token_stream {
@@ -108,6 +84,7 @@ const char  quit = 'q';
 const char  help = 'h';
 const char let = '#';
 const char name = '~';
+const char assignment = '=';
 const char underscore = '_';
 const char permanent = 'k';
 const std::string constant = "const";
@@ -191,7 +168,8 @@ Token Token_stream::get() {
 			if (s == constant) {
 				return Token(permanent);
 			}
-			return Token(s);
+			std::string internal_name = s;
+			return Token(internal_name);
 			//throw Token::Invalid{ s + " is invalid..." };
 		}
 		std::cin.unget();
@@ -253,46 +231,71 @@ void calculate(Token_stream& ts) {
 		clean_up_mess(ts);
 	}
 }
+
+class Variable {
+public:
+	class Double_declaration {
+	public:
+		explicit Double_declaration(const std::string& err) :error_message{ err } {}
+		std::string what() const { return error_message; }
+	private:
+		std::string error_message;
+	};
+	Variable() = default;
+	explicit  Variable(const std::string& name, const Roman_int& val, bool qualifier = false)
+		:n{ name },
+		v{ val },
+		state{ qualifier } {}
+	Roman_int value() const { return v; }
+	std::string name() const { return n; }
+	bool is_const() const { return state; }
+private:
+	std::string n;
+	Roman_int v;
+	bool state{};
+};
+
+std::vector<Variable> variables;
+
+struct Symbol_table {
+	static bool is_declared(const std::string& variable_name) {
+		for (const auto& variable : variables)
+			if (variable_name == variable.name()) {
+				std::cerr << variable_name << " is already declared\n";
+				return true;
+			}
+		return false;
+	}
+};
 Roman_int statement(Token_stream& ts) {
 	Token t = ts.get();
 	while (true) {
-		switch (t.kind) {
-		case let:
-		{
-			/*	if  it is not declared
-					- build the variable object and push it back to vector of variables
-				get the next token
-				else if it is declared*/
-				// display appropriate message
-			break;
-		}
-		case permanent:
-		{
-			//if (name is in the vector of variables)
-			//	get the next token
-
-			//else  display the appropriate message
-				// if it is not const
-				// re-assign the value of the name with the target value
-				//if it is const display the appropriate message
-				// get next token
-			break;
-		}
-		case name:
-		{
-			//check if the name is in the vector of variables
-			// if it is return the value
-			// get the next token
-			// if it is not display the appropriate error message
-			// throw
-			break;
-		}
-		default:
-			ts.unget(t);
-			return expression(ts);
+		if (t.kind == let) {
+			Token t2 = ts.get();
+			if (t2.kind == print) {
+				throw Token::Invalid{ "No spaces please." };
+			}
+			if (t2.kind != name) {
+				throw Token::Invalid{ "invalid token: " + std::string{t2.kind} + " expected a name" };
+			}
+			Token t3 = ts.get();
+			if (t3.kind == print) {
+				throw Token::Invalid{ "No spaces please." };
+			}
+			if (t3.kind != assignment) {
+				throw Token::Invalid{ "invalid token: " + std::string{t3.kind} + " expected " + assignment };
+			}
+			Roman_int rmn_numeral = expression(ts);
+			Variable v{ t2.name, rmn_numeral };
+			if (Symbol_table::is_declared(t2.name)) {
+				throw Variable::Double_declaration{ t.name + std::string{" is already declared\n"} };
+			}
+			variables.push_back(v);
+			t3 = ts.get();			//get next token
 		}
 	}
 }
+
 Roman_int primary(Token_stream& ts) {
 	Token t = ts.get();
 	switch (t.kind) {
