@@ -92,13 +92,20 @@ const char roman_numeral = 'r';
 const std::string ex_key = "exit";
 const std::string nulla = "nulla";
 
-bool roman_letter(char c) {
-	static std::vector<char>valids = { 'I','V','X','L','C','D','M','i','v','x','l','c','d','m' };
-	auto result1 = std::find(begin(valids), end(valids), c);
-	if (result1 != std::end(valids)) {
+bool is_rmn(const std::string& target) {
+	try {
+		Roman_int r{ target };
+		for (const auto character : target) {
+			std::cin.putback(character);
+		}
 		return true;
 	}
-	return false;
+	catch (Token_gen::Token::Invalid) {
+		return false;
+	}
+	catch (Roman_int::Parse_error) {
+		return false;
+	}
 }
 
 Token Token_stream::get() {
@@ -148,17 +155,24 @@ Token Token_stream::get() {
 			if (c == help) {
 				std::cout << "Calculator application...\n\n"
 					<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included.\n"
-					<< "The calculator is also capable of creating variables and constants.\n" << "Functions... \n\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n#to declare a variable and #const to declare a constant\nh key to display instructions...\n";
-				throw Token::Invalid{ "invalid token..." };
+					<< "The calculator is also capable of creating variables and constants.\n" << "\nFunctions...\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n\n# variable declaration format\n#shawn=xix\n\n" <<
+					"const declaration format \nconst shawn=xix\n" <<
+					"h key to display instructions...\n";
+				throw Token::Invalid{ "\nrestarting..." };
 			}
 		}
-		else if (isalpha(c) && (!roman_letter(std::cin.peek())) && (!ispunct(std::cin.peek()))) {
-			std::cin.unget();
-			std::string s;
-			while (std::cin.get(c) && (isalpha(c) || isdigit(c) || c == underscore)) {
-				s += c;
+
+		std::cin.unget();
+		std::string s;
+		while (std::cin.get(c) && (isalpha(c) || isdigit(c) || c == underscore)) {
+			s += c;
+		}
+
+		std::cin.unget();
+		if (!is_rmn(s)) {
+			if (s.front() == underscore) {
+				throw Token::Invalid{ "names cannot start with an " + std::string{underscore } };
 			}
-			std::cin.unget();
 			if (s == ex_key) {
 				return Token(quit);
 			}
@@ -168,15 +182,15 @@ Token Token_stream::get() {
 			if (s == constant) {
 				return Token(permanent);
 			}
+
 			std::string internal_name = s;
 			return Token(internal_name);
-			//throw Token::Invalid{ s + " is invalid..." };
 		}
-		std::cin.unget();
-		Roman_int r;
-		std::cin >> r;
-		return Token(r);
 	}
+
+	Roman_int r;
+	std::cin >> r;
+	return Token(r);
 }
 
 Roman_int statement(Token_stream& ts);
@@ -199,38 +213,6 @@ void clean_up_mess(Token_stream& ts) {
 
 const char prompt = '>';
 const char result = '=';
-
-void calculate(Token_stream& ts) {
-	while (true)try {
-		std::cout << prompt << " ";
-		Token t = ts.get();
-		while (t.kind == print) t = ts.get();
-		if (t.kind == quit) return;
-		ts.unget(t);
-		//std::cout << result << " " << expression(ts) << std::endl;
-		std::cout << result << " " << statement(ts) << std::endl;
-	}
-	catch (std::length_error& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
-	}
-	catch (Roman_int::Parse_error& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
-	}
-	catch (Roman_int::Invalid& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
-	}
-	catch (Token::Invalid& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
-	}
-	catch (Token_gen::Token::Invalid& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
-	}
-}
 
 class Variable {
 public:
@@ -255,6 +237,41 @@ private:
 	bool state{};
 };
 
+void calculate(Token_stream& ts) {
+	while (true)try {
+		std::cout << prompt << " ";
+		Token t = ts.get();
+		while (t.kind == print) t = ts.get();
+		if (t.kind == quit) return;
+		ts.unget(t);
+		std::cout << result << " " << statement(ts) << std::endl;
+	}
+	catch (std::length_error& e) {
+		std::cerr << e.what() << "\n";
+		clean_up_mess(ts);
+	}
+	catch (Roman_int::Parse_error& e) {
+		std::cerr << e.what() << "\n";
+		clean_up_mess(ts);
+	}
+	catch (Roman_int::Invalid& e) {
+		std::cerr << e.what() << "\n";
+		clean_up_mess(ts);
+	}
+	catch (Token::Invalid& e) {
+		std::cerr << e.what() << "\n";
+		clean_up_mess(ts);
+	}
+	catch (Token_gen::Token::Invalid& e) {
+		std::cerr << e.what() << "\n";
+		clean_up_mess(ts);
+	}
+	catch (Variable::Double_declaration& e) {
+		std::cerr << e.what() << "\n";
+		clean_up_mess(ts);
+	}
+}
+
 std::vector<Variable> variables;
 
 struct Symbol_table {
@@ -270,28 +287,36 @@ struct Symbol_table {
 Roman_int statement(Token_stream& ts) {
 	Token t = ts.get();
 	while (true) {
-		if (t.kind == let) {
+		if (t.kind == let || t.kind == permanent) {
 			Token t2 = ts.get();
 			if (t2.kind == print) {
-				throw Token::Invalid{ "No spaces please." };
+				t2 = ts.get();
 			}
 			if (t2.kind != name) {
 				throw Token::Invalid{ "invalid token: " + std::string{t2.kind} + " expected a name" };
 			}
 			Token t3 = ts.get();
 			if (t3.kind == print) {
-				throw Token::Invalid{ "No spaces please." };
+				t3 = ts.get();
 			}
 			if (t3.kind != assignment) {
 				throw Token::Invalid{ "invalid token: " + std::string{t3.kind} + " expected " + assignment };
 			}
+			t3 = ts.get();
+			if (t3.kind == print) {
+				t3 = ts.get();
+			}
+			ts.unget(t3);
 			Roman_int rmn_numeral = expression(ts);
-			Variable v{ t2.name, rmn_numeral };
+			Variable v = (t.kind == let ? Variable{ t2.name, rmn_numeral } : Variable{ t2.name, rmn_numeral, true });
 			if (Symbol_table::is_declared(t2.name)) {
 				throw Variable::Double_declaration{ t.name + std::string{" is already declared\n"} };
 			}
 			variables.push_back(v);
-			t3 = ts.get();			//get next token
+			t = ts.get();				//get next token
+			if (t.kind == print) {
+				t = ts.get();			// ignore print character
+			}
 		}
 	}
 }
