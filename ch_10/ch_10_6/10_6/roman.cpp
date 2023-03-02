@@ -269,28 +269,6 @@ std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 	return os << r.as_string();
 }
 
-bool is_not_token(char c) {
-	std::vector<char>valids = { '+','-','*','/','=',';','(',')','$','%','^' };
-	if (auto search = std::find(std::begin(valids), std::end(valids), c) == std::end(valids)) {
-		return true;
-	}
-	return false;
-}
-
-std::istream& operator>>(std::istream& is, Roman_int& r) {
-	char c{};
-	std::string s;
-	while ((std::cin.get(c)) && (is_not_token(c)) && (!isspace(c))) {
-		s += c;
-	}
-	std::cin.unget();
-	if (!is) {
-		return is;
-	}
-	r = Roman_int(s);
-	return is;
-}
-
 std::string integer_to_roman_code(int val) {
 	constexpr int max_value = 3999;
 
