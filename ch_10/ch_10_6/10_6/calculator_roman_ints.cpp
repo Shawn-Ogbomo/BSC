@@ -92,12 +92,10 @@ const char roman_numeral = 'r';
 const std::string ex_key = "exit";
 const std::string nulla = "nulla";
 
-bool is_rmn(const std::string& target) {
+bool is_rmn(const std::string& target, Token_stream& ts) {
 	try {
 		Roman_int r{ target };
-		for (const auto character : target) {
-			std::cin.putback(character);
-		}
+		ts.unget(static_cast<Token>(r));
 		return true;
 	}
 	catch (Token_gen::Token::Invalid) {
@@ -169,7 +167,7 @@ Token Token_stream::get() {
 		}
 
 		std::cin.unget();
-		if (!is_rmn(s)) {
+		if (!is_rmn(s, *this)) {
 			if (s.front() == underscore) {
 				throw Token::Invalid{ "names cannot start with an " + std::string{underscore } };
 			}
@@ -182,15 +180,11 @@ Token Token_stream::get() {
 			if (s == constant) {
 				return Token(permanent);
 			}
-
 			std::string internal_name = s;
 			return Token(internal_name);
 		}
+		return get();		//return the stored token
 	}
-
-	Roman_int r;
-	std::cin >> r;
-	return Token(r);
 }
 
 Roman_int statement(Token_stream& ts);
@@ -314,10 +308,13 @@ Roman_int statement(Token_stream& ts) {
 			}
 			variables.push_back(v);
 			t = ts.get();				//get next token
-			if (t.kind == print) {
-				t = ts.get();			// ignore print character
-			}
 		}
+		//name
+
+		//default
+		//else {
+		//	return Roman_int{ t.rmn_letters };
+		//}
 	}
 }
 
