@@ -270,43 +270,44 @@ std::vector<Variable> variables;
 struct Symbol_table {
 public:
 	static bool is_declared(const std::string& variable_name) {
-		for (const auto& variable : variables)
-			if (variable_name == variable.name()) {
-				std::cerr << "double declaration...\n";
-				return true;
-			}
-		return false;
+		return std::any_of(variables.begin(), variables.end(), [&variable_name](Variable const& v) {return v.name() == variable_name; });
 	}
 };
 Roman_int statement(Token_stream& ts) {
 	Token t = ts.get();
-	while (true) {
-		if (t.kind == let || t.kind == permanent) {
-			Token t2 = ts.get();
-			if (t2.kind == print) {
-				t2 = ts.get();
-			}
-			if (t2.kind != name) {
-				throw Token::Invalid{ "invalid token: " + std::string{t2.kind} + " expected a name" };
-			}
-			Token t3 = ts.get();
-			if (t3.kind == print) {
-				t3 = ts.get();
-			}
-			if (t3.kind != assignment) {
-				throw Token::Invalid{ "invalid token: " + std::string{t3.kind} + " expected " + assignment };
-			}
+	if (t.kind == let || t.kind == permanent) {
+		Token t2 = ts.get();
+		if (t2.kind == print) {
+			t2 = ts.get();
+		}
+		if (t2.kind != name) {
+			throw Token::Invalid{ "invalid token: " + std::string{t2.kind} + " expected a name" };
+		}
+		Token t3 = ts.get();
+		if (t3.kind == print) {
+			t3 = ts.get();
+		}
+		if (t3.kind != assignment) {
+			throw Token::Invalid{ "invalid token: " + std::string{t3.kind} + " expected " + assignment };
+		}
 
-			Roman_int rmn_numeral = expression(ts);
-			Variable v = (t.kind == let ? Variable{ t2.name, rmn_numeral } : Variable{ t2.name, rmn_numeral, true });
-			if (Symbol_table::is_declared(t2.name)) {
-				throw Variable::Double_declaration{ t2.name + std::string{" is already declared\n"} };
-			}
-			variables.push_back(v);
-			t = ts.get();				//get next token
-			return v.value();
+		Roman_int rmn_numeral = expression(ts);
+		Variable v = (t.kind == let ? Variable{ t2.name, rmn_numeral } : Variable{ t2.name, rmn_numeral, true });
+		if (Symbol_table::is_declared(t2.name)) {
+			throw Variable::Double_declaration{ t2.name + std::string{" is already declared\n"} };
+		}
+		variables.push_back(v);
+		t = ts.get();				//get next token
+		return v.value();
+	}
+	if (t.kind == name && Symbol_table::is_declared(t.name)) {
+		Token t2 = ts.get();
+		if (t2.kind == print) {
 		}
 	}
+
+	ts.unget(t);
+	return expression(ts);			//check for roman_int
 }
 
 Roman_int primary(Token_stream& ts) {
