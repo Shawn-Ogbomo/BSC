@@ -23,7 +23,8 @@ Roman_int::Roman_int(const std::string& letters)
 	}
 
 	int left{};
-	for (unsigned i = 0; i < roman_code.size(); ++i) {
+	auto rmn_code_sz = roman_code.size();
+	for (unsigned i = 0; i < rmn_code_sz; ++i) {
 		Token_gen::Token t = Token_gen::get(roman_code[i]);
 		switch (t.roman_letter) {
 		case'I':

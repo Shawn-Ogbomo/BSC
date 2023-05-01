@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <cctype>
 #include "util.h"
 
 bool Util::next_value(const std::string& target, const int index) {
@@ -64,19 +65,11 @@ void Util::check_stream(std::istream& ist, char term, const std::string& message
 	if (ist.eof()) {
 		throw Invalid{};
 	}
+}
 
-	if (ist.bad()) {
-		std::cerr << "The stream has been corrupted...\n";
-		ist.exceptions(ist.exceptions() | std::ios_base::badbit);
-	}
-
-	if (ist.fail()) {
-		ist.clear();
-		char ch{};
-		if (ist >> ch && ch == term) {
-			return;
-		}
-		std::cerr << message;
-		ist.clear(std::ios_base::failbit);
-	}
+void Util::clear_white_space(std::istream& ist) {
+	auto c = '?';
+	std::cin >> c;
+	std::cin.unget();
+	return;
 }

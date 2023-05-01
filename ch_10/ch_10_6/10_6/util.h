@@ -8,4 +8,5 @@ namespace Util {
 	bool duplicate_substrs(const std::string& target_string, const std::string& sub_str);
 	bool repeats(const std::string& target_string, char c, unsigned pos);	//returns true if c repeats more than 3 times in succession...
 	void check_stream(std::istream& ist, char term, const std::string& message);
+	void clear_white_space(std::istream& ist = std::cin);
 }

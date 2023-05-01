@@ -2,7 +2,6 @@
 // Sun Jan 15 2023
 //Simple calculator v1
 //revision history
-//added function roman_letter() to prevent putting multiple characters back into the input stream
 //added end_of_loop() to handle stream fail, eof , and bad
 // works on Roman numerals
 // computations resulting in fractional values yield erroneous results
@@ -197,8 +196,11 @@ void Token_stream::ignore(char c) {	// ignores print characters ';'
 	std::cout << "Press; to continue...\n";
 	full = false;
 	char ch;
-	while (std::cin >> ch)
-		if (ch == c) return;
+	while (std::cin >> ch) {
+		if (ch == c) {
+			return;
+		}
+	}
 }
 
 void clean_up_mess(Token_stream& ts) {
@@ -273,11 +275,13 @@ public:
 		return std::any_of(variables.begin(), variables.end(), [&variable_name](Variable const& v) {return v.name() == variable_name; });
 	}
 };
+
 Roman_int statement(Token_stream& ts) {
 	Token t = ts.get();
 	if (t.kind == let || t.kind == permanent) {
 		Token t2 = ts.get();
 		if (t2.kind == print) {
+			Util::clear_white_space();
 			t2 = ts.get();
 		}
 		if (t2.kind != name) {
@@ -285,29 +289,44 @@ Roman_int statement(Token_stream& ts) {
 		}
 		Token t3 = ts.get();
 		if (t3.kind == print) {
+			Util::clear_white_space();
 			t3 = ts.get();
 		}
 		if (t3.kind != assignment) {
 			throw Token::Invalid{ "invalid token: " + std::string{t3.kind} + " expected " + assignment };
 		}
 
+		t3 = ts.get();
+		if (t3.kind == print) {
+			Util::clear_white_space();
+		}
+		else {
+			ts.unget(t3);
+		}
+
 		Roman_int rmn_numeral = expression(ts);
 		Variable v = (t.kind == let ? Variable{ t2.name, rmn_numeral } : Variable{ t2.name, rmn_numeral, true });
+
 		if (Symbol_table::is_declared(t2.name)) {
 			throw Variable::Double_declaration{ t2.name + std::string{" is already declared\n"} };
 		}
+
 		variables.push_back(v);
-		t = ts.get();				//get next token
+		t = ts.get();												//get next token
 		return v.value();
 	}
-	if (t.kind == name && Symbol_table::is_declared(t.name)) {
-		Token t2 = ts.get();
-		if (t2.kind == print) {
+
+	if (t.kind == name) {
+		if (Symbol_table::is_declared(t.name)) {
+			Token t2 = ts.get();
+			if (t2.kind == print) {
+				// return the value matching the name token
+			}
 		}
 	}
 
 	ts.unget(t);
-	return expression(ts);			//check for roman_int
+	return expression(ts);						//check for roman_int
 }
 
 Roman_int primary(Token_stream& ts) {
