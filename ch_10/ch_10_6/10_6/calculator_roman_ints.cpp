@@ -219,6 +219,15 @@ public:
 	private:
 		std::string error_message;
 	};
+
+	class Parse_error {
+	public:
+		explicit Parse_error(const std::string& err) :error_message{ err } {}
+		std::string what() const { return error_message; }
+	private:
+		std::string error_message;
+	};
+
 	Variable() = default;
 	explicit  Variable(const std::string& name, const Roman_int& val, bool qualifier = false)
 		:n{ name },
@@ -328,21 +337,35 @@ Roman_int statement(Token_stream& ts) {
 		}
 
 		variables.push_back(v);
-		t = ts.get();													//get next token
+		t = ts.get();										//get next token
 		return v.value();
 	}
 
-	if (t.kind == name) {
-		if (Symbol_table::is_declared(t.name)) {
-			Token t2 = ts.get();
-			if (t2.kind == print) {
-				Util::clear_white_space();
+	if (t.kind == name && Symbol_table::is_declared(t.name)) {
+		Token t2 = ts.get();
+		if (t2.kind == print) {
+			Util::clear_white_space();
+			if (!std::cin.peek()) {
+				return Symbol_table::value(t.name);
+			}
+			else {
+				t2 = ts.get();
 			}
 		}
+
+		if (t2.kind == assignment) {
+			Util::clear_white_space();
+			Token t3 = ts.get();
+			if (t3.kind == roman_numeral) {
+				Symbol_table::update_value(t.name, static_cast<Roman_int>(t3.rmn_letters));
+				return Symbol_table::value(t.name);
+			}
+		}
+		throw Variable::Parse_error{ "Unable to parse a variable...\n" };
 	}
 
 	ts.unget(t);
-	return expression(ts);											//check for roman_int
+	return expression(ts);								//check for roman_int
 }
 
 Roman_int primary(Token_stream& ts) {

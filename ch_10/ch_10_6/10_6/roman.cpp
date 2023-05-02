@@ -18,15 +18,14 @@ Roman_int::Roman_int(const std::string& letters)
 		return;
 	}
 
-	for (auto& target : roman_code) {
-		target = std::toupper(target);
+	for (auto& letter : roman_code) {
+		letter = std::toupper(letter);
 	}
 
 	int left{};
 	auto rmn_code_sz = roman_code.size();
 	for (unsigned i = 0; i < rmn_code_sz; ++i) {
-		Token_gen::Token t = Token_gen::get(roman_code[i]);
-		switch (t.roman_letter) {
+		switch (Token_gen::Token t = Token_gen::get(roman_code[i]); t.roman_letter) {
 		case'I':
 		{
 			if (Util::repeats(roman_code, roman_code[i], i)) {
