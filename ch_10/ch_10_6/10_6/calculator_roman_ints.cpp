@@ -274,6 +274,22 @@ public:
 	static bool is_declared(const std::string& variable_name) {
 		return std::any_of(variables.begin(), variables.end(), [&variable_name](Variable const& v) {return v.name() == variable_name; });
 	}
+
+	static Roman_int value(const std::string& variable_name) {
+		if (auto found = std::find_if(variables.begin(), variables.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
+			found != std::end(variables)) {
+			return found->value();
+		}
+		throw Roman_int::Invalid{ std::string{"The variable " + variable_name + " does not exist..."} };
+	}
+
+	static void update_value(const std::string& variable_name, const Roman_int& new_value) {
+		if (auto found = std::find_if(variables.begin(), variables.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
+			found != std::end(variables)) {
+			found->value() = new_value;
+		}
+		throw Roman_int::Invalid{ std::string{"The variable " + variable_name + " does not exist..."} };
+	}
 };
 
 Roman_int statement(Token_stream& ts) {
@@ -312,7 +328,7 @@ Roman_int statement(Token_stream& ts) {
 		}
 
 		variables.push_back(v);
-		t = ts.get();												//get next token
+		t = ts.get();													//get next token
 		return v.value();
 	}
 
@@ -320,13 +336,13 @@ Roman_int statement(Token_stream& ts) {
 		if (Symbol_table::is_declared(t.name)) {
 			Token t2 = ts.get();
 			if (t2.kind == print) {
-				// return the value matching the name token
+				Util::clear_white_space();
 			}
 		}
 	}
 
 	ts.unget(t);
-	return expression(ts);						//check for roman_int
+	return expression(ts);											//check for roman_int
 }
 
 Roman_int primary(Token_stream& ts) {
