@@ -38,6 +38,9 @@
 #include "roman.h"
 #include "token.h"
 #include "util.h"
+#include "exceptions.h"
+
+class Invalid {};
 
 struct Token {
 	class Invalid {
@@ -61,13 +64,11 @@ struct Token {
 
 class Token_stream {
 public:
-	class Invalid {};
 	explicit Token_stream(std::istream const&) {}
 	Token get();
 	void unget(Token const& t) {
 		if (full) {
-			std::cerr << "cannot put token into full stream...\n";
-			throw Token_stream::Invalid{};
+			throw  std::runtime_error{ "cannot put token into full stream...\n" };
 		}
 		buffer = t;
 		full = true;
@@ -97,10 +98,7 @@ bool is_rmn(const std::string& target, Token_stream& ts) {
 		ts.unget(static_cast<Token>(r));
 		return true;
 	}
-	catch (Token_gen::Token::Invalid) {
-		return false;
-	}
-	catch (Roman_int::Parse_error) {
+	catch (std::runtime_error) {
 		return false;
 	}
 }
@@ -112,7 +110,9 @@ Token Token_stream::get() {
 	}
 	char c;
 	std::cin.get(c);
-	Util::check_stream(std::cin, print, "oops couldn't find the terminating character");
+	if (std::cin.eof()) {
+		throw Invalid{};				//catch this in main...
+	}
 	switch (c) {
 	case '+':
 	case '-':
@@ -139,7 +139,7 @@ Token Token_stream::get() {
 	case '9':
 	case '.':
 	{
-		throw Token::Invalid{ "Roman numerals only." };
+		throw  std::runtime_error{ "Roman numerals only." };
 	}
 	default:
 		if (isspace(c)) {
@@ -155,7 +155,7 @@ Token Token_stream::get() {
 					<< "The calculator is also capable of creating variables and constants.\n" << "\nFunctions...\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n\n# variable declaration format\n#shawn=xix\n\n" <<
 					"const declaration format \nconst shawn=xix\n" <<
 					"h key to display instructions...\n";
-				throw Token::Invalid{ "\nrestarting..." };
+				throw  std::runtime_error{ "\nrestarting..." };
 			}
 		}
 
@@ -166,7 +166,7 @@ Token Token_stream::get() {
 		}
 		std::cin.unget();
 		if (s.empty() || s.front() == underscore) {
-			throw Token::Invalid{ std::string{c} + " is invalid.." };
+			throw  std::runtime_error{ std::string{c} + " is invalid.." };
 		}
 		if (is_rmn(s, *this)) {
 			return get();	//return the stored token
@@ -212,30 +212,17 @@ const char result = '=';
 
 class Variable {
 public:
-	class Double_declaration {
-	public:
-		explicit Double_declaration(const std::string& err) :error_message{ err } {}
-		std::string what() const { return error_message; }
-	private:
-		std::string error_message;
-	};
-
-	class Parse_error {
-	public:
-		explicit Parse_error(const std::string& err) :error_message{ err } {}
-		std::string what() const { return error_message; }
-	private:
-		std::string error_message;
-	};
-
 	Variable() = default;
 	explicit  Variable(const std::string& name, const Roman_int& val, bool qualifier = false)
 		:n{ name },
 		v{ val },
 		state{ qualifier } {}
-	Roman_int value() const { return v; }
+	Roman_int value()const { return v; }
 	std::string name() const { return n; }
 	bool is_const() const { return state; }
+	void set_value(const Roman_int& val) {
+		v = val;
+	}
 private:
 	std::string n;
 	Roman_int v;
@@ -251,66 +238,22 @@ void calculate(Token_stream& ts) {
 		ts.unget(t);
 		std::cout << result << " " << statement(ts) << std::endl;
 	}
-	catch (std::length_error& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
-	}
-	catch (Roman_int::Parse_error& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
-	}
-	catch (Roman_int::Invalid& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
-	}
-	catch (Token::Invalid& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
-	}
-	catch (Token_gen::Token::Invalid& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
-	}
-	catch (Variable::Double_declaration& e) {
+	catch (std::exception& e) {
 		std::cerr << e.what() << "\n";
 		clean_up_mess(ts);
 	}
 }
 
-std::vector<Variable> variables;
-struct Symbol_table {
+class Symbol_table {
 public:
-	static bool is_declared(const std::string& variable_name) {
-		return std::any_of(variables.begin(), variables.end(), [&variable_name](Variable const& v) {return v.name() == variable_name; });
-	}
-
-	static Roman_int value(const std::string& variable_name) {
-		if (auto found = std::find_if(variables.begin(), variables.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
-			found != std::end(variables)) {
-			return found->value();
-		}
-		throw Roman_int::Invalid{ std::string{"The variable " + variable_name + " does not exist..."} };
-	}
-
-	static void update_value(const std::string& variable_name, const Roman_int& new_value) {
-		if (auto found = std::find_if(variables.begin(), variables.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
-			found != std::end(variables)) {
-			found->value() = new_value;
-		}
-		throw Roman_int::Invalid{ std::string{"The variable " + variable_name + " does not exist..."} };
-	}
-};
-
-Roman_int statement(Token_stream& ts) {
-	Token t = ts.get();
-	if (t.kind == let || t.kind == permanent) {
+	Roman_int declare(Token_stream& ts, Token& t) {
 		Token t2 = ts.get();
 		if (t2.kind == print) {
 			Util::clear_white_space();
 			t2 = ts.get();
 		}
 		if (t2.kind != name) {
-			throw Token::Invalid{ "invalid token: " + std::string{t2.kind} + " expected a name" };
+			throw  std::runtime_error{ "invalid token: " + std::string{t2.kind} + " expected a name" };
 		}
 		Token t3 = ts.get();
 		if (t3.kind == print) {
@@ -318,7 +261,7 @@ Roman_int statement(Token_stream& ts) {
 			t3 = ts.get();
 		}
 		if (t3.kind != assignment) {
-			throw Token::Invalid{ "invalid token: " + std::string{t3.kind} + " expected " + assignment };
+			throw  std::runtime_error{ "invalid token: " + std::string{t3.kind} + " expected " + assignment };
 		}
 
 		t3 = ts.get();
@@ -332,21 +275,57 @@ Roman_int statement(Token_stream& ts) {
 		Roman_int rmn_numeral = expression(ts);
 		Variable v = (t.kind == let ? Variable{ t2.name, rmn_numeral } : Variable{ t2.name, rmn_numeral, true });
 
-		if (Symbol_table::is_declared(t2.name)) {
-			throw Variable::Double_declaration{ t2.name + std::string{" is already declared\n"} };
+		if (is_declared(t2.name)) {
+			throw  std::runtime_error{ t2.name + std::string{" is already declared\n"} };
 		}
-
-		variables.push_back(v);
+		var_table.push_back(v);
 		t = ts.get();										//get next token
 		return v.value();
 	}
 
-	if (t.kind == name && Symbol_table::is_declared(t.name)) {
+	bool is_declared(const std::string& variable_name) {
+		return std::any_of(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) {return v.name() == variable_name; });
+	}
+
+	Roman_int value(const std::string& variable_name) {
+		if (auto found = std::find_if(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
+			found != std::end(var_table)) {
+			return found->value();
+		}
+		throw  std::runtime_error{ std::string{"The variable: " + variable_name + " does not exist..."} };
+	}
+
+	void update_value(const std::string& variable_name, const Roman_int& new_value) {
+		if (auto found = std::find_if(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
+			found != std::end(var_table)) {
+			if (found->is_const()) {
+				std::cerr << variable_name << ": is marked constant. Unmodifiable...\n";
+				return;
+			}
+			found->set_value(new_value);				//doesn't work updates the copy
+			return;
+		}
+		std::cerr << "The variable: " << variable_name << " does not exist...";
+	}
+
+private:
+	std::vector<Variable> var_table;
+};
+
+Symbol_table st;
+
+Roman_int statement(Token_stream& ts) {
+	Token t = ts.get();
+	if (t.kind == let || t.kind == permanent) {
+		return st.declare(ts, t);
+	}
+
+	if (t.kind == name && st.is_declared(t.name)) {
 		Token t2 = ts.get();
 		if (t2.kind == print) {
-			Util::clear_white_space();
-			if (!std::cin.peek()) {
-				return Symbol_table::value(t.name);
+			//	Util::clear_white_space();				//fix this...
+			if (!std::cin.peek()) {						//fix this...
+				return st.value(t.name);
 			}
 			else {
 				t2 = ts.get();
@@ -357,11 +336,15 @@ Roman_int statement(Token_stream& ts) {
 			Util::clear_white_space();
 			Token t3 = ts.get();
 			if (t3.kind == roman_numeral) {
-				Symbol_table::update_value(t.name, static_cast<Roman_int>(t3.rmn_letters));
-				return Symbol_table::value(t.name);
+				st.update_value(t.name, static_cast<Roman_int>(t3.rmn_letters));
+				return st.value(t.name);
 			}
 		}
-		throw Variable::Parse_error{ "Unable to parse a variable...\n" };
+		throw  std::runtime_error{ "Unable to parse a variable...\n" };
+	}
+
+	if (!st.is_declared(t.name)) {
+		throw std::runtime_error{ "testing...." };
 	}
 
 	ts.unget(t);
@@ -376,14 +359,14 @@ Roman_int primary(Token_stream& ts) {
 		Roman_int left = expression(ts);
 		t = ts.get();
 		if (t.kind != ')') {
-			throw Roman_int::Parse_error{ "')' expected\n" };
+			throw  std::runtime_error{ "')' expected\n" };
 		}
 		while (std::cin.peek() == '(') {
 			t = ts.get();
 			left = left * expression(ts);
 			t = ts.get();
 			if (t.kind != ')') {
-				throw Roman_int::Parse_error{ "')' expected\n" };
+				throw  std::runtime_error{ "')' expected\n" };
 			}
 		}
 		return left;
@@ -391,7 +374,7 @@ Roman_int primary(Token_stream& ts) {
 	case roman_numeral:
 		return Roman_int{ t.rmn_letters };
 	default:
-		throw Roman_int::Parse_error{ "\nExpected term..." };
+		throw  std::runtime_error{ "\nExpected term..." };
 	}
 }
 
@@ -467,7 +450,7 @@ int main() {
 		return 1;
 	}
 	catch (...) {
-		std::cerr << "Something went wrong...";
+		std::cerr << "Something went wrong...\n";
 		return 2;
 	}
 }

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "token.h"
+#include "exceptions.h"
 Token_gen::Token Token_gen::get(const char c) {
 	switch (c) {
 	case 'I':
@@ -17,17 +18,18 @@ Token_gen::Token Token_gen::get(const char c) {
 	case 'M':
 		return Token_gen::Token{ c, 1000 };
 	default:
-		throw Token_gen::Token::Invalid{ std::string{c} + " is not a valid roman numeral..." };
+		throw std::runtime_error{ std::string{c} + " is not a valid roman numeral..." };
 	}
 }
+
 Token_gen::Token::Token() = default;
 
 Token_gen::Token::Token(char c, int v)
 	: roman_letter{ c },
-	val{ v }{
+	val{ v } {
 }
 
-Token_gen::Token::Token(const std::string & s, int v)
+Token_gen::Token::Token(const std::string& s, int v)
 	: val{ v },
-	roman_letters{ s }{
+	roman_letters{ s } {
 }
