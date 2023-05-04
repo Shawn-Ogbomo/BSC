@@ -240,7 +240,7 @@ void calculate(Token_stream& ts) {
 
 class Symbol_table {
 public:
-	Roman_int declare(Token_stream& ts, Token& t) {
+	static Roman_int declare(Token_stream& ts, Token& t) {
 		Token t2 = ts.get();
 		if (t2.kind == print) {
 			t2 = ts.get();
@@ -267,7 +267,7 @@ public:
 		Roman_int rmn_numeral = expression(ts);
 		Variable v = (t.kind == let ? Variable{ t2.name, rmn_numeral } : Variable{ t2.name, rmn_numeral, true });
 
-		if (is_declared(t2.name)) {
+		if (Symbol_table::is_declared(t2.name)) {
 			throw  std::runtime_error{ t2.name + std::string{" is already declared\n"} };
 		}
 		var_table.push_back(v);
@@ -275,11 +275,11 @@ public:
 		return v.value();
 	}
 
-	bool is_declared(const std::string& variable_name) {
+	static bool is_declared(const std::string& variable_name) {
 		return std::any_of(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) {return v.name() == variable_name; });
 	}
 
-	Roman_int value(const std::string& variable_name) {
+	static Roman_int value(const std::string& variable_name) {
 		if (auto found = std::find_if(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
 			found != std::end(var_table)) {
 			return found->value();
@@ -287,36 +287,34 @@ public:
 		throw  std::runtime_error{ std::string{"The variable: " + variable_name + " does not exist..."} };
 	}
 
-	void update_value(const std::string& variable_name, const Roman_int& new_value) {
+	static void update_value(const std::string& variable_name, const Roman_int& new_value) {
 		if (auto found = std::find_if(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
 			found != std::end(var_table)) {
 			if (found->is_const()) {
 				std::cerr << variable_name << ": is marked constant. Unmodifiable...\n";
 				return;
 			}
-			found->set_value(new_value);				//doesn't work updates the copy
+			found->set_value(new_value);
 			return;
 		}
 		std::cerr << "The variable: " << variable_name << " does not exist...";
 	}
 
 private:
-	std::vector<Variable> var_table;
+	static inline std::vector<Variable> var_table;
 };
-
-Symbol_table st;
 
 Roman_int statement(Token_stream& ts) {
 	Token t = ts.get();
 	if (t.kind == let || t.kind == permanent) {
-		return st.declare(ts, t);
+		return Symbol_table::declare(ts, t);
 	}
 
-	if (t.kind == name && st.is_declared(t.name)) {
+	if (t.kind == name && Symbol_table::is_declared(t.name)) {
 		Token t2 = ts.get();
 		if (t2.kind == print) {
 			if (!std::cin.peek()) {
-				return st.value(t.name);
+				return Symbol_table::value(t.name);
 			}
 			else {
 				t2 = ts.get();
@@ -326,8 +324,8 @@ Roman_int statement(Token_stream& ts) {
 		if (t2.kind == assignment) {
 			Token t3 = ts.get();		//call expression here and assign the return to the token
 			if (t3.kind == roman_numeral) {
-				st.update_value(t.name, static_cast<Roman_int>(t3.rmn_letters));
-				return st.value(t.name);
+				Symbol_table::update_value(t.name, static_cast<Roman_int>(t3.rmn_letters));
+				return Symbol_table::value(t.name);
 			}
 		}
 		throw  std::runtime_error{ "Unable to parse a variable...\n" };
