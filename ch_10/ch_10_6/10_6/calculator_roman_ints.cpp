@@ -249,19 +249,9 @@ public:
 			throw  std::runtime_error{ "invalid token: " + std::string{t2.kind} + " expected a name" };
 		}
 		Token t3 = ts.get();
-		if (t3.kind == print) {
-			t3 = ts.get();
-		}
+
 		if (t3.kind != assignment) {
 			throw  std::runtime_error{ "invalid token: " + std::string{t3.kind} + " expected " + assignment };
-		}
-
-		t3 = ts.get();
-		if (t3.kind == print) {
-			t3 = ts.get();
-		}
-		else {
-			ts.unget(t3);
 		}
 
 		Roman_int rmn_numeral = expression(ts);
@@ -271,7 +261,6 @@ public:
 			throw  std::runtime_error{ t2.name + std::string{" is already declared\n"} };
 		}
 		var_table.push_back(v);
-		t = ts.get();										//get next token
 		return v.value();
 	}
 
@@ -313,22 +302,13 @@ Roman_int statement(Token_stream& ts) {
 	if (t.kind == name && Symbol_table::is_declared(t.name)) {
 		Token t2 = ts.get();
 		if (t2.kind == print) {
-			if (!std::cin.peek()) {
-				return Symbol_table::value(t.name);
-			}
-			else {
-				t2 = ts.get();
-			}
+			return Symbol_table::value(t.name);
 		}
 
 		if (t2.kind == assignment) {
-			Token t3 = ts.get();		//call expression here and assign the return to the token
-			if (t3.kind == roman_numeral) {
-				Symbol_table::update_value(t.name, static_cast<Roman_int>(t3.rmn_letters));
-				return Symbol_table::value(t.name);
-			}
+			Symbol_table::update_value(t.name, expression(ts));
+			return Symbol_table::value(t.name);
 		}
-		throw  std::runtime_error{ "Unable to parse a variable...\n" };
 	}
 
 	ts.unget(t);
@@ -357,6 +337,8 @@ Roman_int primary(Token_stream& ts) {
 	}
 	case roman_numeral:
 		return Roman_int{ t.rmn_letters };
+	case name:
+		return Symbol_table::value(t.name);
 	default:
 		throw  std::runtime_error{ "\nExpected term..." };
 	}
