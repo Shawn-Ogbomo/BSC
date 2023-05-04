@@ -35,21 +35,13 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <optional>
 #include "roman.h"
 #include "token.h"
-#include "util.h"
-#include "exceptions.h"
 
 class Invalid {};
 
 struct Token {
-	class Invalid {
-	public:
-		explicit Invalid(const std::string& err) :error_message{ err } {}
-		std::string what() const { return error_message; }
-	private:
-		std::string error_message;
-	};
 	Token() = default;
 	explicit Token(char c) :kind{ c } {}
 	explicit Token(const std::string& name)
@@ -92,14 +84,12 @@ const char roman_numeral = 'r';
 const std::string ex_key = "exit";
 const std::string nulla = "nulla";
 
-bool is_rmn(const std::string& target, Token_stream& ts) {
+std::optional<Roman_int> is_rmn(const std::string& target) {
 	try {
-		Roman_int r{ target };
-		ts.unget(static_cast<Token>(r));
-		return true;
+		return Roman_int{ target };
 	}
 	catch (std::runtime_error) {
-		return false;
+		return std::nullopt;
 	}
 }
 
@@ -111,7 +101,7 @@ Token Token_stream::get() {
 	char c;
 	std::cin.get(c);
 	if (std::cin.eof()) {
-		throw Invalid{};				//catch this in main...
+		throw Invalid{};
 	}
 	switch (c) {
 	case '+':
@@ -164,20 +154,24 @@ Token Token_stream::get() {
 		while (std::cin.get(c) && (isalpha(c) || isdigit(c) || c == underscore)) {
 			s += c;
 		}
+
 		std::cin.unget();
 		if (s.empty() || s.front() == underscore) {
 			throw  std::runtime_error{ std::string{c} + " is invalid.." };
 		}
-		if (is_rmn(s, *this)) {
-			return get();	//return the stored token
+
+		if (auto const rmn_object = is_rmn(s)) {
+			return Token(rmn_object.value());
 		}
 
 		if (s == ex_key) {
 			return Token(quit);
 		}
+
 		if (s == nulla) {
 			return Token(static_cast<Roman_int>(s));
 		}
+
 		if (s == constant) {
 			return Token(permanent);
 		}
@@ -249,7 +243,6 @@ public:
 	Roman_int declare(Token_stream& ts, Token& t) {
 		Token t2 = ts.get();
 		if (t2.kind == print) {
-			Util::clear_white_space();
 			t2 = ts.get();
 		}
 		if (t2.kind != name) {
@@ -257,7 +250,6 @@ public:
 		}
 		Token t3 = ts.get();
 		if (t3.kind == print) {
-			Util::clear_white_space();
 			t3 = ts.get();
 		}
 		if (t3.kind != assignment) {
@@ -266,7 +258,7 @@ public:
 
 		t3 = ts.get();
 		if (t3.kind == print) {
-			Util::clear_white_space();
+			t3 = ts.get();
 		}
 		else {
 			ts.unget(t3);
@@ -323,8 +315,7 @@ Roman_int statement(Token_stream& ts) {
 	if (t.kind == name && st.is_declared(t.name)) {
 		Token t2 = ts.get();
 		if (t2.kind == print) {
-			//	Util::clear_white_space();				//fix this...
-			if (!std::cin.peek()) {						//fix this...
+			if (!std::cin.peek()) {
 				return st.value(t.name);
 			}
 			else {
@@ -333,18 +324,13 @@ Roman_int statement(Token_stream& ts) {
 		}
 
 		if (t2.kind == assignment) {
-			Util::clear_white_space();
-			Token t3 = ts.get();
+			Token t3 = ts.get();		//call expression here and assign the return to the token
 			if (t3.kind == roman_numeral) {
 				st.update_value(t.name, static_cast<Roman_int>(t3.rmn_letters));
 				return st.value(t.name);
 			}
 		}
 		throw  std::runtime_error{ "Unable to parse a variable...\n" };
-	}
-
-	if (!st.is_declared(t.name)) {
-		throw std::runtime_error{ "testing...." };
 	}
 
 	ts.unget(t);

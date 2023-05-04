@@ -5,7 +5,6 @@
 #include "token.h"
 #include "place_value.h"
 #include "util.h"
-#include "exceptions.h"
 
 Roman_int::Roman_int()
 	:roman_code{ "nulla" } {
@@ -415,7 +414,3 @@ Roman_int operator%(const Roman_int& left, const Roman_int& right) {
 	}
 	return Roman_int{ integer_to_roman_code(left.as_int() % right.as_int()) };
 }
-
-//std::istream& operator>>(std::istream& is, Roman_int& r) {
-//	// TODO: insert return statement here
-//}

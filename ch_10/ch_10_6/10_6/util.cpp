@@ -61,10 +61,3 @@ bool Util::repeats(const std::string& target_string, char c, unsigned pos) {
 	}
 	throw std::length_error("oops, the string is empty...\n");
 }
-
-void Util::clear_white_space(std::istream& ist) {			//fix this
-	auto c = '?';
-	std::cin >> c;
-	std::cin.unget();
-	return;
-}

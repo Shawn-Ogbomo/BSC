@@ -1,6 +1,5 @@
 #include <iostream>
 #include "token.h"
-#include "exceptions.h"
 Token_gen::Token Token_gen::get(const char c) {
 	switch (c) {
 	case 'I':
