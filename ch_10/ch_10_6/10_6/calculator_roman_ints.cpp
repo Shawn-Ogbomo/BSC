@@ -140,9 +140,9 @@ Token Token_stream::get() {
 				return Token(quit);
 			}
 			if (c == help) {
-				std::cout << "Calculator application...\n\n"
+				std::cout << "\nCalculator application...\n\n"
 					<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included.\n"
-					<< "The calculator is also capable of creating variables and constants.\n" << "\nFunctions...\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n\n# variable declaration format\n#shawn=xix\n\n" <<
+					<< "The calculator is also capable of creating variables and constants.\n" << "\nFunctions...\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n\n# variable declaration format\n#shawn=xix or space one space after #key\n\n" <<
 					"const declaration format \nconst shawn=xix\n" <<
 					"h key to display instructions...\n";
 				throw  std::runtime_error{ "\nrestarting..." };
@@ -166,10 +166,6 @@ Token Token_stream::get() {
 
 		if (s == ex_key) {
 			return Token(quit);
-		}
-
-		if (s == nulla) {
-			return Token(static_cast<Roman_int>(s));
 		}
 
 		if (s == constant) {
@@ -245,12 +241,12 @@ public:
 		if (t2.kind == print) {
 			t2 = ts.get();
 		}
+
 		if (t2.kind != name) {
 			throw  std::runtime_error{ "invalid token: " + std::string{t2.kind} + " expected a name" };
 		}
-		Token t3 = ts.get();
 
-		if (t3.kind != assignment) {
+		if (Token t3 = ts.get(); t3.kind != assignment) {
 			throw  std::runtime_error{ "invalid token: " + std::string{t3.kind} + " expected " + assignment };
 		}
 
@@ -336,7 +332,7 @@ Roman_int primary(Token_stream& ts) {
 		return left;
 	}
 	case roman_numeral:
-		return Roman_int{ t.rmn_letters };
+		return Roman_int{ t.rmn_letters }; //fix this don't build another roman int if you already have one as a token...
 	case name:
 		return Symbol_table::value(t.name);
 	default:
