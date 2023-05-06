@@ -2,7 +2,6 @@
 // Sun Jan 15 2023
 //Simple calculator v1
 //revision history
-//added end_of_loop() to handle stream fail, eof , and bad
 // works on Roman numerals
 // computations resulting in fractional values yield erroneous results
 // inputting the character 'x' sends output to file 'X' represents the number 10
@@ -31,11 +30,11 @@
 //Roman numeral :
 //<string, int>
 #include <iostream>
+#include <algorithm>
+#include <optional>
 #include <cctype>
 #include <vector>
-#include <algorithm>
 #include <cmath>
-#include <optional>
 #include "roman.h"
 #include "token.h"
 
@@ -47,11 +46,10 @@ struct Token {
 	explicit Token(const std::string& name)
 		: kind{ '~' },
 		name{ name } {}
-	explicit Token(const Roman_int& r) : kind{ 'r' }, rmn_letters{ r.as_string() }, value{ r.as_int() } {}
+	explicit Token(const Roman_int& r) : kind{ 'r' }, v_rmn{ r } {}
 	char kind{};
 	std::string name;
-	std::string rmn_letters;
-	int value{};
+	Roman_int v_rmn{};
 };
 
 class Token_stream {
@@ -79,10 +77,9 @@ const char name = '~';
 const char assignment = '=';
 const char underscore = '_';
 const char permanent = 'k';
-const std::string constant = "const";
 const char roman_numeral = 'r';
-const std::string ex_key = "exit";
-const std::string nulla = "nulla";
+constexpr std::string_view constant = "const";
+constexpr std::string_view ex_key = "exit";
 
 std::optional<Roman_int> is_rmn(const std::string& target) {
 	try {
@@ -332,7 +329,7 @@ Roman_int primary(Token_stream& ts) {
 		return left;
 	}
 	case roman_numeral:
-		return Roman_int{ t.rmn_letters }; //fix this don't build another roman int if you already have one as a token...
+		return t.v_rmn;
 	case name:
 		return Symbol_table::value(t.name);
 	default:

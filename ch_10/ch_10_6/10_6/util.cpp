@@ -1,5 +1,6 @@
-#include <iostream>
+#include <string_view>
 #include <algorithm>
+#include <iostream>
 #include <cctype>
 #include "util.h"
 
@@ -17,7 +18,7 @@ bool Util::previous_value(const int index) {
 	return false;
 }
 
-int Util::find_duplicates(const std::string& target_string, char c) {
+int Util::find_duplicates(std::string_view target_string, char c) {
 	if (target_string.size()) {
 		const int num_items = std::count(target_string.begin(), target_string.end(), c);
 		return num_items;
@@ -25,13 +26,12 @@ int Util::find_duplicates(const std::string& target_string, char c) {
 	throw std::length_error("oops, the string is empty...\n");
 }
 
-bool Util::duplicate_substrs(const std::string& target_string, const std::string& sub_str) {
+bool Util::duplicate_substrs(std::string_view target_string, std::string_view sub_str) {
 	if (sub_str.empty()) {
 		throw std::length_error("oops, you passed in an empty string \n");
 	}
 
-	int pos = target_string.find(sub_str);
-	if (pos != std::string::npos) {
+	if (int pos = target_string.find(sub_str); pos != std::string::npos) {
 		if (int pos2 = target_string.find(sub_str, (pos + sub_str.size()))) {
 			if (pos2 != std::string::npos) {
 				return true;
