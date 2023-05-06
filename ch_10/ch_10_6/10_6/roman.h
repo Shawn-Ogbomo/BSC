@@ -5,8 +5,8 @@ class Roman_int {
 public:
 	Roman_int();
 	explicit Roman_int(const std::string& letters);
-	int as_int() const;
-	std::string as_string() const;
+	const int& as_int() const;
+	std::string_view as_string() const;
 private:
 	std::string roman_code;
 	int value{};

@@ -29,11 +29,12 @@
 //
 //Roman numeral :
 //<string, int>
-#include <iostream>
+#include <string_view>
 #include <algorithm>
 #include <optional>
-#include <cctype>
+#include <iostream>
 #include <vector>
+#include <cctype>
 #include <cmath>
 #include "roman.h"
 #include "token.h"
@@ -204,8 +205,8 @@ public:
 		:n{ name },
 		v{ val },
 		state{ qualifier } {}
-	Roman_int value()const { return v; }
-	std::string name() const { return n; }
+	const Roman_int& value()const { return v; }
+	std::string_view name() const { return n; }
 	bool is_const() const { return state; }
 	void set_value(const Roman_int& val) {
 		v = val;
@@ -257,19 +258,19 @@ public:
 		return v.value();
 	}
 
-	static bool is_declared(const std::string& variable_name) {
+	static bool is_declared(std::string_view variable_name) {
 		return std::any_of(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) {return v.name() == variable_name; });
 	}
 
-	static Roman_int value(const std::string& variable_name) {
+	static Roman_int value(std::string_view variable_name) {
 		if (auto found = std::find_if(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
 			found != std::end(var_table)) {
 			return found->value();
 		}
-		throw  std::runtime_error{ std::string{"The variable: " + variable_name + " does not exist..."} };
+		throw  std::runtime_error{ "The variable: " + static_cast<std::string>(variable_name) + " does not exist..." };
 	}
 
-	static void update_value(const std::string& variable_name, const Roman_int& new_value) {
+	static void update_value(std::string_view variable_name, const Roman_int& new_value) {
 		if (auto found = std::find_if(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
 			found != std::end(var_table)) {
 			if (found->is_const()) {

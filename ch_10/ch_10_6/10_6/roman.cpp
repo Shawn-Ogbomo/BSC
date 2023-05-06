@@ -257,11 +257,11 @@ Roman_int::Roman_int(const std::string& letters)
 	}
 }
 
-int Roman_int::as_int() const {
+const int& Roman_int::as_int() const {
 	return value;
 }
 
-std::string Roman_int::as_string() const {
+std::string_view Roman_int::as_string() const {
 	return roman_code;
 }
 
