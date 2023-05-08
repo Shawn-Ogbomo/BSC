@@ -248,12 +248,13 @@ public:
 			throw  std::runtime_error{ "invalid token: " + std::string{t3.kind} + " expected " + assignment };
 		}
 
-		Roman_int rmn_numeral = expression(ts);
-		Variable v = (t.kind == let ? Variable{ t2.name, rmn_numeral } : Variable{ t2.name, rmn_numeral, true });
-
 		if (Symbol_table::is_declared(t2.name)) {
 			throw  std::runtime_error{ t2.name + std::string{" is already declared\n"} };
 		}
+
+		Roman_int rmn_numeral = expression(ts);
+		Variable v = (t.kind == let ? Variable{ t2.name, rmn_numeral } : Variable{ t2.name, rmn_numeral, true });
+
 		var_table.push_back(v);
 		return v.value();
 	}
@@ -293,16 +294,19 @@ Roman_int statement(Token_stream& ts) {
 		return Symbol_table::declare(ts, t);
 	}
 
-	if (t.kind == name && Symbol_table::is_declared(t.name)) {
-		Token t2 = ts.get();
-		if (t2.kind == print) {
-			return Symbol_table::value(t.name);
-		}
+	if (t.kind == name) {
+		if (Symbol_table::is_declared(t.name)) {
+			Token t2 = ts.get();
+			if (t2.kind == print) {
+				return Symbol_table::value(t.name);
+			}
 
-		if (t2.kind == assignment) {
-			Symbol_table::update_value(t.name, expression(ts));
-			return Symbol_table::value(t.name);
+			if (t2.kind == assignment) {
+				Symbol_table::update_value(t.name, expression(ts));
+				return Symbol_table::value(t.name);
+			}
 		}
+		throw std::runtime_error{ "The variable: " + t.name + " does not exist...\n" };
 	}
 
 	ts.unget(t);
