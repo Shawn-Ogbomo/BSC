@@ -38,6 +38,9 @@ Roman_int::Roman_int(const std::string& letters)
 			}
 
 			if (Util::next_value(roman_code, i + 1) && (roman_code[i + 1] == 'V' || roman_code[i + 1] == 'X')) {
+				if (Util::next_value(roman_code, i + 2)) {
+					throw std::runtime_error{ "Invalid roman int...\n" };
+				}
 				left += roman_ints.find("I" + std::string{ roman_code[i + 1] })->second;
 				break;
 			}
