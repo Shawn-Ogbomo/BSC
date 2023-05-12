@@ -37,10 +37,19 @@ Roman_int::Roman_int(const std::string& letters)
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
-			if (Util::next_value(roman_code, i + 1) && (roman_code[i + 1] == 'V' || roman_code[i + 1] == 'X')) {
-				if ((Util::next_value(roman_code, i + 2)) || (Util::previous_value(i - 1) && (roman_code[i - 1] == 'I' || roman_code[i - 1] == 'V'))) {
-					throw std::runtime_error{ "Invalid roman int...\n" };
-				}
+			if (Util::next_value(roman_code, i + 1) && roman_code[i + 1] != 'I' && roman_code[i + 1] != 'V' && roman_code[i + 1] != 'X') {
+				throw std::runtime_error{ "Invalid roman int...\n" };
+			}
+
+			const auto new_case = Util::next_value(roman_code, i + 1) && (roman_code[i + 1] == 'V' || roman_code[i + 1] == 'X');
+
+			if (const auto error = new_case && Util::next_value(roman_code, i + 2) || (new_case && Util::previous_value(i - 1) && (roman_code[i - 1] == 'I'
+				|| roman_code[i - 1] == 'V'));
+				new_case && error) {
+				throw std::runtime_error{ "Invalid roman int...\n" };
+			}
+
+			else if (new_case && !error) {
 				left += roman_ints.find("I" + std::string{ roman_code[i + 1] })->second;
 				break;
 			}
@@ -92,6 +101,7 @@ Roman_int::Roman_int(const std::string& letters)
 		//		break;
 		//	}
 		//}
+
 		/*case 'L':
 		{
 			break;
