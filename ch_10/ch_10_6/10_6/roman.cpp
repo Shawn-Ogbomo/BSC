@@ -37,20 +37,14 @@ Roman_int::Roman_int(const std::string& letters)
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
-			if (Util::next_value(roman_code, i + 1) && roman_code[i + 1] != 'I' && roman_code[i + 1] != 'V' && roman_code[i + 1] != 'X') {
+			if (auto found = roman_ints.find("I" + std::string{ roman_code[i + 1] });
+				(found != roman_ints.end()) && (Util::next(roman_code, i + 2)) || (found != roman_ints.end())
+				&& (Util::previous(i - 1)) && (roman_code[i - 1] == 'I')) {
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
-			const auto new_case = Util::next_value(roman_code, i + 1) && (roman_code[i + 1] == 'V' || roman_code[i + 1] == 'X');
-
-			if (const auto error = new_case && Util::next_value(roman_code, i + 2) || (new_case && Util::previous_value(i - 1) && (roman_code[i - 1] == 'I'
-				|| roman_code[i - 1] == 'V'));
-				new_case && error) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			else if (new_case && !error) {
-				left += roman_ints.find("I" + std::string{ roman_code[i + 1] })->second;
+			else if (found != roman_ints.end()) {
+				left += found->second;
 				break;
 			}
 
@@ -64,15 +58,15 @@ Roman_int::Roman_int(const std::string& letters)
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
-			if (Util::previous_value(i - 1) && roman_code[i - 1] == 'I') {
+			if (Util::previous(i - 1) && roman_code[i - 1] == 'I') {
 				break;
 			}
 
-			if (Util::previous_value(i - 1) && roman_code[i - 1] != 'I') {
+			if (Util::previous(i - 1) && roman_code[i - 1] != 'I') {
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
-			if (Util::next_value(roman_code, i + 1) && roman_code[i + 1] != 'I') {
+			if (Util::next(roman_code, i + 1) && roman_code[i + 1] != 'I') {
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
@@ -82,21 +76,21 @@ Roman_int::Roman_int(const std::string& letters)
 
 		//case 'X':								//FIX THIS
 		//{
-		//	if (Util::repeats(roman_code, roman_code[i], i) || (Util::previous_value(i - 1)
+		//	if (Util::repeats(roman_code, roman_code[i], i) || (Util::previous(i - 1)
 		//		&& roman_code[i - 1] != 'I' && roman_code[i - 1] != 'X')
-		//		|| (Util::next_value(roman_code, i + 1) && roman_code[i + 1] == 'L'
-		//			|| roman_code[i + 1] == 'C') && (Util::next_value(roman_code, i + 2)
+		//		|| (Util::next(roman_code, i + 1) && roman_code[i + 1] == 'L'
+		//			|| roman_code[i + 1] == 'C') && (Util::next(roman_code, i + 2)
 		//				&& roman_code[i + 2] != 'I' && roman_code[i + 2] != 'V')) {
 		//		throw std::runtime_error{ "Invalid roman int...\n" };
 		//	}
 
-		//	if (const auto found = (Util::next_value(roman_code, i + 1) && (roman_code[i + 1] == 'L' || roman_code[i + 1] == 'C')) && (Util::next_value(roman_code, i + 2))
-		//		&& ((roman_code[i + 2] == 'I' || roman_code[i + 2] == 'V')) || !Util::next_value(roman_code, i + 2)) {
+		//	if (const auto found = (Util::next(roman_code, i + 1) && (roman_code[i + 1] == 'L' || roman_code[i + 1] == 'C')) && (Util::next(roman_code, i + 2))
+		//		&& ((roman_code[i + 2] == 'I' || roman_code[i + 2] == 'V')) || !Util::next(roman_code, i + 2)) {
 		//		left += roman_ints.find("X" + std::string{ roman_code[i + 1] })->second;
 		//		break;
 		//	}
 
-		//	else if (!found && !Util::next_value(roman_code, i + 1) || roman_code[i + 1] == 'X') {
+		//	else if (!found && !Util::next(roman_code, i + 1) || roman_code[i + 1] == 'X') {
 		//		left += roman_ints.find("X")->second;
 		//		break;
 		//	}
