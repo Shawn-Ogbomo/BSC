@@ -1,11 +1,11 @@
-#include <algorithm>
-#include <iostream>
-#include <vector>
-#include <cmath>
 #include <map>
+#include <cmath>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include "util.h"
 #include "roman.h"
 #include "token.h"
-#include "util.h"
 #include "place_value.h"
 
 Roman_int::Roman_int() = default;
@@ -20,14 +20,17 @@ Roman_int::Roman_int(const std::string& letters)
 
 	std::for_each(roman_code.begin(), roman_code.end(), [](char& letter) {letter = std::toupper(letter); });
 
-	std::map<std::string, int> roman_ints{
+	static const std::map<std::string, int> roman_ints{
 	{"I",1},{"IV",4},{"V",5},{"IX",9},{"X",10},
 	{ "XL",40 },{"L",50},{ "XC",90 },{"C",100},
 	{"CD",400 },{"D",500},{ "CM",900 }, { "M",1000 } };
 
-	auto left = 0;
 	const auto rmn_code_sz = roman_code.size();
-	for (auto i = 0; i < rmn_code_sz; ++i) {
+
+	for (auto i = 0U; i < rmn_code_sz; ++i) {
+		auto next = Util::lookup(roman_ints, roman_code, i, i + 1);
+		auto prev = Util::lookup(roman_ints, roman_code, i, i - 1);
+
 		switch (roman_code[i]) {
 		case 'I':
 		{
@@ -35,63 +38,61 @@ Roman_int::Roman_int(const std::string& letters)
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
-			if (auto found = roman_ints.find("I" + std::string{ roman_code[i + 1] });
-				(found != roman_ints.end()) && (Util::next(roman_code, i + 2)) || (found != roman_ints.end())
-				&& (Util::previous(i - 1)) && ((roman_code[i - 1] == 'I') || roman_code[i - 1] == 'V')) {
+			if (next != roman_ints.end() && (next->first == "IV" || next->first == "IX") && roman_code[i + 2]) {
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
-			else if (found != roman_ints.end()) {
-				left += found->second;
+			else if (next != roman_ints.end() && (next->first == "IV" || next->first == "IX")) {
+				value += roman_ints.find(next->first)->second;
 				break;
 			}
 
-			left += roman_ints.find("I")->second;
+			value += roman_ints.find("I")->second;
 			break;
 		}
 
-		case 'V':
-		{
-			if (Util::find_duplicates(roman_code, roman_code[i]) > 1) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
+		//case 'V':
+		//{
+		//	if (Util::find_duplicates(roman_code, roman_code[i]) > 1) {
+		//		throw std::runtime_error{ "Invalid roman int...\n" };
+		//	}
 
-			if (Util::previous(i - 1) && roman_code[i - 1] != 'I') {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
+		//	if (prev != roman_ints.end() && prev->first != "I") {				//CHECK THIS...
+		//		throw std::runtime_error{ "Invalid roman int...\n" };
+		//	}
 
-			if (Util::next(roman_code, i + 1) && roman_code[i + 1] != 'I') {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
+		//	if (next != roman_ints.end() && next->first != "I") {
+		//		throw std::runtime_error{ "Invalid roman int...\n" };
+		//	}
 
-			if (Util::previous(i - 1) && roman_code[i - 1] == 'I') {
-				break;
-			}
+		//	if (prev != roman_ints.end() && prev->first == "I") {
+		//		break;
+		//	}
 
-			left += roman_ints.find("V")->second;
-			break;
-		}
+		//	value += roman_ints.find("V")->second;
+		//	break;
+		//}
 
-		case 'X':
+		/*case 'X':
 		{
 			if (Util::repeats(roman_code, roman_code[i], i)) {
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
 			if (auto found = roman_ints.find("X" + std::string{ roman_code[i + 1] });
-				(found != roman_ints.end()) && (Util::next(roman_code, i + 2)) && (roman_code[i + 2] == roman_code[i + 1])
-				|| roman_ints.find(std::string{ roman_code[i + 1] })->second > roman_ints.find(std::string{ roman_code[i + 2] })->second) {
+				(found != roman_ints.end()) && (roman_ints.find(std::string{ roman_code[i + 2] })->second >= roman_ints.find(std::string{ roman_code[i + 1] })->second)
+				|| (roman_ints.find(std::string{ roman_code[i + 2] })->second == (roman_ints.find(std::string{ roman_code[i] })->second))) {
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
 			else if (found != roman_ints.end()) {
-				left += found->second;
+				value += found->second;
 				break;
 			}
 
-			left += roman_ints.find("I")->second;
+			value += roman_ints.find("I")->second;
 			break;
-		}
+		}*/
 
 		/*case 'L':
 		{
@@ -125,6 +126,11 @@ std::string_view Roman_int::as_string() const {
 
 std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 	return os << r.as_string();
+}
+
+std::istream& operator>>(std::istream& is, Roman_int& r) {
+	// TODO: insert return statement here
+	return is;
 }
 
 std::string integer_to_roman_code(int val) {
@@ -243,32 +249,32 @@ std::string integer_to_roman_code(int val) {
 	throw  std::runtime_error("oops something went wrong...");
 }
 
-Roman_int operator+(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(left.as_int() + right.as_int()) };
+Roman_int operator+(const Roman_int& value, const Roman_int& right) {
+	return Roman_int{ integer_to_roman_code(value.as_int() + right.as_int()) };
 }
 
-Roman_int operator-(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(left.as_int() - right.as_int()) };
+Roman_int operator-(const Roman_int& value, const Roman_int& right) {
+	return Roman_int{ integer_to_roman_code(value.as_int() - right.as_int()) };
 }
 
-Roman_int operator*(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(left.as_int() * right.as_int()) };
+Roman_int operator*(const Roman_int& value, const Roman_int& right) {
+	return Roman_int{ integer_to_roman_code(value.as_int() * right.as_int()) };
 }
 
-Roman_int operator/(const Roman_int& left, const Roman_int& right) {
+Roman_int operator/(const Roman_int& value, const Roman_int& right) {
 	if (!right.as_int()) {
 		throw  std::runtime_error{ "Cannot divide by zero..." };
 	}
-	return Roman_int{ integer_to_roman_code(left.as_int() / right.as_int()) };
+	return Roman_int{ integer_to_roman_code(value.as_int() / right.as_int()) };
 }
 
-Roman_int operator^(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code((std::pow(left.as_int(),right.as_int()))) };
+Roman_int operator^(const Roman_int& value, const Roman_int& right) {
+	return Roman_int{ integer_to_roman_code((std::pow(value.as_int(),right.as_int()))) };
 }
 
-Roman_int operator%(const Roman_int& left, const Roman_int& right) {
+Roman_int operator%(const Roman_int& value, const Roman_int& right) {
 	if (!right.as_int()) {
 		throw  std::runtime_error{ "Cannot mod by " + std::string{std::to_string(right.as_int())} + "..." };
 	}
-	return Roman_int{ integer_to_roman_code(left.as_int() % right.as_int()) };
+	return Roman_int{ integer_to_roman_code(value.as_int() % right.as_int()) };
 }
