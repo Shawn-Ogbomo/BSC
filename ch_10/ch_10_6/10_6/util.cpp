@@ -13,24 +13,19 @@ int Util::find_duplicates(std::string_view target_string, char c) {
 	throw std::invalid_argument("oops, the string is empty...\n");
 }
 
-bool Util::repeats(const std::string& target_string, char c, unsigned pos) {
-	if (!target_string.empty()) {
-		constexpr auto repeat_limit = 3;
-		const auto max_size = target_string.size();
-		auto count = 0;
-		for (auto i = pos; i < max_size; ++i) {
-			if (c == target_string[i]) {
-				++count;
-			}
-			else if (c != target_string[i]) {
-				return false;
-			}
-			if (count > repeat_limit) {
-				return true;
-			}
+bool Util::repeats(const std::string_view s, char c, unsigned pos) {
+	if (!s.empty()) {
+		auto test = s.find_first_not_of(c, 0) == std::string::npos ? s.size() : s.find_first_not_of(c, 0);
+
+		if (auto internal_num_items = std::count_if(s.begin() + pos, s.begin()
+			+ test, [c](auto ch) {
+				return ch = c;
+			}); internal_num_items > 3) {
+			return true;
 		}
 		return false;
 	}
+
 	throw std::invalid_argument("oops, the string is empty...\n");
 }
 
