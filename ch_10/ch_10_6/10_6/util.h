@@ -13,11 +13,5 @@ namespace Util {
 		}
 		return m.end();
 	}
-
-	template <typename T>
-	void increment(const std::map <std::string, int, std::less<>>& m, const T it, unsigned& index) {
-		if (it != m.end()) {
-			++index;
-		}
-	}
+	void increment(unsigned& index);
 }

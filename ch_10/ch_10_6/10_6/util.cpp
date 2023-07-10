@@ -33,3 +33,7 @@ bool Util::repeats(const std::string& target_string, char c, unsigned pos) {
 	}
 	throw std::invalid_argument("oops, the string is empty...\n");
 }
+
+void Util::increment(unsigned& index) {
+	++index;
+}
