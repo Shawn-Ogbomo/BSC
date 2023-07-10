@@ -34,7 +34,7 @@ Roman_int::Roman_int(const std::string& letters)
 			}
 
 			if ((new_case != roman_ints.end()) && (next_new_case != roman_ints.end()
-				|| (prev != roman_ints.end() && prev->first == "I"))) {
+				|| (prev != roman_ints.end()) && (prev->first == "I" || prev->first == "V"))) {
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
@@ -89,25 +89,62 @@ Roman_int::Roman_int(const std::string& letters)
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
-			if (next != roman_ints.end() && next->second > roman_ints.find("X")->second) {
+			if ((next != roman_ints.end() && next->second > roman_ints.find("X")->second)
+				|| prev != roman_ints.end() && prev->first == "I") {
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
 			value += roman_ints.find("L")->second;
 			break;
 		}
-		/*	case 'C':
-			{
+		case 'C':
+		{
+			if (Util::repeats(roman_code, roman_code[i], i)) {
+				throw std::runtime_error{ "Invalid roman int...\n" };
+			}
+
+			if ((new_case != roman_ints.end()) && (next_new_case != roman_ints.end()
+				&& next_new_case->second >= roman_ints.find("C")->second)
+				|| (prev != roman_ints.end() && prev->first == "I")) {
+				throw std::runtime_error{ "Invalid roman int...\n" };
+			}
+
+			else if (new_case != roman_ints.end()) {
+				value += roman_ints.find(new_case->first)->second;
+				Util::increment(i);
 				break;
 			}
-			case 'D':
-			{
-				break;
+
+			value += roman_ints.find("C")->second;
+			break;
+		}
+		case 'D':
+		{
+			if (Util::find_duplicates(roman_code, roman_code[i]) > 1) {
+				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
-			case 'M':
-			{
-				break;
-			}*/
+
+			if (next != roman_ints.end() && next->second == roman_ints.find("M")->second
+				|| prev != roman_ints.end() && prev->first == "I") {
+				throw std::runtime_error{ "Invalid roman int...\n" };
+			}
+
+			value += roman_ints.find("D")->second;
+			break;
+		}
+		case 'M':
+		{
+			if (Util::repeats(roman_code, roman_code[i], i)) {
+				throw std::runtime_error{ "Invalid roman int...\n" };
+			}
+
+			if (prev != roman_ints.end() && prev->first == "I") {
+				throw std::runtime_error{ "Invalid roman int...\n" };
+			}
+
+			value += roman_ints.find("M")->second;
+			break;
+		}
 		default:
 			throw std::runtime_error{ " Invalid Roman Int...\n" };
 		}
