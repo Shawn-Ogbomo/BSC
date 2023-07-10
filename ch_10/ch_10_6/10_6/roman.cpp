@@ -62,26 +62,26 @@ Roman_int::Roman_int(const std::string& letters)
 			break;
 		}
 
-		/*case 'X':
+		case 'X':
 		{
 			if (Util::repeats(roman_code, roman_code[i], i)) {
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
-			if (auto found = roman_ints.find("X" + std::string{ roman_code[i + 1] });
-				(found != roman_ints.end()) && (roman_ints.find(std::string{ roman_code[i + 2] })->second >= roman_ints.find(std::string{ roman_code[i + 1] })->second)
-				|| (roman_ints.find(std::string{ roman_code[i + 2] })->second == (roman_ints.find(std::string{ roman_code[i] })->second))) {
+			if ((new_case != roman_ints.end()) && (next != roman_ints.end()
+				&& next->second >= roman_ints.find("X")->second)) {
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 
-			else if (found != roman_ints.end()) {
-				value += found->second;
+			else if (new_case != roman_ints.end()) {
+				value += roman_ints.find(new_case->first)->second;
+				Util::increment(i);
 				break;
 			}
 
-			value += roman_ints.find("I")->second;
+			value += roman_ints.find("X")->second;
 			break;
-		}*/
+		}
 
 		/*case 'L':
 		{
