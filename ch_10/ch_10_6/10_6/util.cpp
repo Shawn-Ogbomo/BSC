@@ -15,15 +15,10 @@ int Util::find_duplicates(std::string_view target_string, char c) {
 
 bool Util::repeats(const std::string_view s, char c, unsigned pos) {
 	if (!s.empty()) {
-		auto test = s.find_first_not_of(c, pos) == std::string::npos ? s.size() : s.find_first_not_of(c, pos);
+		auto num_of_consecutive_characters = s.find_first_not_of(c, pos)
+			== std::string::npos ? s.size() : s.find_first_not_of(c, pos);
 
-		if (auto internal_num_items = std::count_if(s.begin() + pos, s.begin()
-			+ test, [c](auto ch) {
-				return ch = c;
-			}); internal_num_items > 3) {
-			return true;
-		}
-		return false;
+		return s.substr(0, num_of_consecutive_characters).size() > 3 ? true : false;
 	}
 
 	throw std::invalid_argument("oops, the string is empty...\n");
