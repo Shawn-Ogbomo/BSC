@@ -16,9 +16,9 @@ int Util::find_duplicates(std::string_view target_string, char c) {
 bool Util::repeats(const std::string_view s, char c, unsigned pos) {
 	if (!s.empty()) {
 		auto num_of_consecutive_characters = s.find_first_not_of(c, pos)
-			== std::string::npos ? s.size() : s.find_first_not_of(c, pos);
+			== std::string::npos ? (s.size() - pos) : s.find_first_not_of(c, pos) - pos;
 
-		return s.substr(0, num_of_consecutive_characters).size() > 3 ? true : false;
+		return num_of_consecutive_characters > 3 ? true : false;
 	}
 
 	throw std::invalid_argument("oops, the string is empty...\n");
