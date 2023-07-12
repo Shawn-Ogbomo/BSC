@@ -2,7 +2,6 @@
 #include <string_view>
 #include <algorithm>
 #include <iostream>
-#include <cctype>
 #include "util.h"
 
 int Util::find_duplicates(std::string_view target_string, char c) {
@@ -15,21 +14,27 @@ int Util::find_duplicates(std::string_view target_string, char c) {
 
 bool Util::repeats(const std::string_view s, char c, unsigned pos) {
 	if (!s.empty()) {
-		auto num_of_consecutive_characters = s.find_first_not_of(c, pos)
-			== std::string::npos ? (s.size() - pos) : s.find_first_not_of(c, pos) - pos;
+		if (const auto num_of_consecutive_characters = s.find_first_not_of(c, pos);
+			num_of_consecutive_characters == std::string::npos) {
+			return s.size() - pos > 3;
+		}
 
-		return num_of_consecutive_characters > 3 ? true : false;
+		else {
+			return num_of_consecutive_characters - pos > 3;
+		}
 	}
 
 	throw std::invalid_argument("oops, the string is empty...\n");
 }
 
-void Util::increment(const std::map<std::string, int>& map, const std::map<std::string, int>::const_iterator it, unsigned& index) {
+void Util::increment(const std::map<std::string, int>& map
+	, const std::map<std::string, int>::const_iterator it, unsigned& index) {
 	if (it != map.end())
 		++index;
 }
 
-std::map<std::string, int>::const_iterator Util::lookup(const std::map <std::string, int>& m, std::string_view rmn_code, int current_index, int new_index) {
+std::map<std::string, int>::const_iterator Util::lookup(const std::map <std::string, int>& m
+	, std::string_view rmn_code, int current_index, int new_index) {
 	if (new_index && (new_index < rmn_code.size())) {
 		return m.find(rmn_code[current_index] + std::string{ rmn_code[new_index] });
 	}
