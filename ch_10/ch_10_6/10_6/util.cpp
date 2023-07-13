@@ -4,24 +4,30 @@
 #include <iostream>
 #include "util.h"
 
-int Util::find_duplicates(std::string_view target_string, char c) {
+void Util::find_duplicates(std::string_view target_string, char c) {
 	if (target_string.size()) {
-		const int num_items = std::count(target_string.begin(), target_string.end(), c);
-		return num_items;
+		if (const int num_items = std::count(target_string.begin(), target_string.end(), c)
+			; num_items > 1) {
+			throw std::runtime_error{ "Invalid roman int...\n" };
+		}
+		return;
 	}
 	throw std::invalid_argument("oops, the string is empty...\n");
 }
 
-bool Util::repeats(const std::string_view s, char c, unsigned pos) {
+void Util::repeats(const std::string_view s, char c, unsigned pos) {
 	if (!s.empty()) {
-		if (const auto num_of_consecutive_characters = s.find_first_not_of(c, pos);
-			num_of_consecutive_characters == std::string::npos) {
-			return s.size() - pos > 3;
+		if (const auto num_of_consecutive_characters = s.find_first_not_of(c, pos)
+			; num_of_consecutive_characters == std::string::npos) {
+			if (s.size() > 3) {
+				throw std::runtime_error{ "Invalid roman int...\n" };
+			}
 		}
 
-		else {
-			return num_of_consecutive_characters - pos > 3;
+		else if (num_of_consecutive_characters - pos > 3) {
+			throw std::runtime_error{ "Invalid roman int...\n" };
 		}
+		return;
 	}
 
 	throw std::invalid_argument("oops, the string is empty...\n");
@@ -41,39 +47,25 @@ std::map<std::string, int>::const_iterator Util::lookup(const std::map <std::str
 	return m.end();
 }
 
-void::Util::sum(const std::map<std::string, int>::const_iterator it1
-	, const std::map<std::string, int>::const_iterator it2
-	, const std::map <std::string, int> ::const_iterator it3
-	, const std::map<std::string, int>::const_iterator it4
+void::Util::sum(const std::map<std::string, int>::const_iterator it1_new_case
+	, const std::map<std::string, int>::const_iterator it2_next_new_case
+	, const std::map<std::string, int>::const_iterator it3_next
+	, const std::map<std::string, int>::const_iterator it4_prev
 	, const std::map<std::string, int>& map, int& val, char c) {
-	//FUNCTION TO REDUCE COGNITIVE COMPLEXITY OF 1 ARGUMENT CONSTRUCTOR ROMAN INT
-	// ACCEPT ALL ITERATORS
-	//NEW_CASE
-	//NEXT_NEW_CASE
-	//NEXT
-	//PREV
-
-	//ACCEPT THE MAP
-	//ACCEPT THE VALUE
-	// CURRENT CASE LETTER
-
-	//NEW CASE
-	if ((it1 != map.end()) && (it2 != map.end()
-		|| (it4 != map.end()) && (it4->first == std::string{ c }
-			|| it3->first == map.find(it3->first)->first))) {
-		throw std::runtime_error{ "Invalid roman int...\n" };
+	if (it1_new_case != map.end()) {
+		if ((it2_next_new_case != map.end() && it2_next_new_case->second >= map.find(std::string{ c })->second)
+			|| ((it4_prev != map.end()) && (it4_prev->second < it3_next->second))) {
+			throw std::runtime_error{ "Invalid roman int...\n" };
+		}
+		val += map.find(it1_new_case->first)->second;
 	}
 
-	else if (it3 != map.end() && it3->first != "I") {
+	else if (it3_next != map.end() && it3_next->second > map.find(std::string{ c })->second
+		|| it4_prev != map.end() && it4_prev->second < map.find(std::string{ c })->second) {
 		throw std::runtime_error{ "Invalid roman int...\n" };
-	}
-
-	else if (it1 != map.end()) {
-		val += map.find(it1->first)->second;
 	}
 
 	else {
-		//NOT NEW CASE
 		val += map.find(std::string{ c })->second;
 	}
 }

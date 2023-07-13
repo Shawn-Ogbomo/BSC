@@ -29,145 +29,49 @@ Roman_int::Roman_int(const std::string& letters)
 		switch (roman_code[i]) {
 		case 'I':
 		{
-			if (Util::repeats(roman_code, roman_code[i], i)) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			if ((new_case != roman_ints.end() && next_new_case != roman_ints.end() && next_new_case->second >= roman_ints.find("I")->second)
-				|| (new_case != roman_ints.end()) && (prev != roman_ints.end()) && (prev->second <= roman_ints.find("V")->second)) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			if (new_case != roman_ints.end()) {
-				value += roman_ints.find(new_case->first)->second;
-				Util::increment(roman_ints, new_case, i);
-				break;
-			}
-
-			if (next != roman_ints.end() && next->second > roman_ints.find("I")->second) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			value += roman_ints.find("I")->second;
+			Util::repeats(roman_code, roman_code[i], i);
+			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
+			Util::increment(roman_ints, new_case, i);
 			break;
 		}
-
 		case 'V':
 		{
-			if (Util::find_duplicates(roman_code, roman_code[i]) > 1) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			if (prev != roman_ints.end() && prev->second < roman_ints.find("V")->second) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			if (next != roman_ints.end() && next->second > roman_ints.find("V")->second) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			value += roman_ints.find("V")->second;
+			Util::find_duplicates(roman_code, roman_code[i]);
+			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
 			break;
 		}
-
 		case 'X':
 		{
-			if (Util::repeats(roman_code, roman_code[i], i)) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			if ((new_case != roman_ints.end() && next_new_case != roman_ints.end() && next_new_case->second >= roman_ints.find("X")->second)
-				|| new_case != roman_ints.end() && prev != roman_ints.end() && prev->second <= roman_ints.find("L")->second) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			else if (new_case != roman_ints.end()) {
-				value += roman_ints.find(new_case->first)->second;
-				Util::increment(roman_ints, new_case, i);
-				break;
-			}
-
-			if (next != roman_ints.end() && next->second > roman_ints.find("X")->second) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			value += roman_ints.find("X")->second;
+			Util::repeats(roman_code, roman_code[i], i);
+			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
+			Util::increment(roman_ints, new_case, i);
 			break;
 		}
-
 		case 'L':
 		{
-			if (Util::find_duplicates(roman_code, roman_code[i]) > 1) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			if (prev != roman_ints.end() && prev->second < roman_ints.find("L")->second) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			if (next != roman_ints.end() && next->second > roman_ints.find("L")->second) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			value += roman_ints.find("L")->second;
+			Util::find_duplicates(roman_code, roman_code[i]);
+			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
 			break;
 		}
-
 		case 'C':
 		{
-			if (Util::repeats(roman_code, roman_code[i], i)) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			if ((new_case != roman_ints.end()) && next_new_case != roman_ints.end() && next_new_case->second >= roman_ints.find("C")->second
-				|| new_case != roman_ints.end() && prev != roman_ints.end() && prev->second <= roman_ints.find("D")->second) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			else if (new_case != roman_ints.end()) {
-				value += roman_ints.find(new_case->first)->second;
-				Util::increment(roman_ints, new_case, i);
-				break;
-			}
-
-			if (next != roman_ints.end() && next->second > roman_ints.find("C")->second) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			value += roman_ints.find("C")->second;
+			Util::repeats(roman_code, roman_code[i], i);
+			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
+			Util::increment(roman_ints, new_case, i);
 			break;
 		}
-
 		case 'D':
 		{
-			if (Util::find_duplicates(roman_code, roman_code[i]) > 1) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			if (prev != roman_ints.end() && prev->second < roman_ints.find("D")->second
-				|| next != roman_ints.end() && next->second > roman_ints.find("D")->second) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			value += roman_ints.find("D")->second;
+			Util::find_duplicates(roman_code, roman_code[i]);
+			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
 			break;
 		}
-
 		case 'M':
 		{
-			if (Util::repeats(roman_code, roman_code[i], i)) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			if (prev != roman_ints.end() && prev->second < roman_ints.find("M")->second
-				|| next != roman_ints.end() && next->second > roman_ints.find("M")->second) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-
-			value += roman_ints.find("M")->second;
+			Util::repeats(roman_code, roman_code[i], i);
+			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
 			break;
 		}
-
 		default:
 			throw std::runtime_error{ " Invalid Roman Int...\n" };
 		}
