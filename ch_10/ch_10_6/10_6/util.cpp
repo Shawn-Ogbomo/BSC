@@ -19,7 +19,7 @@ void Util::repeats(const std::string_view s, char c, unsigned pos) {
 	if (!s.empty()) {
 		if (const auto num_of_consecutive_characters = s.find_first_not_of(c, pos)
 			; num_of_consecutive_characters == std::string::npos) {
-			if (s.size() > 3) {
+			if (s.size() - pos > 3) {
 				throw std::runtime_error{ "Invalid roman int...\n" };
 			}
 		}
@@ -67,5 +67,33 @@ void::Util::sum(const std::map<std::string, int>::const_iterator it1_new_case
 
 	else {
 		val += map.find(std::string{ c })->second;
+	}
+}
+
+void Util::parse_rmn_from_int(std::string& result, const std::map<std::string
+	, int>& map, char rmn_letter, int& val, char next_rmn_letter) {
+	const auto place_value = map.find(std::string{ rmn_letter })->second;
+	const auto rmn_letter_qty = val / place_value;
+	const auto repeat_limit = 3;
+
+	if (rmn_letter_qty > 0 && rmn_letter_qty <= repeat_limit) {
+		result.append(val / place_value, rmn_letter);
+		val -= ((val / place_value) * place_value);
+	}
+
+	else if (rmn_letter_qty > repeat_limit) {
+		const auto total = rmn_letter_qty * place_value;
+		for (const auto& [key, value] : map) {
+			if (total == value) {
+				result += key;
+				val -= value;
+				return;
+			}
+		}
+
+		result.append(1, next_rmn_letter);
+		val -= map.find(std::string{ next_rmn_letter })->second;
+		result.append(val / place_value, rmn_letter);
+		val -= val;
 	}
 }
