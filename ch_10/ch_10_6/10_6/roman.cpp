@@ -88,12 +88,36 @@ std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 	return os << r.as_string();
 }
 
-std::ifstream& operator>>(std::ifstream& ifs, Roman_int& r) {
-	//ROMAN NUMERALS ARE ALPHA ONLY
-	//EXTRACT ALPHABETS ONLY FROM THE INPUT STREAM
-	//LEAVE EVERYTHOMG ELSE
+std::istream& operator>>(std::istream& is, Roman_int& r) {
+	//LOOP
+		// GET CHARACTER
+		//CONVERT TO UPPER
+		//DO MAP FIND
+		// IF IT IS NOT IN THE MAP
+			//SET THE STREAM STATE TO FAIL
+		//ELSE
+			//APPEND THE CHARACTER TO TEMPORARY STRING
 
-	return ifs;
+	char c = (toupper(is.peek()));
+
+	if (auto test = roman_ints.find(std::string{ c }); test == roman_ints.end()) {
+		is.clear(std::ios_base::failbit);
+		return is;
+	}
+
+	std::string s;
+	while (is.get(c) && roman_ints.find(std::string{ static_cast<char>((toupper(c))) }) != roman_ints.end()) {
+		s += c;
+	}
+
+	is.unget();
+
+	//BUILD ROMAN INT
+	Roman_int rmn{ s };
+
+	//UPDATE THE TARGET ROMAN INT
+	r = rmn;
+	return is;
 }
 
 std::string integer_to_roman_code(int val) {

@@ -1,5 +1,5 @@
 //Shawn Ogbomo
-// Sun Jan 15 2023
+// Sun Jul 16 2023
 //Simple calculator v1
 //revision history
 // works on Roman numerals
@@ -55,9 +55,10 @@ class Token_stream {
 public:
 	explicit Token_stream(std::istream const&) {}
 	Token get();
+
 	void unget(Token const& t) {
 		if (full) {
-			throw  std::runtime_error{ "cannot put token into full stream...\n" };
+			throw  std::runtime_error{ "cannot put token into full stream..." };
 		}
 		buffer = t;
 		full = true;
@@ -79,6 +80,34 @@ const char permanent = 'k';
 const char roman_numeral = 'r';
 constexpr std::string_view constant = "const";
 constexpr std::string_view ex_key = "exit";
+
+Token input_to_string(std::istream& is = std::cin) {						//EXTENSION OF TOKENSTREAM_GET()
+	std::string s;
+	char c{};
+
+	while (is.get(c) && isalpha(c) || isdigit(c) || c == underscore) {
+		s += c;
+	}
+	std::cin.unget();
+
+	if (s.empty() || s.front() == underscore || isdigit(s.front())) {
+		throw  std::runtime_error{ std::string{c} + " is invalid.." };
+	}
+
+	if (s == ex_key) {
+		return Token(quit);
+	}
+
+	if (s == constant) {
+		return Token(permanent);
+	}
+
+	char& first_char_s = s.front();
+	first_char_s = std::toupper(first_char_s);
+	std::transform(s.cbegin() + 1, s.cend(), s.begin() + 1
+		, [](unsigned char letter) {return std::tolower(letter); });
+	return Token(s);
+}
 
 Token Token_stream::get() {
 	if (full) {
@@ -122,6 +151,7 @@ Token Token_stream::get() {
 		if (isspace(c)) {
 			return Token(print);
 		}
+
 		if (isalpha(c) && std::cin.peek() == '\n') {
 			if (c == quit) {
 				return Token(quit);
@@ -129,52 +159,29 @@ Token Token_stream::get() {
 			if (c == help) {
 				std::cout << "\nCalculator application...\n\n"
 					<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included.\n"
-					<< "The calculator is also capable of creating variables and constants.\n" << "\nFunctions...\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n\n# variable declaration format\n#shawn=xix or space one space after #key\n\n" <<
-					"const declaration format \nconst shawn=xix\n" <<
-					"h key to display instructions...\n";
+					<< "The calculator is also capable of creating variables and constants.\n"
+					<< "\nFunctions...\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n\n# variable declaration format\n#~shawn=roman_numeral or one space after or before = key\n\n"
+					<< "const declaration format \nconst ~shawn=roman_numeral or const ~shawn =roman_numeral or const ~shawn = roman_numeral\n"
+					<< "h key to display instructions...\n"
+					<< "y key to send all cerr output and standard output to a file\n";
 				throw  std::runtime_error{ "\nrestarting..." };
 			}
 		}
 
 		if (c == name) {
-			std::string s;
+			return input_to_string();
+		}
 
-			while (std::cin.get(c) && (isalpha(c) || isdigit(c) || c == underscore)) {
-				s += c;
-			}
-
+		else if (c == 'e' || c == 'c') {
 			std::cin.unget();
-
-			if (s.empty() || s.front() == underscore) {
-				throw  std::runtime_error{ std::string{c} + " is invalid.." };
-			}
-
-			char& first_char_s = s.front();
-			first_char_s = std::toupper(first_char_s);
-			std::transform(s.cbegin() + 1, s.cend(), s.begin() + 1
-				, [](unsigned char letter) {return std::tolower(letter); });
-			return Token(s);
+			return input_to_string();
 		}
 
 		std::cin.unget();
-		std::string internal_s;
+		Roman_int rmn;
+		std::cin >> rmn;
 
-		while (std::cin.get(c) && (isalpha(c))) {
-			internal_s += c;
-		}
-
-		std::cin.unget();
-
-		if (internal_s == ex_key) {
-			return Token(quit);
-		}
-
-		if (internal_s == constant) {
-			return Token(permanent);
-		}
-
-		//BUILD ROMAN INT....
-		return Token{ static_cast<Roman_int>(internal_s) };
+		return Token{ rmn };
 	}
 }
 
@@ -240,16 +247,21 @@ class Symbol_table {
 public:
 	static Roman_int declare(Token_stream& ts, Token& t) {
 		Token t2 = ts.get();
-		if (t2.kind == print) {
-			t2 = ts.get();
-		}
 
 		if (t2.kind != name) {
 			throw  std::runtime_error{ "invalid token: " + std::string{t2.kind} + " expected a name" };
 		}
 
-		if (Token t3 = ts.get(); t3.kind != assignment) {
-			throw  std::runtime_error{ "invalid token: " + std::string{t3.kind} + " expected " + assignment };
+		if (Token t3 = ts.get(); t3.kind != print) {
+			ts.unget(t3);
+		}
+
+		if (Token t4 = ts.get(); t4.kind != assignment) {
+			throw  std::runtime_error{ "invalid token: " + std::string{t4.kind} + " expected " + assignment };
+		}
+
+		if (Token t5 = ts.get(); t5.kind != print) {
+			ts.unget(t5);
 		}
 
 		if (Symbol_table::is_declared(t2.name)) {
