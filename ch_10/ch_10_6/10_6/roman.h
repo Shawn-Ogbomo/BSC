@@ -15,7 +15,7 @@ private:
 std::string integer_to_roman_code(int val);
 std::ostream& operator<< (std::ostream& os, const
 	Roman_int& r);
-std::istream& operator >> (std::istream& is, Roman_int& r);
+std::ifstream& operator >> (std::ifstream& ifs, Roman_int& r);
 Roman_int operator +(const Roman_int& left, const Roman_int& right);
 Roman_int operator -(const Roman_int& left, const Roman_int& right);
 Roman_int operator *(const Roman_int& left, const Roman_int& right);

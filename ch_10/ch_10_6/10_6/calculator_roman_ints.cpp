@@ -31,13 +31,11 @@
 //<string, int>
 #include <string_view>
 #include <algorithm>
-#include <optional>
 #include <iostream>
 #include <vector>
 #include <cctype>
 #include <cmath>
 #include "roman.h"
-#include "token.h"
 
 class Invalid {};
 
@@ -81,15 +79,6 @@ const char permanent = 'k';
 const char roman_numeral = 'r';
 constexpr std::string_view constant = "const";
 constexpr std::string_view ex_key = "exit";
-
-std::optional<Roman_int> is_rmn(const std::string& target) {
-	try {
-		return Roman_int{ target };
-	}
-	catch (std::runtime_error) {
-		return std::nullopt;
-	}
-}
 
 Token Token_stream::get() {
 	if (full) {
@@ -147,30 +136,45 @@ Token Token_stream::get() {
 			}
 		}
 
-		std::cin.unget();
-		std::string s;
-		while (std::cin.get(c) && (isalpha(c) || isdigit(c) || c == underscore)) {
-			s += c;
+		if (c == name) {
+			std::string s;
+
+			while (std::cin.get(c) && (isalpha(c) || isdigit(c) || c == underscore)) {
+				s += c;
+			}
+
+			std::cin.unget();
+
+			if (s.empty() || s.front() == underscore) {
+				throw  std::runtime_error{ std::string{c} + " is invalid.." };
+			}
+
+			char& first_char_s = s.front();
+			first_char_s = std::toupper(first_char_s);
+			std::transform(s.cbegin() + 1, s.cend(), s.begin() + 1
+				, [](unsigned char letter) {return std::tolower(letter); });
+			return Token(s);
 		}
 
 		std::cin.unget();
-		if (s.empty() || s.front() == underscore) {
-			throw  std::runtime_error{ std::string{c} + " is invalid.." };
+		std::string internal_s;
+
+		while (std::cin.get(c) && (isalpha(c))) {
+			internal_s += c;
 		}
 
-		if (auto const rmn_object = is_rmn(s)) {
-			return Token(rmn_object.value());
-		}
+		std::cin.unget();
 
-		if (s == ex_key) {
+		if (internal_s == ex_key) {
 			return Token(quit);
 		}
 
-		if (s == constant) {
+		if (internal_s == constant) {
 			return Token(permanent);
 		}
-		std::string internal_name = s;
-		return Token(internal_name);
+
+		//BUILD ROMAN INT....
+		return Token{ static_cast<Roman_int>(internal_s) };
 	}
 }
 

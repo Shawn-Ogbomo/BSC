@@ -52,25 +52,27 @@ void::Util::sum(const std::map<std::string, int>::const_iterator it1_new_case
 	, const std::map<std::string, int>::const_iterator it3_next
 	, const std::map<std::string, int>::const_iterator it4_prev
 	, const std::map<std::string, int>& map, int& val, char c) {
+	std::string c_as_string{ c };
+
 	if (it1_new_case != map.end()) {
-		if ((it2_next_new_case != map.end() && it2_next_new_case->second >= map.find(std::string{ c })->second)
+		if ((it2_next_new_case != map.end() && it2_next_new_case->second >= map.find(c_as_string)->second)
 			|| ((it4_prev != map.end()) && (it4_prev->second < it3_next->second))) {
 			throw std::runtime_error{ "Invalid roman int...\n" };
 		}
 		val += map.find(it1_new_case->first)->second;
 	}
 
-	else if (it3_next != map.end() && it3_next->second > map.find(std::string{ c })->second
-		|| it4_prev != map.end() && it4_prev->second < map.find(std::string{ c })->second) {
+	else if (it3_next != map.end() && it3_next->second > map.find(c_as_string)->second
+		|| it4_prev != map.end() && it4_prev->second < map.find(c_as_string)->second) {
 		throw std::runtime_error{ "Invalid roman int...\n" };
 	}
 
 	else {
-		val += map.find(std::string{ c })->second;
+		val += map.find(c_as_string)->second;
 	}
 }
 
-void Util::parse_rmn_from_int(std::string& result, const std::map<std::string
+void Util::parse_rmn_by_placevalue(std::string& result, const std::map<std::string
 	, int>& map, char rmn_letter, int& val, char next_rmn_letter) {
 	const auto place_value = map.find(std::string{ rmn_letter })->second;
 	const auto rmn_letter_qty = val / place_value;

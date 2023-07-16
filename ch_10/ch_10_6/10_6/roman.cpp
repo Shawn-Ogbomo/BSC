@@ -5,12 +5,12 @@
 #include "util.h"
 #include "roman.h"
 
-Roman_int::Roman_int() = default;
-
 static const std::map<std::string, int> roman_ints{
 {"I",1},{"IV",4},{"V",5},{"IX",9},{"X",10},
 { "XL",40 },{"L",50},{ "XC",90 },{"C",100},
 {"CD",400 },{"D",500},{ "CM",900 }, { "M",1000 } };
+
+Roman_int::Roman_int() = default;
 
 Roman_int::Roman_int(const std::string& letters)
 	: roman_code{ letters } {
@@ -88,8 +88,12 @@ std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 	return os << r.as_string();
 }
 
-std::istream& operator>>(std::istream& is, Roman_int& r) {
-	return is;
+std::ifstream& operator>>(std::ifstream& ifs, Roman_int& r) {
+	//ROMAN NUMERALS ARE ALPHA ONLY
+	//EXTRACT ALPHABETS ONLY FROM THE INPUT STREAM
+	//LEAVE EVERYTHOMG ELSE
+
+	return ifs;
 }
 
 std::string integer_to_roman_code(int val) {
@@ -99,10 +103,10 @@ std::string integer_to_roman_code(int val) {
 	}
 
 	std::string roman_notation;
-	Util::parse_rmn_from_int(roman_notation, roman_ints, 'M', val);
-	Util::parse_rmn_from_int(roman_notation, roman_ints, 'C', val, 'D');
-	Util::parse_rmn_from_int(roman_notation, roman_ints, 'X', val, 'L');
-	Util::parse_rmn_from_int(roman_notation, roman_ints, 'I', val, 'V');
+	Util::parse_rmn_by_placevalue(roman_notation, roman_ints, 'M', val);
+	Util::parse_rmn_by_placevalue(roman_notation, roman_ints, 'C', val, 'D');
+	Util::parse_rmn_by_placevalue(roman_notation, roman_ints, 'X', val, 'L');
+	Util::parse_rmn_by_placevalue(roman_notation, roman_ints, 'I', val, 'V');
 	return roman_notation;
 }
 

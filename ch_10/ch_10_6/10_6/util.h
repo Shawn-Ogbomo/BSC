@@ -20,5 +20,5 @@ namespace Util {
 		, const std::map<std::string, int>::const_iterator it4_prev
 		, const std::map<std::string, int>& map, int& val, char c);
 
-	void parse_rmn_from_int(std::string& result, const std::map<std::string, int>& map, char rmn_letter, int& val, char next_rmn_letter = 0);
+	void parse_rmn_by_placevalue(std::string& result, const std::map<std::string, int>& map, char rmn_letter, int& val, char next_rmn_letter = 0);
 }
