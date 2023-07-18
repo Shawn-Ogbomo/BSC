@@ -14,8 +14,6 @@ Roman_int::Roman_int() = default;
 
 Roman_int::Roman_int(const std::string& letters)
 	: roman_code{ letters } {
-	std::for_each(roman_code.begin(), roman_code.end(), [](char& letter) {letter = std::toupper(letter); });
-
 	const auto rmn_code_sz = roman_code.size();
 
 	for (auto i = 0U; i < rmn_code_sz; ++i) {

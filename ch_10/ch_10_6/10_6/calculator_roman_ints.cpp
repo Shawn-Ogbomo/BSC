@@ -35,9 +35,9 @@
 #include <vector>
 #include <cctype>
 #include <cmath>
+#include "exceptions.h"
 #include "roman.h"
-
-class Invalid {};
+#include "util.h"
 
 struct Token {
 	Token() = default;
@@ -81,7 +81,7 @@ const char roman_numeral = 'r';
 constexpr std::string_view constant = "const";
 constexpr std::string_view ex_key = "exit";
 
-Token input_to_string(std::istream& is = std::cin) {						//EXTENSION OF TOKENSTREAM_GET()
+Token input_to_string(std::istream& is = std::cin) {
 	std::string s;
 	char c{};
 
@@ -116,8 +116,9 @@ Token Token_stream::get() {
 	}
 	char c;
 	std::cin.get(c);
+
 	if (std::cin.eof()) {
-		throw Invalid{};
+		throw Invalid{ "Exiting..." };
 	}
 	switch (c) {
 	case '+':
@@ -147,6 +148,7 @@ Token Token_stream::get() {
 	{
 		throw  std::runtime_error{ "Roman numerals only." };
 	}
+
 	default:
 		if (isspace(c)) {
 			return Token(print);
@@ -168,20 +170,57 @@ Token Token_stream::get() {
 			}
 		}
 
-		if (c == name) {
-			return input_to_string();
+		else if (c == name) {
+			std::string s;
+			while (std::cin.get(c) && c == underscore || isalpha(c) || isdigit(c)) {
+				s += c;
+			}
+			std::cin.unget();
+
+			if (s.empty() || s.front() == underscore || isdigit(s.front())) {
+				throw std::runtime_error{ "Invalid name format..." };
+			}
+
+			char& first_char_s = s.front();
+			first_char_s = std::toupper(first_char_s);
+			std::transform(s.cbegin() + 1, s.cend(), s.begin() + 1
+				, [](unsigned char letter) {return std::tolower(letter); });
+
+			return Token(s);
 		}
 
-		else if (c == 'e' || c == 'c') {
-			std::cin.unget();
-			return input_to_string();
+		std::string pattern = "const"
+			"exit";
+
+		std::string internal_s;
+
+		while (std::cin.get(c) && pattern.find(c) != std::string::npos) {
+			internal_s += c;
+		}
+
+		if (!internal_s.empty()) {
+			if (internal_s == "const") {
+				return Token{ permanent };
+			}
+
+			if (internal_s == "exit") {
+				return Token{ quit };
+			}
+
+			throw Bad_input{ "your input is not const or exit..." };
 		}
 
 		std::cin.unget();
+		std::cin.unget();			//FIX THIS...
+
 		Roman_int rmn;
 		std::cin >> rmn;
 
-		return Token{ rmn };
+		if (!std::cin) {
+			throw Bad_input{ "Couldn't build a roman int" };
+		}
+
+		return Token{ Roman_int{rmn} };
 	}
 }
 
@@ -429,8 +468,17 @@ int main() {
 		std::cerr << e.what() << "\n";
 		return 1;
 	}
+	catch (Bad_input& e) {
+		std::cerr << e.what() << "\n";
+		return 2;
+	}
+
+	catch (Invalid& e) {
+		std::cerr << e.what() << "\n";
+		return 3;
+	}
 	catch (...) {
 		std::cerr << "Something went wrong...\n";
-		return 2;
+		return 4;
 	}
 }
