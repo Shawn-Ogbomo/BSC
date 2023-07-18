@@ -81,34 +81,6 @@ const char roman_numeral = 'r';
 constexpr std::string_view constant = "const";
 constexpr std::string_view ex_key = "exit";
 
-Token input_to_string(std::istream& is = std::cin) {
-	std::string s;
-	char c{};
-
-	while (is.get(c) && isalpha(c) || isdigit(c) || c == underscore) {
-		s += c;
-	}
-	std::cin.unget();
-
-	if (s.empty() || s.front() == underscore || isdigit(s.front())) {
-		throw  std::runtime_error{ std::string{c} + " is invalid.." };
-	}
-
-	if (s == ex_key) {
-		return Token(quit);
-	}
-
-	if (s == constant) {
-		return Token(permanent);
-	}
-
-	char& first_char_s = s.front();
-	first_char_s = std::toupper(first_char_s);
-	std::transform(s.cbegin() + 1, s.cend(), s.begin() + 1
-		, [](unsigned char letter) {return std::tolower(letter); });
-	return Token(s);
-}
-
 Token Token_stream::get() {
 	if (full) {
 		full = false;
@@ -194,7 +166,9 @@ Token Token_stream::get() {
 
 		std::string internal_s;
 
-		while (std::cin.get(c) && pattern.find(c) != std::string::npos) {
+		std::cin.unget();
+
+		while (std::cin.get(c) && (pattern.find(c) != std::string::npos)) {
 			internal_s += c;
 		}
 
@@ -207,17 +181,17 @@ Token Token_stream::get() {
 				return Token{ quit };
 			}
 
-			throw Bad_input{ "your input is not const or exit..." };
+			throw std::runtime_error{ "your input is not const or exit..." };
 		}
 
 		std::cin.unget();
-		std::cin.unget();			//FIX THIS...
 
 		Roman_int rmn;
 		std::cin >> rmn;
 
 		if (!std::cin) {
-			throw Bad_input{ "Couldn't build a roman int" };
+			std::cin.clear();
+			throw std::runtime_error{ "Invalid input.\n" + std::string{"Press the help key : h help.."} };
 		}
 
 		return Token{ Roman_int{rmn} };
