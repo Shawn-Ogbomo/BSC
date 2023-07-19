@@ -32,9 +32,7 @@ void merge_files() {
 		return;
 	}
 
-	for (std::string s; std::getline(ist2, s);) {
-		ost << s << "\n";
-	}
+	ost << ist2.rdbuf();
 }
 
 int main() {
