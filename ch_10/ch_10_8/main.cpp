@@ -36,13 +36,8 @@ void concatenate_files() {
 	}
 	std::ofstream ost{ "output.txt" };
 
-	for (std::string s; std::getline(ist, s);) {
-		ost << s << "\n";
-	}
-
-	for (std::string internal_s; std::getline(ist2, internal_s);) {
-		ost << internal_s << "\n";
-	}
+	ost << ist.rdbuf();
+	ost << ist2.rdbuf();
 }
 
 int main() {
