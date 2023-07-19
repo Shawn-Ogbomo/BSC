@@ -31,7 +31,7 @@ void concatenate_files() {
 
 	if (!ist2) {
 		std::cerr << "The file: " << file_name2 << " does not exist...\n";
-		ist.exceptions(ist.exceptions() | std::ios_base::badbit);
+		ist.exceptions(ist2.exceptions() | std::ios_base::badbit);
 		return;
 	}
 	std::ofstream ost{ "output.txt" };
