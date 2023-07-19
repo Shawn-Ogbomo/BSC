@@ -101,25 +101,25 @@ void Util::parse_rmn_by_placevalue(std::string& result, const std::map<std::stri
 	}
 }
 
-//void Util::check_stream(std::istream& is, char terminator) {
-//	if (is.bad()) {
-//		is.exceptions(is.exceptions() | std::ios_base::badbit);
-//		throw Bad_input{ "You tried to read a character that is not in the ascii table...\nExiting..." };
-//	}
-//
-//	else if (is.fail()) {
-//		is.clear();
-//		const std::string pattern = "+-*/=;()$%^#~"
-//			"0123456789."
-//			"IVXLCDMivxlcdm"
-//			"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-//			"abcdefghijklmnopqrstuvwxyz";
-//
-//		for (char ch{}; is.get(ch);) {
-//			if (ch == terminator || pattern.find(ch) != std::string::npos) {
-//				is.unget();
-//				return;
-//			}
-//		}
-//	}
-//}
+void Util::check_stream(std::istream& is, char terminator) {
+	if (is.bad()) {
+		is.exceptions(is.exceptions() | std::ios_base::badbit);
+		throw Bad_input{ "You tried to read a character that is not in the ascii table...\nExiting..." };
+	}
+
+	else if (is.fail()) {
+		is.clear();
+		const std::string pattern = "+-*/=;()$%^#~"
+			"0123456789."
+			"IVXLCDM"
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			"abcdefghijklmnopqrstuvwxyz";
+
+		for (char ch{}; is.get(ch);) {
+			if (ch == terminator || pattern.find(ch) != std::string::npos) {
+				is.unget();
+				return;
+			}
+		}
+	}
+}

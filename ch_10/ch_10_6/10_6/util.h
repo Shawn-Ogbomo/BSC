@@ -22,5 +22,5 @@ namespace Util {
 
 	void parse_rmn_by_placevalue(std::string& result, const std::map<std::string, int>& map, char rmn_letter, int& val, char next_rmn_letter = 0);
 
-	//void check_stream(std::istream& is, char terminator);
+	void check_stream(std::istream& is, char terminator);
 }

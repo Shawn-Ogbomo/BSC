@@ -87,15 +87,6 @@ std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 }
 
 std::istream& operator>>(std::istream& is, Roman_int& r) {
-	//LOOP
-		// GET CHARACTER
-		//CONVERT TO UPPER
-		//DO MAP FIND
-		// IF IT IS NOT IN THE MAP
-			//SET THE STREAM STATE TO FAIL
-		//ELSE
-			//APPEND THE CHARACTER TO TEMPORARY STRING
-
 	char c = (toupper(is.peek()));
 
 	if (auto test = roman_ints.find(std::string{ c }); test == roman_ints.end()) {
@@ -110,10 +101,8 @@ std::istream& operator>>(std::istream& is, Roman_int& r) {
 
 	is.unget();
 
-	//BUILD ROMAN INT
 	Roman_int rmn{ s };
 
-	//UPDATE THE TARGET ROMAN INT
 	r = rmn;
 	return is;
 }
@@ -145,9 +134,6 @@ Roman_int operator*(const Roman_int& left, const Roman_int& right) {
 }
 
 Roman_int operator/(const Roman_int& left, const Roman_int& right) {
-	if (!right.as_int()) {
-		throw  std::runtime_error{ "Cannot divide by zero..." };
-	}
 	return Roman_int{ integer_to_roman_code(left.as_int() / right.as_int()) };
 }
 
@@ -156,8 +142,5 @@ Roman_int operator^(const Roman_int& left, const Roman_int& right) {
 }
 
 Roman_int operator%(const Roman_int& left, const Roman_int& right) {
-	if (!right.as_int()) {
-		throw  std::runtime_error{ "Cannot mod by " + std::string{std::to_string(right.as_int())} + "..." };
-	}
 	return Roman_int{ integer_to_roman_code(left.as_int() % right.as_int()) };
 }
