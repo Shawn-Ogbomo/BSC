@@ -12,6 +12,7 @@ private:
 	std::string roman_code = "nulla";
 	int value{};
 };
+
 std::string integer_to_roman_code(int val);
 std::ostream& operator<< (std::ostream& os, const
 	Roman_int& r);

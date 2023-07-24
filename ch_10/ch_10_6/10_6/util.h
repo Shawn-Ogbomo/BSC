@@ -6,7 +6,8 @@
 namespace Util {
 	void find_duplicates(std::string_view target_string, char c);
 
-	void repeats(const std::string_view s, char c, unsigned pos);	//RETURNS TRUE IF C REPEATS MORE THAN 3 TIMES IN SUCCESSION
+	//RETURNS TRUE IF C REPEATS MORE THAN 3 TIMES IN SUCCESSION
+	void repeats(const std::string_view s, char c, unsigned pos);
 
 	void increment(const std::map<std::string, int>& map, const std::map<std::string, int>::const_iterator it, unsigned& index);
 
@@ -22,5 +23,9 @@ namespace Util {
 
 	void parse_rmn_by_placevalue(std::string& result, const std::map<std::string, int>& map, char rmn_letter, int& val, char next_rmn_letter = 0);
 
-	void check_stream(std::istream& is, char terminator);
+	//FORMATS THE STRING TO START WITH UPPERCASE AND EACH SUBSEQUENT CHARACTER TO LOWERCASE
+	void format_string(std::string& target_string);
+
+	//SKIPS BAD INPUT
+	void skip_input(std::istream& is, char terminator);
 }

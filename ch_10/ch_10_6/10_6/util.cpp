@@ -101,25 +101,25 @@ void Util::parse_rmn_by_placevalue(std::string& result, const std::map<std::stri
 	}
 }
 
-void Util::check_stream(std::istream& is, char terminator) {
-	if (is.bad()) {
-		is.exceptions(is.exceptions() | std::ios_base::badbit);
-		throw Bad_input{ "You tried to read a character that is not in the ascii table...\nExiting..." };
+void Util::format_string(std::string& target_string) {
+	if (!target_string.empty()) {
+		target_string[0] = toupper(target_string[0]);
+		std::transform(target_string.cbegin() + 1, target_string.cend(), target_string.begin() + 1
+			, [](unsigned char letter) {return std::tolower(letter); });
 	}
+}
 
-	else if (is.fail()) {
-		is.clear();
-		const std::string pattern = "+-*/=;()$%^#~"
-			"0123456789."
-			"IVXLCDM"
-			"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-			"abcdefghijklmnopqrstuvwxyz";
+void Util::skip_input(std::istream& is, char terminator) {
+	is.clear();
 
-		for (char ch{}; is.get(ch);) {
-			if (ch == terminator || pattern.find(ch) != std::string::npos) {
-				is.unget();
-				return;
-			}
+	const std::string pattern = "+-*/=;()$%^#~"
+		"IVXLCDM"
+		"cex";
+
+	for (char ch{}; is.get(ch);) {
+		if (ch == terminator || ch == '\n' || pattern.find(ch) != std::string::npos) {
+			is.unget();
+			return;
 		}
 	}
 }
