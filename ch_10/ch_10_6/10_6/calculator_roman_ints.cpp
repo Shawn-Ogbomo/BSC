@@ -83,6 +83,57 @@ const char file = 'x';
 constexpr std::string_view constant = "const";
 constexpr std::string_view ex_key = "exit";
 
+//CHECKS FOR NAME,CONST,EXIT, AND ROMAN INT
+Token remaining_case(char c, std::istream& is) {
+	if (c == name) {
+		std::string s;
+		while (is.get(c) && c == underscore || isalpha(c) || isdigit(c)) {
+			s += c;
+		}
+
+		is.unget();
+
+		if (s.empty() || s.front() == underscore || isdigit(s.front())) {
+			throw std::runtime_error{ "Invalid name format..." };
+		}
+
+		Util::format_string(s);
+		return Token(s);
+	}
+
+	if (c == 'c' || c == 'e') {
+		std::string pattern = "abcdefghijklmnopqrstuvwxyz";
+		std::string internal_s;
+
+		is.unget();
+
+		while (is.get(c) && (pattern.find(c) != std::string::npos)) {
+			internal_s += c;
+		}
+
+		if (internal_s == "const") {
+			return Token{ permanent };
+		}
+
+		if (internal_s == "exit") {
+			return Token{ quit };
+		}
+
+		throw std::runtime_error{ "your input is not const or exit..." };
+	}
+
+	is.unget();
+	Roman_int rmn;
+	is >> rmn;
+
+	if (!is) {
+		is.clear();
+		throw std::runtime_error{ "couldn't build a roman int..." };
+	}
+
+	return Token{ Roman_int{rmn} };
+}
+
 Token Token_stream::get(std::istream& is) {
 	if (full) {
 		full = false;
@@ -94,6 +145,7 @@ Token Token_stream::get(std::istream& is) {
 	if (is.eof()) {
 		throw Invalid{ "Exiting..." };
 	}
+
 	switch (c) {
 	case '+':
 	case '-':
@@ -141,6 +193,7 @@ Token Token_stream::get(std::istream& is) {
 					<< "const declaration format \nconst ~shawn=roman_numeral or const ~shawn =roman_numeral or const ~shawn = roman_numeral\n"
 					<< "h key to display instructions...\n"
 					<< "y key to send all cerr output and standard output to a file\n";
+
 				throw  std::runtime_error{ "\nrestarting..." };
 			}
 
@@ -149,52 +202,7 @@ Token Token_stream::get(std::istream& is) {
 			}
 		}
 
-		if (c == name) {
-			std::string s;
-			while (is.get(c) && c == underscore || isalpha(c) || isdigit(c)) {
-				s += c;
-			}
-
-			is.unget();
-
-			if (s.empty() || s.front() == underscore || isdigit(s.front())) {
-				throw std::runtime_error{ "Invalid name format..." };
-			}
-
-			Util::format_string(s);
-			return Token(s);
-		}
-
-		if (c == 'c' || c == 'e') {
-			std::string pattern = "abcdefghijklmnopqrstuvwxyz";
-			std::string internal_s;
-
-			is.unget();
-
-			while (is.get(c) && (pattern.find(c) != std::string::npos)) {
-				internal_s += c;
-			}
-
-			if (internal_s == "const") {
-				return Token{ permanent };
-			}
-
-			if (internal_s == "exit") {
-				return Token{ quit };
-			}
-
-			throw std::runtime_error{ "your input is not const or exit..." };
-		}
-
-		is.unget();
-		Roman_int rmn;
-		is >> rmn;
-
-		if (!is) {
-			throw std::runtime_error{ "couldn't build a roman int..." };
-		}
-
-		return Token{ Roman_int{rmn} };
+		return remaining_case(c, is);
 	}
 }
 
@@ -286,7 +294,7 @@ void calculate(Token_stream& ts) {
 
 		if (t.kind == file) {
 			from_file(ts);
-			throw std::runtime_error{ "restarting..." };
+			throw std::runtime_error{ "Finished reading file contents.\n" };
 		}
 
 		ts.unget(t);
