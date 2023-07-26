@@ -102,7 +102,6 @@ std::istream& operator>>(std::istream& is, Roman_int& r) {
 	is.unget();
 
 	Roman_int rmn{ s };
-
 	r = rmn;
 	return is;
 }

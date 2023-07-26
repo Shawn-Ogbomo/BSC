@@ -267,6 +267,9 @@ void from_file(Token_stream& ts) {
 		Token t = ts.get(ifs);
 
 		while (t.kind == print) {
+			if (ifs.peek() == -1) {
+				return;
+			}
 			t = ts.get(ifs);
 		}
 
