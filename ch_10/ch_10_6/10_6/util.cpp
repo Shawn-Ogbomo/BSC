@@ -6,32 +6,23 @@
 #include "util.h"
 
 void Util::find_duplicates(std::string_view target_string, char c) {
-	if (target_string.size()) {
-		if (const int num_items = std::count(target_string.begin(), target_string.end(), c)
-			; num_items > 1) {
-			throw std::runtime_error{ "Invalid roman int...\n" };
-		}
-		return;
+	if (const int num_items = std::count(target_string.begin(), target_string.end(), c)
+		; target_string.empty() || num_items > 1) {
+		throw std::runtime_error{ "Invalid roman int...\n" };
 	}
-	throw std::invalid_argument("oops, the string is empty...\n");
 }
 
 void Util::repeats(const std::string_view s, char c, unsigned pos) {
-	if (!s.empty()) {
-		if (const auto num_of_consecutive_characters = s.find_first_not_of(c, pos)
-			; num_of_consecutive_characters == std::string::npos) {
-			if (s.size() - pos > 3) {
-				throw std::runtime_error{ "Invalid roman int...\n" };
-			}
-		}
-
-		else if (num_of_consecutive_characters - pos > 3) {
-			throw std::runtime_error{ "Invalid roman int...\n" };
-		}
-		return;
+	if (s.empty()) {
+		throw std::invalid_argument("oops, the string is empty...\n");
 	}
 
-	throw std::invalid_argument("oops, the string is empty...\n");
+	if (const auto num_of_consecutive_characters = s.find_first_not_of(c, pos)
+		; (num_of_consecutive_characters == std::string::npos) && (s.size() - pos > 3)
+		|| (num_of_consecutive_characters != std::string::npos)
+		&& (num_of_consecutive_characters - pos > 3)) {
+		throw std::runtime_error{ "Invalid roman int...\n" };
+	}
 }
 
 void Util::increment(const std::map<std::string, int>& map
