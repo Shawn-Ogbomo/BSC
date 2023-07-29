@@ -1,22 +1,18 @@
 #include <map>
-#include <string_view>
-#include <algorithm>
 #include <iostream>
+#include <algorithm>
+#include <string_view>
 #include "exceptions.h"
 #include "util.h"
 
 void Util::find_duplicates(std::string_view target_string, char c) {
 	if (const int num_items = std::count(target_string.begin(), target_string.end(), c)
-		; target_string.empty() || num_items > 1) {
+		; num_items > 1) {
 		throw std::runtime_error{ "Invalid roman int...\n" };
 	}
 }
 
 void Util::repeats(const std::string_view s, char c, unsigned pos) {
-	if (s.empty()) {
-		throw std::invalid_argument("oops, the string is empty...\n");
-	}
-
 	if (const auto num_of_consecutive_characters = s.find_first_not_of(c, pos)
 		; (num_of_consecutive_characters == std::string::npos) && (s.size() - pos > 3)
 		|| (num_of_consecutive_characters != std::string::npos)
@@ -27,16 +23,20 @@ void Util::repeats(const std::string_view s, char c, unsigned pos) {
 
 void Util::increment(const std::map<std::string, int>& map
 	, const std::map<std::string, int>::const_iterator it, unsigned& index) {
-	if (it != map.end())
-		++index;
+	if (it == map.end()) {
+		return;
+	}
+
+	++index;
 }
 
 std::map<std::string, int>::const_iterator Util::lookup(const std::map <std::string, int>& m
 	, std::string_view rmn_code, int current_index, int new_index) {
-	if (new_index && (new_index < rmn_code.size())) {
-		return m.find(rmn_code[current_index] + std::string{ rmn_code[new_index] });
+	if (new_index == rmn_code.size()) {
+		return m.end();
 	}
-	return m.end();
+
+	return m.find(rmn_code[current_index] + std::string{ rmn_code[new_index] });
 }
 
 void::Util::sum(const std::map<std::string, int>::const_iterator it1_new_case
