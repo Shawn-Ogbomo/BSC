@@ -1,4 +1,6 @@
-#pragma once
+#ifndef EXCEPTIONS_H
+#define EXCEPTIONS_H
+
 #include <iostream>
 #include <string>
 
@@ -17,3 +19,4 @@ public:
 private:
 	std::string error_message;
 };
+#endif // EXCEPTIONS_H

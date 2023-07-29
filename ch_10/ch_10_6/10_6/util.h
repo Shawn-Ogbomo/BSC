@@ -1,4 +1,6 @@
-#pragma once
+#ifndef UTIL_H
+#define UTIL_H
+
 #include <string_view>
 #include <string>
 #include <map>
@@ -29,3 +31,4 @@ namespace Util {
 	//SKIPS BAD INPUT
 	void skip_input(std::istream& is, char terminator);
 }
+#endif // UTIL_H

@@ -1,6 +1,9 @@
-#pragma once
+#ifndef ROMAN_H
+#define ROMAN_H
+
 #include <string>
 #include <string_view>
+
 class Roman_int {
 	static constexpr int repeat_limit = 3;
 public:
@@ -23,3 +26,4 @@ Roman_int operator *(const Roman_int& left, const Roman_int& right);
 Roman_int operator /(const Roman_int& left, const Roman_int& right);
 Roman_int operator ^(const Roman_int& left, const Roman_int& right);
 Roman_int operator %(const Roman_int& left, const Roman_int& right);
+#endif // ROMAN_H
