@@ -126,10 +126,7 @@ Token remaining_case(char c, std::istream& is) {
 	Roman_int rmn;
 	is >> rmn;
 
-	if (!is) {
-		is.clear();
-		throw std::runtime_error{ "couldn't build a roman int..." };
-	}
+	Util::check_stream(is, "couldn't build a roman int...");
 
 	return Token{ Roman_int{rmn} };
 }
@@ -258,9 +255,7 @@ void from_file(Token_stream& ts) {
 	std::cin >> file_name;
 	std::ifstream ifs{ file_name };
 
-	if (!ifs) {
-		throw Invalid_file{ "Oops, the file: " + file_name + " does not exist..." };
-	}
+	Util::check_stream(ifs, "Oops, the file: " + file_name + " does not exist...");
 
 	while (ifs)try {
 		std::cout << prompt << " ";
@@ -302,11 +297,6 @@ void calculate(Token_stream& ts) {
 
 		ts.unget(t);
 		std::cout << result << " " << statement(ts) << std::endl;
-	}
-
-	catch (Invalid_file& e) {
-		std::cerr << e.what() << "\n";
-		clean_up_mess(ts);
 	}
 
 	catch (std::exception& e) {

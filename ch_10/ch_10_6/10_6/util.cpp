@@ -14,7 +14,8 @@ void Util::find_duplicates(std::string_view target_string, char c) {
 
 void Util::repeats(const std::string_view s, char c, unsigned pos) {
 	if (const auto num_of_consecutive_characters = s.find_first_not_of(c, pos)
-		; (num_of_consecutive_characters == std::string::npos) && (s.size() - pos > 3)
+		; (num_of_consecutive_characters == std::string::npos)
+		&& (s.size() - pos > 3)
 		|| (num_of_consecutive_characters != std::string::npos)
 		&& (num_of_consecutive_characters - pos > 3)) {
 		throw std::runtime_error{ "Invalid roman int...\n" };
@@ -112,5 +113,12 @@ void Util::skip_input(std::istream& is, char terminator) {
 			is.unget();
 			return;
 		}
+	}
+}
+
+void Util::check_stream(std::istream& is, const std::string& message) {
+	if (is.fail()) {
+		is.clear();
+		throw std::runtime_error{ message };
 	}
 }
