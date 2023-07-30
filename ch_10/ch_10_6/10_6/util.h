@@ -32,6 +32,6 @@ namespace Util {
 	void skip_input(std::istream& is, char terminator);
 
 	//CHECKS STREAM STATE
-	void check_stream(std::istream& is, const std::string& message);
+	void check_stream(std::istream& is, const std::string& message, const std::string& message2 = "");
 }
 #endif // UTIL_H

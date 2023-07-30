@@ -116,7 +116,11 @@ void Util::skip_input(std::istream& is, char terminator) {
 	}
 }
 
-void Util::check_stream(std::istream& is, const std::string& message) {
+void Util::check_stream(std::istream& is, const std::string& message, const std::string& message2) {
+	if (is.eof() || std::cin.eof()) {
+		throw Terminate{ message + message2 };
+	}
+
 	if (is.fail()) {
 		is.clear();
 		throw std::runtime_error{ message };

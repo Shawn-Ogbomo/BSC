@@ -36,9 +36,9 @@
 #include <vector>
 #include <cctype>
 #include <cmath>
-#include "exceptions.h"
 #include "roman.h"
 #include "util.h"
+#include "exceptions.h"
 
 struct Token {
 	Token() = default;
@@ -138,10 +138,7 @@ Token Token_stream::get(std::istream& is) {
 	}
 	char c{};
 	is.get(c);
-
-	if (is.eof()) {
-		throw Invalid{ "Exiting..." };
-	}
+	Util::check_stream(is, "exiting...");
 
 	switch (c) {
 	case '+':
@@ -255,7 +252,7 @@ void from_file(Token_stream& ts) {
 	std::cin >> file_name;
 	std::ifstream ifs{ file_name };
 
-	Util::check_stream(ifs, "Oops, the file: " + file_name + " does not exist...");
+	Util::check_stream(ifs, "Oops, the file: " + file_name + " does not exist...", "\nyou pressed ctrl+z\nexiting....");
 
 	while (ifs)try {
 		std::cout << prompt << " ";
@@ -488,8 +485,8 @@ int main() {
 		calculate(ts);
 	}
 
-	catch (Invalid& e) {
-		std::cerr << e.what() << "\n";
+	catch (Terminate& e) {
+		std::cerr << e.what() << std::endl;
 		return 1;
 	}
 

@@ -4,9 +4,9 @@
 #include <iostream>
 #include <string>
 
-class Invalid {
+class Terminate {
 public:
-	explicit Invalid(const std::string& err) :error_message{ err } {}
+	explicit Terminate(const std::string& err) :error_message{ err } {}
 	const std::string& what() const { return error_message; }
 private:
 	std::string error_message;
