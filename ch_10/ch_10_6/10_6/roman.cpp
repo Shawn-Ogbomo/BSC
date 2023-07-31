@@ -14,7 +14,7 @@ Roman_int::Roman_int() = default;
 
 Roman_int::Roman_int(const std::string& letters)
 	: roman_code{ letters } {
-	const auto rmn_code_sz = roman_code.size();
+	const auto& rmn_code_sz = roman_code.size();
 
 	for (auto i = 0U; i < rmn_code_sz; ++i) {
 		const auto& new_case = Util::build_new_case(roman_ints, roman_code, i, i + 1);

@@ -111,11 +111,11 @@ Token remaining_case(char c, std::istream& is) {
 			internal_s += c;
 		}
 
-		if (internal_s == "const") {
+		if (internal_s == constant) {
 			return Token{ permanent };
 		}
 
-		if (internal_s == "exit") {
+		if (internal_s == ex_key) {
 			return Token{ quit };
 		}
 
@@ -327,7 +327,7 @@ public:
 			throw  std::runtime_error{ t2.name + std::string{" is already declared\n"} };
 		}
 
-		Roman_int rmn_numeral = expression(ts);
+		Roman_int rmn_numeral = expression(ts, is);
 		Variable v = (t.kind == let ? Variable{ t2.name, rmn_numeral } : Variable{ t2.name, rmn_numeral, true });
 
 		var_table.push_back(v);
@@ -377,7 +377,7 @@ Roman_int statement(Token_stream& ts, std::istream& is) {
 			}
 
 			if (t2.kind == assignment) {
-				Symbol_table::update_value(t.name, expression(ts));
+				Symbol_table::update_value(t.name, expression(ts, is));
 				return Symbol_table::value(t.name);
 			}
 		}
