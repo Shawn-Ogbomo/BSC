@@ -17,10 +17,11 @@ Roman_int::Roman_int(const std::string& letters)
 	const auto rmn_code_sz = roman_code.size();
 
 	for (auto i = 0U; i < rmn_code_sz; ++i) {
-		const auto& new_case = Util::lookup(roman_ints, roman_code, i, i + 1);
-		auto next_new_case = ((i + 2) < rmn_code_sz) ? roman_ints.find(std::string{ roman_code[i + 2] }) : roman_ints.end();
-		auto next = ((i + 1) < rmn_code_sz) ? roman_ints.find(std::string{ roman_code[i + 1] }) : roman_ints.end();
-		auto prev = ((i - 1) != -1) ? roman_ints.find(std::string{ roman_code[i - 1] }) : roman_ints.end();
+		const auto& new_case = Util::build_new_case(roman_ints, roman_code, i, i + 1);
+
+		auto next_new_case = Util::next_or_previous(roman_ints, roman_code, i + 2);
+		auto next = Util::next_or_previous(roman_ints, roman_code, i + 1);
+		auto prev = Util::next_or_previous(roman_ints, roman_code, i + -1);
 
 		switch (roman_code[i]) {
 		case 'I':

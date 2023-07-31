@@ -14,7 +14,10 @@ namespace Util {
 	void increment(const std::map<std::string, int>& map, const std::map<std::string, int>::const_iterator it, unsigned& index);
 
 	//BUILDS A NEW CASE
-	std::map<std::string, int>::const_iterator lookup(const std::map <std::string, int>& m, std::string_view rmn_code, int current_index, int new_index);
+	std::map<std::string, int>::const_iterator build_new_case(const std::map <std::string, int>& m, std::string_view rmn_code, int current_index, int new_index);
+
+	//FINDS NEXT AND PREVIOUS
+	std::map<std::string, int>::const_iterator next_or_previous(const std::map<std::string, int>& m, std::string_view rmn_code, int new_index);
 
 	//CALCULATES VALUE OF ROMAN CODE
 	void sum(const std::map<std::string, int>::const_iterator it1_new_case

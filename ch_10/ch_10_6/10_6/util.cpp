@@ -31,13 +31,22 @@ void Util::increment(const std::map<std::string, int>& map
 	++index;
 }
 
-std::map<std::string, int>::const_iterator Util::lookup(const std::map <std::string, int>& m
+std::map<std::string, int>::const_iterator Util::build_new_case(const std::map <std::string, int>& m
 	, std::string_view rmn_code, int current_index, int new_index) {
 	if (new_index == rmn_code.size()) {
 		return m.end();
 	}
 
 	return m.find(rmn_code[current_index] + std::string{ rmn_code[new_index] });
+}
+
+std::map<std::string, int>::const_iterator Util::next_or_previous(const std::map<std::string, int>& m, std::string_view rmn_code, int new_index) {
+	if (auto rmn_code_sz = rmn_code.size(); new_index >= rmn_code_sz
+		|| new_index < 0) {
+		return m.end();
+	}
+
+	return m.find(std::string{ rmn_code[new_index] });
 }
 
 void::Util::sum(const std::map<std::string, int>::const_iterator it1_new_case
