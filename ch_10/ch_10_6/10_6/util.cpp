@@ -111,8 +111,6 @@ void Util::format_string(std::string& target_string) {
 }
 
 void Util::skip_input(std::istream& is, char terminator) {
-	is.clear();
-
 	const std::string pattern = "+-*/=;()$%^#~"
 		"IVXLCDM"
 		"cex";

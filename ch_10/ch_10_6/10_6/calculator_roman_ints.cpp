@@ -122,7 +122,8 @@ Token remaining_case(char c, std::istream& is) {
 		throw std::runtime_error{ "your input is not const or exit..." };
 	}
 
-	is.unget();
+	is.putback(c);
+
 	Roman_int rmn;
 	is >> rmn;
 
