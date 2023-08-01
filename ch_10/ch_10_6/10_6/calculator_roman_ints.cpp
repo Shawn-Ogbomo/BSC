@@ -49,7 +49,7 @@ struct Token {
 	explicit Token(const Roman_int& r) : kind{ 'r' }, v_rmn{ r } {}
 	char kind{};
 	std::string name;
-	Roman_int v_rmn{};
+	Roman_int v_rmn;
 };
 
 class Token_stream {
@@ -67,7 +67,7 @@ public:
 	void ignore(char c);
 private:
 	bool full{};
-	Token buffer{};
+	Token buffer;
 };
 
 const char print = ';';
@@ -124,12 +124,13 @@ Token remaining_case(char c, std::istream& is) {
 
 	is.putback(c);
 
+	//is.unget();
 	Roman_int rmn;
 	is >> rmn;
 
 	Util::check_stream(is, "couldn't build a roman int...");
 
-	return Token{ Roman_int{rmn} };
+	return Token{ rmn };
 }
 
 Token Token_stream::get(std::istream& is) {
