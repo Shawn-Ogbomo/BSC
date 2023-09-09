@@ -31,8 +31,7 @@ int main() {
 		case'i':
 		case'o':
 		case'u': {
-			c = {};
-			os << c;
+			os << "";
 			break;
 		}
 		default:
