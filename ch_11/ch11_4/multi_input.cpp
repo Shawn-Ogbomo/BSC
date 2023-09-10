@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <sstream>
 #include <ios>
@@ -24,28 +25,64 @@ void clean_up_mess() {
 	}
 }
 
+std::istream& operator >> (std::istream& is, std::pair<std::string, int>& p) {
+	auto& [base, val] = p;
+	is >> base;
+	std::istringstream iss{ base };
+
+	iss.unsetf(std::ios::oct);
+	iss.unsetf(std::ios::hex);
+	iss.unsetf(std::ios::dec);
+
+	iss >> val;
+
+	return is;
+}
+
+void display(const std::vector<std::pair<std::string, int>>& vals) {
+	std::string_view hex{ "0x" };
+	constexpr char oct{ '0' };
+
+	for (const auto& [base, val] : vals) {
+		if (std::string_view(base).substr(0, 2) == hex) {
+			std::cout << base
+				<< " hexadecimal converts to:\t" << val << "\tdecimal" << "\n";
+		}
+
+		else if (base[0] == oct) {
+			std::cout << base << " octal converts to:\t" << val << "\tdecimal" << "\n";
+		}
+
+		else {
+			std::cout << base << " decimal converts to:\t" << val << "\tdecimal" << "\n";
+		}
+	}
+}
+
+void convert_to_lower(std::string& target_string) {
+	if (!target_string.empty()) {
+		std::transform(target_string.cbegin(), target_string.cend(), target_string.begin()
+			, [](unsigned char letter) {return std::tolower(letter); });
+	}
+}
+
 int main() {
 	std::vector<std::pair<std::string, int>> vals;
-	std::cin.unsetf(std::ios::oct);
-	std::cin.unsetf(std::ios::hex);
 
 	while (true) {
 		std::cout << "Enter a set of values either in decimal,octal,or hex. Press ctrl+z to stop\n\n";
 
-		for (auto s = ""s; std::cin >> s;) {
-			std::istringstream is{ s };
-			int val{};
-			is >> val;
-			vals.emplace_back(s, val);
+		for (std::pair<std::string, int> p; std::cin >> p;) {
+			convert_to_lower(p.first);
+			vals.emplace_back(p);
 		}
 
 		if (std::cin.eof()) {
-			for (const auto& [base, val] : vals) {
-				std::cout << base << "converts to\t" << val << "\tdecimal" << "\n";
-			}
+			display(vals);
+			break;
 		}
 
-		else if (!std::cin) {
+		if (!std::cin) {
 			clean_up_mess();
 		}
 	}
