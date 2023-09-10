@@ -36,6 +36,9 @@ std::istream& operator >> (std::istream& is, std::pair<std::string, int>& p) {
 
 	iss >> val;
 
+	if (!iss) {
+		is.clear(std::ios::failbit);
+	}
 	return is;
 }
 
