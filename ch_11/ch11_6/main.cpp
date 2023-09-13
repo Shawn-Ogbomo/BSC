@@ -28,6 +28,11 @@ public:
 	}
 
 	bool is_whitespace(char c) const {
+		if (white.find(c) != std::string::npos) {
+			return true;
+		}
+
+		return false;
 	}
 
 	void case_sensitive(bool b) {
@@ -38,11 +43,35 @@ public:
 		return sensitive;
 	}
 
-	friend std::istream& operator >>(std::istream& is, Punct_stream& p) {
+	Punct_stream& operator >>(std::string& s) {
+		while (!(buffer >> s)) {
+			if (buffer.bad() || !source.good()) {
+				return *this;
+			}
+
+			buffer.clear();
+			auto line = ""s;
+			std::getline(source, line);
+
+			for (auto& ch : line) {
+				if (is_whitespace(ch)) {
+					ch = ' ';
+				}
+
+				else if (!sensitive) {
+					ch = tolower(ch);
+				}
+			}
+
+			buffer.str(line);
+		}
+		return *this;
 	}
 
 	explicit operator bool() const {
+		return !(source.fail() || source.bad() && source.good());
 	}
+
 private:
 	std::istream& source;
 	std::istringstream buffer;
