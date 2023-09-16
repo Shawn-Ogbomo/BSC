@@ -44,7 +44,7 @@ public:
 	}
 
 	Punct_stream& operator >>(std::string& s) {
-		while (!(buffer >> s)) {
+		while (!(std::getline(buffer,s))) {
 			if (buffer.bad() || !source.good()) {
 				return *this;
 			}
@@ -80,4 +80,16 @@ private:
 };
 
 int main() {
+	Punct_stream ps{ std::cin };
+	ps.whitespace(".;,?-'");
+
+	std::cout << "Enter a few senteces, .;,?-' will be replaced with a space. Press ctrl-z to exit.\n\n";
+
+	for (auto test{ ""s }; ps >> test;) {
+		std::cout <<  test << "\n";
+	}
+
+	if (!ps) {
+		std::cerr << "Exiting...";
+	}
 }

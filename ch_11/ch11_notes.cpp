@@ -336,4 +336,3 @@ scientific: floating point format. Scientific notation.
 setprecision: floating point formater, sets the input and output maxdigits to the provided argument
 
 showbase: floating point formater. Shows the base of the value, decimal , oct , hex 
-
