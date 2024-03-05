@@ -32,18 +32,6 @@ int main() {
 	std::vector<std::pair<int, int>> vals;
 
 	for (int val{}; ifs >> val;) {
-		//READ FILE
-			//LOOP WHILE DATA IN THE FILE
-				//CHECK IF THE NUMBER IS IN THE VECTOR
-					// IF IT IS NOT
-						//CREATE STD::PAIR OF THE NUMBER AND OCCURENCES {0}
-						//PUSH TO BACK OF VECTOR
-						// CONTINUE
-					//END IF
-				// INCREMENT THE OCCURENCES OF THE NUMBER
-				//NEXT NUMBER
-			//END LOOP
-
 		auto found = std::find_if(vals.begin(), vals.end(), [val](std::pair<int, int>lhs) {
 			return lhs.first == val; });
 
@@ -56,21 +44,9 @@ int main() {
 		found->second++;
 	}
 
-	//SORT THE VECTOR OF PAIRS LEXICOGRAPHICALLY BY KEY
 	std::sort(vals.begin(), vals.end(), [](std::pair<int, int> lhs, std::pair<int, int> rhs) {
 		return lhs.first < rhs.first;
 		});
-
-	//DISPLAY
-	//IF VECTOR IS NOT EMPTY
-		//LOOP
-			//IF OCCURENCES IS 0 OF THE PAIR
-				// DONT DISPLAT THE VALUE OF THE PAIR
-				// CONTINUE
-			// END IF
-			// DISPLAY THE PAIRS KEY AND VALUE
-		//END LOOP
-	//END IF
 
 	if (!vals.empty())
 	{
