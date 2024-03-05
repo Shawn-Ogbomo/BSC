@@ -6,11 +6,6 @@
 #include <vector>
 
 using namespace std::string_literals;
-//Write a program that replaces punctuation with whitespace.Consider
-//. (dot), ; (semicolon), , (comma), ? (question mark), -(dash), ' (single
-//quote) punctuation characters.Don’t modify characters within a pair of
-//double quotes("). For example, “ - don't use the as-if rule.” becomes
-//	“ don t use the as if rule ”.
 
 class Punct_stream {
 public:
@@ -44,7 +39,7 @@ public:
 	}
 
 	Punct_stream& operator >>(std::string& s) {
-		while (!(std::getline(buffer,s))) {
+		while (!(std::getline(buffer, s))) {
 			if (buffer.bad() || !source.good()) {
 				return *this;
 			}
@@ -59,7 +54,7 @@ public:
 				}
 
 				else if (!sensitive) {
-					ch = tolower(ch);
+					ch = static_cast<char>(tolower(ch));
 				}
 			}
 
@@ -86,7 +81,7 @@ int main() {
 	std::cout << "Enter a few senteces, .;,?-' will be replaced with a space. Press ctrl-z to exit.\n\n";
 
 	for (auto test{ ""s }; ps >> test;) {
-		std::cout <<  test << "\n";
+		std::cout << test << "\n";
 	}
 
 	if (!ps) {

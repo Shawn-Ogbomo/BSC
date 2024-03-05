@@ -1,7 +1,7 @@
-//Modify the program from the previous exercise so that it replaces don't
-//with do not, can't with cannot, etc.; leaves hyphens within words intact
-//(so that we get “ do not use the as - if rule ”); and converts all characters
-//to lower case
+//  Use the program from the previous exercise to make a dictionary(as an
+//	alternative to the approach in §11.7).Run the result on a multi - page text
+//	file, look at the result, and see if you can improve the program to make a
+//	better dictionary
 
 #include <iostream>
 #include <string_view>
@@ -124,7 +124,12 @@ int main()
 	for (auto test{ ""s }; ps >> test;)
 	{
 		std::cout << test << "\n";
+		//push each word to words vector
+			//prevent duplicates
+			//remove punctuation characters from word
 	}
+
+	//function to display words vector
 
 	if (!ps)
 	{
