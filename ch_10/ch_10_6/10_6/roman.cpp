@@ -24,6 +24,9 @@ Roman_int::Roman_int(const std::string& letters)
 
 		switch (roman_code[i]) {
 		case 'I':
+		case 'X':
+		case 'C':
+		case'M':
 		{
 			Util::repeats(roman_code, roman_code[i], i);
 			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
@@ -31,43 +34,14 @@ Roman_int::Roman_int(const std::string& letters)
 			break;
 		}
 		case 'V':
-		{
-			Util::find_duplicates(roman_code, roman_code[i]);
-			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
-			break;
-		}
-		case 'X':
-		{
-			Util::repeats(roman_code, roman_code[i], i);
-			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
-			Util::increment(roman_ints, new_case, i);
-			break;
-		}
 		case 'L':
+		case'D':
 		{
 			Util::find_duplicates(roman_code, roman_code[i]);
 			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
 			break;
 		}
-		case 'C':
-		{
-			Util::repeats(roman_code, roman_code[i], i);
-			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
-			Util::increment(roman_ints, new_case, i);
-			break;
-		}
-		case 'D':
-		{
-			Util::find_duplicates(roman_code, roman_code[i]);
-			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
-			break;
-		}
-		case 'M':
-		{
-			Util::repeats(roman_code, roman_code[i], i);
-			Util::sum(new_case, next_new_case, next, prev, roman_ints, value, roman_code[i]);
-			break;
-		}
+
 		default:
 			throw std::runtime_error{ " Invalid Roman Int...\n" };
 		}
@@ -87,7 +61,7 @@ std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
 }
 
 std::istream& operator>>(std::istream& is, Roman_int& r) {
-	char c = toupper(is.peek());
+	auto c = static_cast<char>(toupper(is.peek()));
 
 	if (auto test = roman_ints.find(std::string{ c }); test == roman_ints.end()) {
 		is.clear(std::ios_base::failbit);
@@ -138,7 +112,7 @@ Roman_int operator/(const Roman_int& left, const Roman_int& right) {
 }
 
 Roman_int operator^(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code((std::pow(left.as_int(),right.as_int()))) };
+	return Roman_int{ integer_to_roman_code(static_cast<int>(std::pow(left.as_int(),right.as_int()))) };
 }
 
 Roman_int operator%(const Roman_int& left, const Roman_int& right) {
