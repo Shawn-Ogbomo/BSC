@@ -1,0 +1,100 @@
+//REVIEW
+
+1, Why do we need data structures with varying array elements? - To prevent out of range errors - Account for users inputs
+
+2, What are the four types of storage we have in a typical program?
+-code storage
+-when you start a c++ program, the compiler reserves memory for your code
+
+    -static
+      -for global variables you define
+
+    -stack
+        -functions
+        -parameters
+        -local variables
+
+    -heap *free store*
+        -memory allocated using operator new
+
+3, What is the free store? What name is commonly used for it? - The free store is the heap memory in a program - Heap
+-Supported operators
+-new -delete
+
+4, What is the dereference operator and why do we need one?
+The dereference operator yields the data at a memory location
+for a pointer type.
+
+    dereference operator is required to manipulate the data of a pointer type and
+    to retreive it.
+
+5, What is an address? How are are memory addresses manipulated in c++?
+An address is a memory location within the computers memory.
+Memory addresses are manupulated in c++ using pointers and arrays
+
+6, What information about a pointed-to object does a pointer have?
+-Its location in memory
+-its value
+-size in bytes
+
+    Pointers do contain a method to return the maximum number of elements within the pointer
+
+7, What can a pointer point to? - A pointer can point to another pointer, or another object of the same type.
+
+8, What is a leak? - A leak occurs when the programmer forgets to use the delete keyword to
+manually deallocate memory that has been allocated using operator new.
+
+9, What is a resource? - A resource is an object managed by a pointer type
+
+10, How can we initialize a pointer?
+Pointers are initialized using - nullptr - uniform initialization {}
+
+11, What is a nullptr? When do we need to use one?
+
+    -A nullptr is used to initialize of pointer to a safe state
+    -nullptr means unknown memory location
+
+    - pointer type can be used on objects to prevent a double delete
+    - nullptr is used to prevent access of data at an unknown memory location
+
+    -nullptr is used with selection to ensure that data is at an address before
+    accessing it
+
+12, When do we need a pointer (instead of a reference or a named object)? - Pointers are used to refer to multiple nullable objects or to manipulate them.
+
+13, What is a destructor? When do we want one?
+-A destructor is a spectial function that is called when invoking operator delete - assignment operator
+-going out of scope
+-End of program
+
+    A destructor is required to return the allocated memery to the free store
+
+14, When would we want a virual destructor?
+-A virtual destructor is used with polymorphism (class with a virutal function)
+-Virtual destructors ensure that all of the resources in the inheritance hierrarchy
+are de-allocated.
+
+15, How are destructors for members called?
+-assignment operator
+-going out of scope
+-End of program
+-invoking operator delete
+
+16, What is a cast? When do we need to use one? - A cast is an explicit conversion - converts one type into a related type. Casts are required when we want to convert
+a value to a related type
+
+-eg, double to int
+
+    We rarely want to use casts since they result in the loss of information
+    Usually programs can be refractored to avoid the use of casts
+    casts can result in implicit errors.
+
+17, How do we access a member of a class through a pointer?
+-Using the dereference operator \*
+
+18, What is a doubly-linked list?
+
+    - A doubly linked list is a list that holds a pointer to the previous link and the
+    next link
+
+19, What is this and why do we need to use it? - This is a pointer to the current object. - This is used to refer to the current object and is only used to refer to the entire object
