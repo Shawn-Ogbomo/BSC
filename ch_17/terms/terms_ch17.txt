@@ -24,7 +24,7 @@ destructor - special function used to deallocate resource of class
 
 free store - heap memory (objects allocated using operator new )
 
-link - type containing holding pointers to next and previous and current 
+link - type used to express the concept of list
 
 list - prominent data structure. Holds information and pointers to other links 
 
@@ -50,4 +50,3 @@ resource leak - occurs when the destructor of a pointer type is not called.
 Usually occurs when an exception is thrown. (dangling pointer)
 
 subscripting- operator [] used to access a specific region of memory within the array type 
-
