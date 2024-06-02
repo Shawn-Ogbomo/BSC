@@ -35,6 +35,8 @@ int main() {
 
 	const char* cp{};
 
+	strdupp(cp);
+
 	std::cout << "Copy: " << name_cpy << "  Original: " << name;
 
 	delete[] name_cpy;
