@@ -18,7 +18,7 @@ static void to_lowerr(char* s) {
 
 	while (s[index] != '\0')
 	{
-		if (auto dec = static_cast<int>(s[index]); dec >= 65 && dec <= 90)
+		if (const auto dec = static_cast<int>(s[index]); dec >= 65 && dec <= 90)
 		{
 			s[index] += 32;
 		}
