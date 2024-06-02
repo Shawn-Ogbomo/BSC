@@ -15,6 +15,10 @@ static char* strdupp(const char* target) {
 		++sz;
 	}
 
+	if (!sz) {
+		return nullptr;
+	}
+
 	auto target_cpy{ new char[sz + 1] {} };
 
 	target_cpy[sz] = '\0';
@@ -36,6 +40,10 @@ int main() {
 	const char* cp{};
 
 	strdupp(cp);
+
+	char empty[]{ '\0' };
+
+	strdupp(empty);
 
 	std::cout << "Copy: " << name_cpy << "  Original: " << name;
 
