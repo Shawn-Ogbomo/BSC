@@ -6,7 +6,7 @@
 #include <iostream>
 
 int main() {
-	std::cout << "Please enter some characters. Press ! to exit...\n";
+	std::cout << "Please enter some characters. Press ctrl+z or ! to exit...\n";
 
 	for (auto c = '?'; std::cin >> c;)
 	{
