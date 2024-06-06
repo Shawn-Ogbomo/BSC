@@ -44,7 +44,7 @@ nullptr - used to initialize a pointer to a safe state
 
 pointer - an object that holds an address value 
 
-range 
+range - total elements. Pointers do not know how many elements they are pointing to
 
 resource leak - occurs when the destructor of a pointer type is not called.
 Usually occurs when an exception is thrown. (dangling pointer)
