@@ -88,10 +88,12 @@ std::string integer_to_roman_code(int val) {
 	}
 
 	std::string roman_notation;
+
 	Util::parse_rmn_by_placevalue(roman_notation, roman_ints, 'M', val);
 	Util::parse_rmn_by_placevalue(roman_notation, roman_ints, 'C', val, 'D');
 	Util::parse_rmn_by_placevalue(roman_notation, roman_ints, 'X', val, 'L');
 	Util::parse_rmn_by_placevalue(roman_notation, roman_ints, 'I', val, 'V');
+
 	return roman_notation;
 }
 

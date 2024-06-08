@@ -218,9 +218,11 @@ void Token_stream::ignore(char c) {
 		full = false;
 		return;
 	}
+
 	std::cout << "Press; to continue...\n";
 	full = false;
 	char ch;
+
 	while (std::cin >> ch) {
 		if (ch == c) {
 			return;
@@ -316,8 +318,7 @@ void calculate(Token_stream& ts, std::ostream& os) {
 		}
 
 		if (t.kind == output_to_file) {
-			std::string file_name;
-			file_prompt(file_name);
+			std::string file_name;	file_prompt(file_name);
 			std::ofstream oft{ file_name };
 
 			to_file(ts, oft);
@@ -461,7 +462,7 @@ Roman_int term(Token_stream& ts, std::istream& is = std::cin) {
 			t2 = ts.get(is);
 			break;
 		}
-		case'^':
+		case '^':
 		{
 			left = left ^ primary(ts, is);
 			t2 = ts.get(is);

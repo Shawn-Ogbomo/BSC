@@ -9,24 +9,28 @@
 #include <algorithm>
 #include "exceptions.h"
 
-bool find_duplicates(std::string_view target_string) {
+bool find_duplicates(std::string_view target_string)
+{
 	return std::any_of(target_string.begin(), target_string.end(), [target_string](const char& c) {
 		return  (std::count(target_string.begin(), target_string.end(), c) > 1);
 		});
 }
 
-void check_stream(const std::istream& is = std::cin) {
+void check_stream(const std::istream& is = std::cin)
+{
 	if (is.fail())
 	{
 		throw Terminate{ "exiting..." };
 	}
 }
 
-std::vector<std::string> split(const std::string& s, const std::string& w) {
+std::vector<std::string> split(const std::string& s, const std::string& w)
+{
 	std::string s_cpy = s;
 
-	std::replace_if(s_cpy.begin(), s_cpy.end(), [&w](char c) {
-		return w.find(c) != std::string::npos;
+	std::replace_if(s_cpy.begin(), s_cpy.end(), [&w](char c)
+		{
+			return w.find(c) != std::string::npos;
 		}, ' ');
 
 	std::istringstream iss{ s_cpy };
@@ -44,13 +48,15 @@ std::vector<std::string> split(const std::string& s, const std::string& w) {
 void display(const std::vector<std::string>& words) {
 	std::cout << "results\n\n";
 
-	std::for_each(words.begin(), words.end(), [](const std::string& word) {
-		std::cout << word << "\n";
+	std::for_each(words.begin(), words.end(), [](const std::string& word)
+		{
+			std::cout << word << "\n";
 		});
 }
 
 int main() {
-	while (true) try {
+	while (true) try
+	{
 		std::cout << "Enter a string, then enter a set of characters you want to treat as whitespace. Press ctrl+z to exit:  ";
 
 		std::string line;
@@ -63,11 +69,13 @@ int main() {
 		std::getline(std::cin, white);
 		check_stream();
 
-		if (find_duplicates(white)) {
+		if (find_duplicates(white))
+		{
 			std::cerr << "Try again\n\n";
 		}
 
-		else {
+		else
+		{
 			display(split(line, white));
 			std::cout << "\n";
 		}

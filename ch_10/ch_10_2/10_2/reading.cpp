@@ -19,9 +19,9 @@ void fill_vector(std::vector<Reading>& r) {
 	int h = 0;
 	double temp_f = 0;
 	char c{};
-	static char quit = 'q';
-	static const char celcius = 'C';
-	static const char farenheit = 'F';
+	constexpr char quit = 'q';
+	constexpr  char celcius = 'C';
+	constexpr  char farenheit = 'F';
 	while (true) {
 		std::cout << "Enter temp readings hour followed by temp. \nWhen finished, press q to stop... \n";
 		while (std::cin >> h >> temp_f >> c) {
@@ -76,11 +76,11 @@ double median(const std::vector<Reading>& r) {
 			temps.push_back(target.temperature_fahrenheit);
 		}
 		std::sort(temps.begin(), temps.end());
-		bool is_odd = r.size() % 2 == 1 ? true : false;
-		if (is_odd) {
+		bool odd = r.size() % 2 == 1 ? true : false;
+		if (odd) {
 			return temps[(r.size() / 2)];
 		}
-		else if (!is_odd) {
+		else if (!odd) {
 			return (((temps[(r.size() / 2) - 1]) + temps[(r.size() / 2)])) / 2;
 		}
 	}
