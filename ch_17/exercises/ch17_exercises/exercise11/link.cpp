@@ -19,6 +19,8 @@ Link* Link::insert(Link* n)
 		prev->succ = n;
 	}
 
+	n->prev = prev;
+
 	prev = n;
 
 	return n;
@@ -26,10 +28,47 @@ Link* Link::insert(Link* n)
 
 Link* Link::add(Link* n)
 {
+	if (!n)
+	{
+		return this;
+	}
+
+	if (!this)
+	{
+		return n;
+	}
+
+	n->prev = this;
+
+	if (succ)
+	{
+		succ->prev = n;
+	}
+
+	n->succ = succ;
+
+	succ = n;
+
+	return n;
 }
 
-Link* Link::erase()
+Link* Link::erase(Link* p)
 {
+	if (!p) {
+		return nullptr;
+	}
+
+	if (p->succ)
+	{
+		p->succ->prev = p->prev;
+	}
+
+	if (p->prev)
+	{
+		p->prev->succ = p->succ;
+	}
+
+	return p->succ;
 }
 
 Link* Link::find(const std::string& s)
@@ -74,7 +113,7 @@ Link* Link::advance(Link* p, int n) const
 		}
 	}
 
-	if (n < 0)
+	else if (n < 0)
 	{
 		while (n++)
 		{

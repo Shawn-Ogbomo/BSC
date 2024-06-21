@@ -4,8 +4,6 @@
 
 class Link {
 public:
-	std::string value;
-
 	Link(const std::string& v, Link* p = nullptr, Link* s = nullptr)
 		: prev{ p }, succ{ s }, value{ v } { }
 	// INSERT N BEFORE THIS OBJECT
@@ -13,7 +11,7 @@ public:
 	// INSERT N AFTER THIS OBJECT
 	Link* add(Link* n);
 	// REMOVE THIS OBJECT FROM LIST
-	Link* erase();
+	Link* erase(Link* p);
 	// FIND S IN LIST
 	Link* find(const std::string& s);
 	// FIND S IN CONST LIST (SEE §18.5.1)
@@ -22,8 +20,10 @@ public:
 	Link* advance(Link* p, int n) const;
 	Link* next() const { return succ; }
 	Link* previous() const { return prev; }
+	std::string val() const { return value; };
 private:
 	Link* prev;
 	Link* succ;
+	std::string value;
 };
 #endif // !LINK_H

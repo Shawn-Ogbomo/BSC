@@ -3,11 +3,13 @@
 #include "link.h"
 
 int main() {
-	auto* norse_gods = new Link{ "Thor" };
+	auto* norse_gods = new Link{ "Thor",nullptr,new Link{"Shawn"} };
 
-	norse_gods = norse_gods->insert(new Link{ "Odin" });
+	norse_gods = norse_gods->add(new Link{ "Odin" });
 	norse_gods = norse_gods->insert(new Link{ "Zeus" });
 	norse_gods = norse_gods->insert(new Link{ "Freia" });
+
+	std::cout << norse_gods->advance(norse_gods, 2)->val();
 
 	auto* greek_gods = new Link{ "Hera" };
 
@@ -19,13 +21,13 @@ int main() {
 	greek_gods = greek_gods->insert(new Link{ "Hestia" });
 
 	if (const auto* found = greek_gods->find("Athena"); found) {
-		std::cout << "found: " << found->value;
+		std::cout << "found: " << found->val();
 	}
 
 	const auto* p1{ greek_gods };
 
 	while (p1) {
-		std::cout << p1->value << "\n";
+		std::cout << p1->val() << "\n";
 		p1 = p1->next();
 	}
 }
