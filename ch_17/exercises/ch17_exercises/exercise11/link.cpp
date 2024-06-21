@@ -1,4 +1,5 @@
 #include "link.h"
+#include <iostream>
 
 Link* Link::insert(Link* n)
 {
@@ -26,6 +27,7 @@ Link* Link::insert(Link* n)
 	return n;
 }
 
+//REVISE THIS
 Link* Link::add(Link* n)
 {
 	if (!n)
@@ -127,4 +129,21 @@ Link* Link::advance(Link* p, int n) const
 	}
 
 	return p;
+}
+
+void print_all(const Link* p)
+{
+	std::cout << "{";
+
+	while (p)
+	{
+		std::cout << p->val();
+		p = p->next();
+
+		if (p) {
+			std::cout << ", ";
+		}
+	}
+
+	std::cout << "}";
 }

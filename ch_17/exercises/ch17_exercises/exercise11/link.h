@@ -26,4 +26,7 @@ private:
 	Link* succ;
 	std::string value;
 };
+
+void print_all(const Link* p);
+
 #endif // !LINK_H
