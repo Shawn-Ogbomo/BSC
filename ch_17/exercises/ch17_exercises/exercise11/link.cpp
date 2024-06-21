@@ -27,7 +27,6 @@ Link* Link::insert(Link* n)
 	return n;
 }
 
-//REVISE THIS
 Link* Link::add(Link* n)
 {
 	if (!n)
