@@ -1,0 +1,19 @@
+//EXERCISES 
+
+1, What is the output format of pointer values on your implementation?
+    Output format of a pointer is in hex format 
+
+2, How many bytes are in an int? In a double? In a bool? Do not use sizeof operator 
+to verify your answer. 
+
+int = 4 bytes 
+double = 8 bytes 
+bool = 1 byte 
+
+3, Why did we define two versions of find()?
+first version to return a const link*
+such pointer protects the pointed-to object.
+
+Second version returns a Link* 
+Permits modification of pointed-to object
+through the returned pointer. 
