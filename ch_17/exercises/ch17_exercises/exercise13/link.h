@@ -18,13 +18,13 @@ public:
 	Link* erase(Link* p);
 	// FIND S IN LIST
 	Link* find(std::string_view s);
-	// FIND S IN CONST LIST (SEE §18.5.1)
+	// FIND S IN CONST LIST (SEE ï¿½18.5.1)
 	const Link* find(std::string_view s) const;
 	// MOVE N POSITIONS IN LIST
 	Link* advance(Link* p, int n) const;
-	Link* next() const { return succ; }
-	Link* previous() const { return prev; }
-	void value() const { god.print_all(); };
+	Link* next() const { return succ; };
+	Link* previous() const { return prev; };
+	const God& value() const { return god; };
 private:
 	Link* prev;
 	Link* succ;

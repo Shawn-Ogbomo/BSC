@@ -142,7 +142,7 @@ void print_all(const Link* p)
 
 	while (p)
 	{
-		p->value();
+		p->value().print_all();
 		p = p->next();
 
 		if (p) {
