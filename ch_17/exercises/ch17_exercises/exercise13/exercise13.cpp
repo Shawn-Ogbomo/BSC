@@ -49,12 +49,17 @@ int main() {
 	egyptian_gods = egyptian_gods->add(new Link{ God{ "Ra","Egypt","..." } });
 	egyptian_gods = egyptian_gods->insert(new Link{ God{"Isis","Egypt","...",""} });
 
-	print_all(norse_gods);
+	if (const auto* found{ greek_gods->find("Hestia") }; found)
+	{
+		std::cout << "Found";
+	}
+
+	print_all(norse_gods->first_index());
 	std::cout << "\n\n";
 
-	print_all(greek_gods);
+	print_all(greek_gods->first_index());
 	std::cout << "\n\n";
 
-	print_all(egyptian_gods);
+	print_all(egyptian_gods->first_index());
 	std::cout << "\n\n";
 }
