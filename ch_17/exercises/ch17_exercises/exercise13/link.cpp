@@ -65,12 +65,7 @@ Link* Link::add_ordered(Link* n)
 		return n;
 	}
 
-	auto* p1{ this };
-
-	while (p1->prev)
-	{
-		p1 = p1->prev;
-	}
+	auto* p1{ first_index() };
 
 	while (p1->succ)
 	{
@@ -110,7 +105,7 @@ Link* Link::erase(Link* p)
 
 Link* Link::find(std::string_view s)
 {
-	auto* p1 = this;
+	auto* p1 = first_index();
 
 	while (p1)
 	{
@@ -128,6 +123,18 @@ Link* Link::find(std::string_view s)
 const Link* Link::find(std::string_view s) const
 {
 	return const_cast<Link*>(this)->find(s);
+}
+
+Link* Link::first_index()
+{
+	auto* p1{ this };
+
+	while (p1->prev)
+	{
+		p1 = p1->advance(p1, -1);
+	}
+
+	return p1;
 }
 
 Link* Link::advance(Link* p, int n) const
@@ -170,10 +177,7 @@ void print_all(const Link* p)
 {
 	std::cout << "{ \n";
 
-	while (p->previous())
-	{
-		p = p->previous();
-	}
+	p = { const_cast<Link*>(p)->first_index() };
 
 	while (p)
 	{

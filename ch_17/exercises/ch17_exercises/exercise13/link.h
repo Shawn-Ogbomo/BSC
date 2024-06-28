@@ -7,7 +7,7 @@
 class Link {
 public:
 	Link(const God& g, Link* p = nullptr, Link* s = nullptr)
-		: prev{ p }, succ{ s }, god{ g } { }
+		: god{ g }, prev{ p }, succ{ s } { }
 	// INSERT N BEFORE THIS OBJECT
 	Link* insert(Link* n);
 	// INSERT N AFTER THIS OBJECT
@@ -16,19 +16,17 @@ public:
 	Link* add_ordered(Link* n);
 	// REMOVE THIS OBJECT FROM LIST
 	Link* erase(Link* p);
-	// FIND S IN LIST
 	Link* find(std::string_view s);
-	// FIND S IN CONST LIST (SEE �18.5.1)
 	const Link* find(std::string_view s) const;
-	// MOVE N POSITIONS IN LIST
+	Link* first_index();
 	Link* advance(Link* p, int n) const;
 	Link* next() const { return succ; };
 	Link* previous() const { return prev; };
 	const God& value() const { return god; };
 private:
+	God god;
 	Link* prev;
 	Link* succ;
-	God god;
 };
 
 void print_all(const Link* p);

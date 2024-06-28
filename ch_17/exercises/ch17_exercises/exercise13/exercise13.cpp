@@ -11,6 +11,26 @@
 #include <iostream>
 #include "link.h"
 
+static const Link* ordered_list(const Link* lhs, Link* rhs) {
+	if (!lhs)
+	{
+		return nullptr;
+	}
+
+	if (!rhs)
+	{
+		return lhs;
+	}
+
+	//GET FIRST INDEX OF LHS
+	auto* p1{ const_cast<Link*>(lhs)->first_index() };
+
+	//TRAVERSE LHS USING NEXT
+		//RECURSIVE CALL TO ADD_ORDERED INTO RHS
+
+	return p1;
+}
+
 int main() {
 	auto* norse_gods = new Link{ God{"Odin","Greek","...",""} };
 
@@ -36,4 +56,5 @@ int main() {
 	std::cout << "\n\n";
 
 	print_all(egyptian_gods);
+	std::cout << "\n\n";
 }
