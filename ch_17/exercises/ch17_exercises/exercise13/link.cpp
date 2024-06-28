@@ -53,10 +53,40 @@ Link* Link::add(Link* n)
 	return n;
 }
 
-//COMPLETE THIS...
 Link* Link::add_ordered(Link* n)
 {
-	return nullptr;
+	if (!n)
+	{
+		return this;
+	}
+
+	if (!this)
+	{
+		return n;
+	}
+
+	auto* p1{ this };
+
+	while (p1->prev)
+	{
+		p1 = p1->prev;
+	}
+
+	while (p1->succ)
+	{
+		if (n->god.name <= p1->god.name) {
+			return p1->insert(n);
+		}
+
+		if (n->god.name <= p1->succ->god.name)
+		{
+			return p1->add(n);
+		}
+
+		p1 = p1->advance(p1, 2);
+	}
+
+	return p1->add(n);
 }
 
 Link* Link::erase(Link* p)
@@ -140,14 +170,16 @@ void print_all(const Link* p)
 {
 	std::cout << "{ \n";
 
+	while (p->previous())
+	{
+		p = p->previous();
+	}
+
 	while (p)
 	{
 		p->value().print_all();
+		std::cout << "\n";
 		p = p->next();
-
-		if (p) {
-			std::cout << ", ";
-		}
 	}
 
 	std::cout << "\n}";

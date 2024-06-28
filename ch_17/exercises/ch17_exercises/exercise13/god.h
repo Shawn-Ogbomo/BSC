@@ -16,10 +16,10 @@ public:
 
 	void print_all() const
 	{
-		std::cout << " " << mythology << " \n"
-			<< " " << name << " \n"
-			<< (!vehicle.empty() ? " " + vehicle + "\n" : "")
-			<< " " << weapon;
+		std::cout << "" << mythology << "\n"
+			<< "" << name << " \n"
+			<< (!vehicle.empty() ? "" + vehicle + "\n" : "")
+			<< "" << weapon;
 	}
 
 	std::string name;

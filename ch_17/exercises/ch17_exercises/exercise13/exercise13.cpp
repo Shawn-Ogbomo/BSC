@@ -12,20 +12,21 @@
 #include "link.h"
 
 int main() {
-	auto* norse_gods = new Link{ God{"Zeus","Greek","Lightning",""} };
+	auto* norse_gods = new Link{ God{"Odin","Greek","...",""} };
 
-	//norse_gods = norse_gods->insert(new Link{ God{"","","",""} });
-	//norse_gods = norse_gods->insert(new Link{ "Zeus" });
-	//norse_gods = norse_gods->insert(new Link{ "Freia" });
+	norse_gods = norse_gods->insert(new Link{ God{"Frigg","Norse","...",""} });
+	norse_gods = norse_gods->insert(new Link{ God{"Loki","Norse","...",""} });
+	norse_gods = norse_gods->insert(new Link{ God{"Balder","Norse","...",""} });
 
-	//auto* greek_gods = new Link{ "Hera" };
-	//greek_gods = greek_gods->insert(new Link{ "Athena" });
-	//greek_gods = greek_gods->insert(new Link{ "Mars" });
-	//greek_gods = greek_gods->insert(new Link{ "Poseidon" });
+	auto* greek_gods = new Link{ God{"Hera","Greek","..."} };
+
+	greek_gods = greek_gods->add(new Link{ God{ "Hestia","Greek","..." } });
+	greek_gods = greek_gods->add(new Link{ God{ "Demeter","Greek","..." } });
+	greek_gods = greek_gods->add(new Link{ God{ "Ares","Greek","..." } });
 
 	print_all(norse_gods);
 
-	//std::cout << "\n";
+	std::cout << "\n\n";
 
-	//print_all(greek_gods);
+	print_all(greek_gods);
 }
