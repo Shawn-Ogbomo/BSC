@@ -24,9 +24,16 @@ int main() {
 	greek_gods = greek_gods->add(new Link{ God{ "Demeter","Greek","..." } });
 	greek_gods = greek_gods->add(new Link{ God{ "Ares","Greek","..." } });
 
-	print_all(norse_gods);
+	auto* egyptian_gods = new Link{ God{"Set","Egypt","..."} };
 
+	egyptian_gods = egyptian_gods->add(new Link{ God{ "Ra","Egypt","..." } });
+	egyptian_gods = egyptian_gods->insert(new Link{ God{"Isis","Egypt","...",""} });
+
+	print_all(norse_gods);
 	std::cout << "\n\n";
 
 	print_all(greek_gods);
+	std::cout << "\n\n";
+
+	print_all(egyptian_gods);
 }
