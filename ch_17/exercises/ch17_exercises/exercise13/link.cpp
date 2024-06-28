@@ -175,7 +175,7 @@ Link* Link::advance(Link* p, int n) const
 
 void print_all(const Link* p)
 {
-	std::cout << "{ \n";
+	p = { const_cast<Link*>(p)->first_index() };
 
 	while (p)
 	{
@@ -183,6 +183,4 @@ void print_all(const Link* p)
 		std::cout << "\n";
 		p = p->next();
 	}
-
-	std::cout << "\n}";
 }
