@@ -15,7 +15,7 @@ public:
 	// INSERTS NEW ELEMENT IN ITS CORRECT LEXICOGRAPHICAL POSITION
 	Link* add_ordered(Link* n);
 	// REMOVE THIS OBJECT FROM LIST
-	Link* erase(Link* p);
+	Link* erase();
 	Link* find(std::string_view s);
 	const Link* find(std::string_view s) const;
 	Link* first_index();

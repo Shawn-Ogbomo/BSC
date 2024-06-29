@@ -84,23 +84,23 @@ Link* Link::add_ordered(Link* n)
 	return p1->add(n);
 }
 
-Link* Link::erase(Link* p)
+Link* Link::erase()
 {
-	if (!p) {
+	if (!this) {
 		return nullptr;
 	}
 
-	if (p->succ)
+	if (succ)
 	{
-		p->succ->prev = p->prev;
+		succ->prev = prev;
 	}
 
-	if (p->prev)
+	if (prev)
 	{
-		p->prev->succ = p->succ;
+		prev->succ = succ;
 	}
 
-	return p->succ;
+	return succ;
 }
 
 Link* Link::find(std::string_view s)
