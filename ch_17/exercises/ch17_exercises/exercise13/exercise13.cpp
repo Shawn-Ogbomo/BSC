@@ -11,21 +11,22 @@
 #include <iostream>
 #include "link.h"
 
-static const Link* ordered_list(Link* lhs) {
+static Link* ordered_list(Link* lhs) {
 	if (!lhs)
 	{
 		return nullptr;
 	}
 
-	auto* new_link{ new Link{God{lhs->first_index()->value()}} };
+	lhs = lhs->first_index();
 
-	lhs->erase();
+	auto* new_link{ new Link{God{lhs->value()}} };
 
-	for (lhs = { lhs->first_index() }; lhs;)
+	lhs = lhs->erase();
+
+	while (lhs)
 	{
-		new_link->add_ordered(lhs);
-
-		lhs->erase();
+		new_link->add_ordered(new Link{ God{lhs->value()} });
+		lhs = lhs->erase();
 	}
 
 	return new_link;
@@ -65,7 +66,13 @@ int main() {
 	print_all(egyptian_gods);
 	std::cout << "\n\n";
 
-	if (auto* norse_ordered{ ordered_list(norse_gods) }; norse_ordered) {
-		norse_ordered->value().print_all();
-	}
+	std::cout << "***Sorted Lists*** \n";
+
+	print_all(ordered_list(norse_gods));
+	std::cout << "\n\n";
+
+	print_all(ordered_list(greek_gods));
+	std::cout << "\n\n";
+
+	print_all(ordered_list(egyptian_gods));
 }

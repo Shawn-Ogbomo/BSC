@@ -67,7 +67,7 @@ Link* Link::add_ordered(Link* n)
 
 	auto* p1{ first_index() };
 
-	while (p1->succ)
+	while (p1)
 	{
 		if (n->god.name <= p1->god.name) {
 			return p1->insert(n);
@@ -173,9 +173,9 @@ Link* Link::advance(Link* p, int n) const
 	return p;
 }
 
-void print_all(const Link* p)
+void print_all(Link* p)
 {
-	p = { const_cast<Link*>(p)->first_index() };
+	p = p->first_index();
 
 	while (p)
 	{

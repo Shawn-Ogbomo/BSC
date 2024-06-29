@@ -29,6 +29,6 @@ private:
 	Link* succ;
 };
 
-void print_all(const Link* p);
+void print_all(Link* p);
 
 #endif // !LINK_H
