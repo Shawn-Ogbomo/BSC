@@ -67,7 +67,12 @@ Link* Link::add_ordered(Link* n)
 
 	auto* p1{ first_index() };
 
-	while (p1)
+	if (!p1->succ && n->god.name <= p1->god.name)
+	{
+		return insert(n);
+	}
+
+	while (p1->succ)
 	{
 		if (n->god.name <= p1->god.name) {
 			return p1->insert(n);
