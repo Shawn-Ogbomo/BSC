@@ -21,12 +21,12 @@ static Link* ordered_list(Link* lhs) {
 
 	auto* new_link{ new Link{God{lhs->value()}} };
 
-	lhs = lhs->erase();
+	lhs = lhs->next();
 
 	while (lhs)
 	{
 		new_link->add_ordered(new Link{ God{lhs->value()} });
-		lhs = lhs->erase();
+		lhs = lhs->next();
 	}
 
 	return new_link;
@@ -68,11 +68,22 @@ int main() {
 
 	std::cout << "***Sorted Lists*** \n";
 
-	print_all(ordered_list(norse_gods));
+	auto* norse_ordered{ ordered_list(norse_gods) };
+	print_all(norse_ordered);
 	std::cout << "\n\n";
 
-	print_all(ordered_list(greek_gods));
+	auto* greek_ordered{ ordered_list(greek_gods) };
+	print_all(greek_ordered);
 	std::cout << "\n\n";
 
-	print_all(ordered_list(egyptian_gods));
+	auto* egyptian_ordered{ ordered_list(egyptian_gods) };
+	print_all(egyptian_ordered);
+	std::cout << "\n\n";
+
+	delete greek_gods;
+	delete norse_gods;
+	delete egyptian_gods;
+	delete norse_ordered;
+	delete greek_ordered;
+	delete egyptian_ordered;
 }

@@ -8,6 +8,7 @@ class Link {
 public:
 	Link(const God& g, Link* p = nullptr, Link* s = nullptr)
 		: god{ g }, prev{ p }, succ{ s } { }
+	~Link();
 	// INSERT N BEFORE THIS OBJECT
 	Link* insert(Link* n);
 	// INSERT N AFTER THIS OBJECT

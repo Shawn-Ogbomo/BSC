@@ -1,6 +1,16 @@
 #include "link.h"
 #include <iostream>
 
+Link::~Link()
+{
+	auto* p1{ first_index() };
+
+	while (p1)
+	{
+		p1 = p1->erase();
+	}
+}
+
 Link* Link::insert(Link* n)
 {
 	if (!n)
