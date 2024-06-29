@@ -11,20 +11,21 @@
 #include <iostream>
 #include "link.h"
 
-static const Link* ordered_list(const Link* lhs) {
+static const Link* ordered_list(Link* lhs) {
 	if (!lhs)
 	{
 		return nullptr;
 	}
 
-	auto* new_link{ new Link{God{const_cast<Link*>(lhs)->first_index()->value()}} };
+	auto* new_link{ new Link{God{lhs->first_index()->value()}} };
 
-	for (lhs = { const_cast<Link*>(lhs)->first_index() }; lhs;)
+	lhs->erase();
+
+	for (lhs = { lhs->first_index() }; lhs;)
 	{
-		new_link->add_ordered(const_cast<Link*>(lhs));
+		new_link->add_ordered(lhs);
 
-		//ERASE CURRENT INDEX OF LHS
-		const_cast<Link*>(lhs)->erase();
+		lhs->erase();
 	}
 
 	return new_link;
