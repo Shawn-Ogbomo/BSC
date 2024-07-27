@@ -11,7 +11,7 @@ public:
 	// INSERT N AFTER THIS OBJECT
 	Link* add(Link* n);
 	// REMOVE THIS OBJECT FROM LIST
-	//Link* erase();
+	Link* erase(Link* h);
 	Link* insert(Link* h, Link* n);
 	Link* find(std::string_view s);
 	const Link* find(std::string_view s) const;

@@ -6,9 +6,9 @@
 
 //Previous member variable may be omitted from Link
 
-//Using a singly liked-list is suitable when the position of removal is trivial
-
-//singly linked list is suitable when removal and insertion at the back is required
+//Singly linked-lists required less overhead since prev is removed; their operations are cheaper.
+//doubly linked-lists do not allow tail-sharing and cannot be used as persistent data structures.
+//singly linked lists are paramount to doubly-linked list when searching is trivial.
 
 #include <iostream>
 #include "link.h"
@@ -29,6 +29,12 @@ int main() {
 	norse_gods = norse_gods->insert(norse_gods, new Link{ "ZZZZ" });
 
 	norse_gods->advance(3)->insert(norse_gods, new Link{ "BBBB" });
+
+	norse_gods = norse_gods->erase(norse_gods);
+
+	norse_gods = norse_gods->advance(4)->erase(norse_gods);
+
+	print_all(norse_gods);
 
 	std::cout << "\n\n";
 

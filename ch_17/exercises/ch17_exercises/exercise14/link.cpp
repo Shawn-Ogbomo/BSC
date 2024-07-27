@@ -1,15 +1,15 @@
 #include "link.h"
 #include <iostream>
 
-//Link::~Link()
-//{
-//	auto* p1{ this };
-//
-//	while (p1)
-//	{
-//		p1 = p1->erase();
-//	}
-//}
+Link::~Link()
+{
+	auto* p1{ this };
+
+	while (p1)
+	{
+		p1 = p1->erase(p1);
+	}
+}
 
 Link* Link::add(Link* n)
 {
@@ -31,29 +31,39 @@ Link* Link::add(Link* n)
 	return this;
 }
 
-//Link* Link::erase()
-//{
-//	if (!this)
-//	{
-//		return nullptr;
-//	}
-//
-//	auto* p{ this };
-//
-//	while (p != this)
-//	{
-//		if (h->succ == this)
-//		{
-//			h->succ = h->succ->succ;
-//			p->succ = nullptr;
-//			return h;
-//		}
-//
-//		h = h->succ;
-//	}
-//
-//	return h->succ;
-//}
+Link* Link::erase(Link* h)
+{
+	if (!this)
+	{
+		return nullptr;
+	}
+
+	if (!h)
+	{
+		return this;
+	}
+
+	auto* p{ h };
+
+	while (p != this)
+	{
+		if (p->succ == this)
+		{
+			if (!p->succ->succ)
+			{
+				p->succ = nullptr;
+				return h;
+			}
+
+			p->succ = p->succ->succ;
+			return h;
+		}
+
+		p = p->succ;
+	}
+
+	return h->succ;
+}
 
 Link* Link::insert(Link* h, Link* n)
 {
