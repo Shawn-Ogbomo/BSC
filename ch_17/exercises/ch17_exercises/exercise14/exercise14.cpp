@@ -16,23 +16,21 @@
 int main() {
 	auto* norse_gods = new Link{ "1" };
 
-	norse_gods->add(new Link{ "2" });
-	norse_gods->add(new Link{ "3" });
-	norse_gods->add(new Link{ "4" });
+	norse_gods = norse_gods->add(new Link{ "2" });
+	norse_gods = norse_gods->add(new Link{ "3" });
+	norse_gods = norse_gods->add(new Link{ "4" });
 
-	norse_gods->add(new Link{ "Shawn" });
-
-	if (auto* p1{ norse_gods->advance(norse_gods,2) }; p1) {
-		p1->add(new Link{ "Shawn7" });
-	}
+	norse_gods->advance(3)->add(new Link{ "777" });
 
 	print_all(norse_gods);
 
-	/*auto* p2{ norse_gods->advance(norse_gods, 2) };
+	std::cout << "\n\n";
 
-	p2->erase();*/
+	norse_gods = norse_gods->insert(norse_gods, new Link{ "ZZZZ" });
 
-	norse_gods->erase(norse_gods->advance(norse_gods, 2));
+	norse_gods->advance(3)->insert(norse_gods, new Link{ "BBBB" });
+
+	std::cout << "\n\n";
 
 	delete norse_gods;
 }

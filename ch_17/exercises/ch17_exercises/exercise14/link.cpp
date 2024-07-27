@@ -1,15 +1,15 @@
 #include "link.h"
 #include <iostream>
 
-Link::~Link()
-{
-	auto* p1{ this };
-
-	while (p1)
-	{
-		p1 = p1->erase(p1);
-	}
-}
+//Link::~Link()
+//{
+//	auto* p1{ this };
+//
+//	while (p1)
+//	{
+//		p1 = p1->erase();
+//	}
+//}
 
 Link* Link::add(Link* n)
 {
@@ -23,64 +23,39 @@ Link* Link::add(Link* n)
 		return n;
 	}
 
-	if (!succ)
-	{
-		succ = n;
-		return n;
-	}
-
 	auto* next{ succ };
 
 	succ = n;
 	n->succ = next;
 
-	return n;
+	return this;
 }
 
-Link* Link::erase(Link* p)
-{
-	if (!this)
-	{
-		return nullptr;
-	}
+//Link* Link::erase()
+//{
+//	if (!this)
+//	{
+//		return nullptr;
+//	}
+//
+//	auto* p{ this };
+//
+//	while (p != this)
+//	{
+//		if (h->succ == this)
+//		{
+//			h->succ = h->succ->succ;
+//			p->succ = nullptr;
+//			return h;
+//		}
+//
+//		h = h->succ;
+//	}
+//
+//	return h->succ;
+//}
 
-	if (!p)
-	{
-		return this;
-	}
-
-	if (!succ)
-	{
-		while (p->succ)
-		{
-			if (!p->succ->succ)
-			{
-				p->succ = nullptr;
-				return p;
-			}
-
-			p = p->succ;
-		}
-
-		return p->succ;
-	}
-
-	while (p != this)
-	{
-		if (p->succ == this)
-		{
-			p->succ = p->succ->succ;
-			succ = nullptr;
-			return p;
-		}
-
-		p = p->succ;
-	}
-
-	return p->succ;
-}
-
-Link* Link::insert(Link* n)
+Link* Link::insert(Link* h, Link* n)
 {
 	if (!this)
 	{
@@ -94,7 +69,16 @@ Link* Link::insert(Link* n)
 
 	n->succ = this;
 
-	// get the link before this and point to n
+	while (h != this)
+	{
+		if (h->succ == this)
+		{
+			h->succ = n;
+			return h;
+		}
+
+		h = h->succ;
+	}
 
 	return n;
 }
@@ -121,12 +105,14 @@ const Link* Link::find(std::string_view s) const
 	return const_cast<Link*>(this)->find(s);
 }
 
-Link* Link::advance(Link* p, int n) const
+Link* Link::advance(int n) const
 {
-	if (!p)
+	if (!this)
 	{
 		return nullptr;
 	}
+
+	auto* p{ this };
 
 	if (n > 0)
 	{
@@ -141,7 +127,7 @@ Link* Link::advance(Link* p, int n) const
 		}
 	}
 
-	return p;
+	return const_cast<Link*>(p);
 }
 
 void print_all(const Link* p)

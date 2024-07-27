@@ -11,11 +11,11 @@ public:
 	// INSERT N AFTER THIS OBJECT
 	Link* add(Link* n);
 	// REMOVE THIS OBJECT FROM LIST
-	Link* erase(Link* p);
-	Link* insert(Link* n);
+	//Link* erase();
+	Link* insert(Link* h, Link* n);
 	Link* find(std::string_view s);
 	const Link* find(std::string_view s) const;
-	Link* advance(Link* p, int n) const;
+	Link* advance(int n) const;
 	Link* next() const { return succ; };
 	std::string_view value() const { return val; };
 private:
