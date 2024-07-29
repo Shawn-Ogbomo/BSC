@@ -33,11 +33,11 @@ static Link* ordered_list(Link* lhs) {
 }
 
 int main() {
-	auto* norse_gods = new Link{ God{"Odin","Greek","...",""} };
+	//auto* norse_gods = new Link{ God{"Odin","Greek","...",""} };
 
-	norse_gods = norse_gods->insert(new Link{ God{"Frigg","Norse","...",""} });
-	norse_gods = norse_gods->insert(new Link{ God{"Loki","Norse","...",""} });
-	norse_gods = norse_gods->insert(new Link{ God{"Balder","Norse","...",""} });
+	//norse_gods = norse_gods->insert(new Link{ God{"Frigg","Norse","...",""} });
+	//norse_gods = norse_gods->insert(new Link{ God{"Loki","Norse","...",""} });
+	//norse_gods = norse_gods->insert(new Link{ God{"Balder","Norse","...",""} });
 
 	auto* greek_gods = new Link{ God{"Hera","Greek","..."} };
 
@@ -45,7 +45,8 @@ int main() {
 	greek_gods = greek_gods->add(new Link{ God{ "Demeter","Greek","..." } });
 	greek_gods = greek_gods->add(new Link{ God{ "Ares","Greek","..." } });
 
-	auto* egyptian_gods = new Link{ God{"Set","Egypt","..."} };
+	greek_gods = greek_gods->advance(greek_gods, -2)->add(new Link{ God{ "test...","Greek","..." } });
+	/*auto* egyptian_gods = new Link{ God{"Set","Egypt","..."} };
 
 	egyptian_gods = egyptian_gods->add(new Link{ God{ "Ra","Egypt","..." } });
 	egyptian_gods = egyptian_gods->insert(new Link{ God{"Isis","Egypt","...",""} });
@@ -58,12 +59,12 @@ int main() {
 	}
 
 	print_all(norse_gods);
-	std::cout << "\n\n";
+	std::cout << "\n\n";*/
 
 	print_all(greek_gods);
 	std::cout << "\n\n";
 
-	print_all(egyptian_gods);
+	/*print_all(egyptian_gods);
 	std::cout << "\n\n";
 
 	std::cout << "***Sorted Lists*** \n";
@@ -78,12 +79,12 @@ int main() {
 
 	auto* egyptian_ordered{ ordered_list(egyptian_gods) };
 	print_all(egyptian_ordered);
-	std::cout << "\n\n";
+	std::cout << "\n\n";*/
 
 	delete greek_gods;
-	delete norse_gods;
-	delete egyptian_gods;
-	delete norse_ordered;
-	delete greek_ordered;
-	delete egyptian_ordered;
+	//delete norse_gods;
+	//delete egyptian_gods;
+	//delete norse_ordered;
+	//delete greek_ordered;
+	//delete egyptian_ordered;
 }
