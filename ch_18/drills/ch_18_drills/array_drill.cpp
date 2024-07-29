@@ -1,8 +1,6 @@
 //Array drill ch18
 #include <iostream>
 
-int ga[]{ 1,2,4,8,16,32,64,128,256,512 };
-
 auto f(const int arr[], int sz) {
 	int la[10]{};
 
@@ -47,6 +45,8 @@ static auto factorial(int val) {
 
 	return fact;
 }
+
+int ga[]{ 1,2,4,8,16,32,64,128,256,512 };
 
 int main()
 {
