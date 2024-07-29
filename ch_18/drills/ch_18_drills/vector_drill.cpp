@@ -3,8 +3,6 @@
 #include <iostream>
 #include <algorithm>
 
-auto gv{ std::vector<int>{1} };
-
 static auto print_vec(const std::vector<int>& v) {
 	for (auto& val : v)
 	{
@@ -25,6 +23,8 @@ static auto f(const std::vector<int>& v) {
 
 	print_vec(lv2);
 }
+
+auto gv{ std::vector<int>{1} };
 
 int main()
 {
