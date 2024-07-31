@@ -38,12 +38,7 @@ static auto strdupp(const char* target) -> char* {
 int main() {
 	char name[]{ "shawn" };
 
-	auto* p = strdupp(name);
-
-	std::cout << "Address of p: " << p << "\n";
-	std::cout << "Address of name: " << &name << "\n";
-
-	if (p)
+	if (auto* p = strdupp(name))
 	{
 		const auto* p2 = p;
 
@@ -51,7 +46,7 @@ int main() {
 			std::cout << *p2;
 			++p2;
 		}
-	}
 
-	delete[] p;
+		delete[] p;
+	}
 }
