@@ -18,7 +18,7 @@ static auto is_palindrome(const std::string_view& s)
 
 int main()
 {
-	std::cout << "This program determines if a string is palindrome. \nEnter a string followed by enter\m"
+	std::cout << "This program determines if a string is palindrome. \nEnter a string followed by enter\n"
 		<< "Press ctrl+z to exit...\n\n";
 
 	for (std::string s; std::cin >> s;)
