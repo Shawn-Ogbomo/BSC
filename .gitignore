@@ -23,6 +23,8 @@
 *.sqlite
 *.wsuo
 *.lock
+*.json
+*.vs
 /ch_10/ch_10_6/10_6/Debug/main.obj
 /ch_10/ch_10_6/10_6/Debug/roman.obj
 /ch_10/ch_10_6/10_6/Debug/calculator_roman_ints.obj.enc
