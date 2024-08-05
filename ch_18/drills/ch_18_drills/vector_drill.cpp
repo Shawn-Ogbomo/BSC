@@ -28,7 +28,7 @@ auto gv{ std::vector<int>{1} };
 
 int main()
 {
-	/*for (auto val = 1, count = 1, sz = 10; val *= 2;)
+	for (auto val = 1, count = 1, sz = 10; val *= 2;)
 	{
 		if (count == sz)
 		{
@@ -37,9 +37,7 @@ int main()
 
 		gv.push_back(val);
 		++count;
-	}*/
-
-	std::for_each(gv.begin() + 1, gv.end(), []() {});
+	}
 
 	print_vec(gv);
 
