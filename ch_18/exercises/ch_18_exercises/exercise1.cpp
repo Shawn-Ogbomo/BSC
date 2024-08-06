@@ -42,10 +42,7 @@ int main() {
 	{
 		const auto* p2 = p;
 
-		while (*p2 != '\0') {
-			std::cout << *p2;
-			++p2;
-		}
+		std::cout << p2;
 
 		delete[] p;
 	}
