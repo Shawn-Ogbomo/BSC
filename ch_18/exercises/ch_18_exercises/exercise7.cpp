@@ -63,22 +63,6 @@ static auto cat_dot(const char* s1, const char* s2, const char* s3 = " ") -> con
 	return new_str;
 }
 
-static auto display(const char* s)
-{
-	if (!s)
-	{
-		return nullptr;
-	}
-
-	auto index = 0;
-
-	while (s[index] != '\0')
-	{
-		std::cout << s[index];
-		++index;
-	}
-}
-
 int main()
 {
 	auto* s = cat_dot("shawn", "o", "***");
@@ -86,27 +70,17 @@ int main()
 	auto* s3 = cat_dot("shawn1111111", "777777777", "_______");
 	auto* s4 = cat_dot("Shawn", "777");
 
-	display(s);
-	std::cout << "\n\n";
-
-	display(s2);
-	std::cout << "\n\n";
-
-	display(s3);
-	std::cout << "\n\n";
-
-	display(s4);
-	std::cout << "\n\n";
+	std::cout << s << "\n\n" << s2
+		<< "\n\n" << s3 << "\n\n"
+		<< s4 << "\n\n";
 
 	char s5[] = { 's','d' ,'\0' };
 
-	display(s5);
-	std::cout << "\n\n";
+	std::cout << s5 << "\n\n";
 
 	char s6[] = { "777" };
 
-	display(s6);
-	std::cout << "\n\n";
+	std::cout << s6 << "\n\n";
 
 	delete[] s;
 	delete[] s2;
