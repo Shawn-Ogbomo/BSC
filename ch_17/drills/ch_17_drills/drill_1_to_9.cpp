@@ -4,8 +4,6 @@
 
 static void print_array10(std::ostream& os, const int* a, int sz)
 {
-	auto val{ sz };
-
 	for (auto i = 0; i < sz; ++i)
 	{
 		os << a[i] << " ";
@@ -14,6 +12,7 @@ static void print_array10(std::ostream& os, const int* a, int sz)
 
 int main() {
 	constexpr auto max_sz{ 21 };
+
 	auto* vals{ new int[max_sz] {} };
 
 	for (auto i = 0, val = 100; i < max_sz; ++i, ++val)
