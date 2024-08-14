@@ -183,9 +183,9 @@ int main()
 		char vals[] = { '2','7','4' };
 		char vals2[] = { '2','7','4' };
 
-		const auto* p1 = strdupp(vals, 20);
-
-		std::cout << p1 << "\n";
+		if (const auto* p1 = strdupp(vals, 20)) {
+			std::cout << p1 << "\n";
+		}
 
 		if (const auto* p2 = strdupp(nullptr, 4)) {
 			std::cout << p2;
