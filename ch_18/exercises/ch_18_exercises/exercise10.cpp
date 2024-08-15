@@ -14,8 +14,6 @@ class Terminate : public std::exception
 	using std::exception::exception;
 };
 
-constexpr int limit = 128;
-
 static auto is_palindrome(const char s[], int n) -> bool
 {
 	int first = 0; // index of first letter
@@ -39,61 +37,48 @@ static auto read_word(std::istream& is, char* buffer, int max) -> std::istream&
 
 static auto check_stream(std::istream& is = std::cin) -> void
 {
-	if (is.eof() || is.bad())
+	if (is.eof())
 	{
 		throw Terminate{ "exiting..." };
 	}
 
 	if (is.fail())
 	{
-		is.clear();
-
-		for (auto c = '?'; std::cin >> c; )
-		{
-			if (isdigit(c))
-			{
-				is.unget();
-				throw std::runtime_error{ "" };
-			}
-		}
-
-		throw Terminate{ "exiting..." };
+		throw std::runtime_error{ "Oops something went wrong..." };
 	}
 }
 
 int main()
 {
-	while (true) try {
-		char* s{};
-
-		auto sz = 0;
-
-		std::cin >> sz;
-
-		check_stream();
-
-		if (sz > limit)
+	try
+	{
+		for (auto sz = 0, limit = 128; std::cin >> sz;)
 		{
-			std::cerr << "Invalid sz\n";
-			sz = limit;
-		}
-
-		s = new char[sz] {};
-
-		if (read_word(std::cin, s, sz)) {
-			std::cout << s << " is";
-
-			if (!is_palindrome(s, strlen(s)))
+			if (sz > limit)
 			{
-				std::cout << " not";
+				sz = limit;
 			}
 
-			std::cout << " a palindrome\n";
+			if (auto* s = new char[sz])
+			{
+				read_word(std::cin, s, sz);
+
+				check_stream();
+
+				std::cout << s << " is";
+
+				if (!is_palindrome(s, strlen(s)))
+				{
+					std::cout << " not";
+				}
+
+				std::cout << " a palindrome\n";
+
+				delete[] s;
+			}
 		}
 
 		check_stream();
-
-		delete[] s;
 	}
 
 	catch (Terminate& e)
@@ -102,19 +87,9 @@ int main()
 		return 1;
 	}
 
-	catch (std::bad_alloc& e)
+	catch (std::exception& e)
 	{
 		std::cerr << e.what() << "\n";
 		return 2;
-	}
-	catch (std::invalid_argument& e)
-	{
-		std::cerr << e.what() << "\n";
-		return 3;
-	}
-
-	catch (std::runtime_error& e)
-	{
-		std::cerr << e.what() << "\n";
 	}
 }
