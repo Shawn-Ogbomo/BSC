@@ -52,23 +52,22 @@ int main()
 				sz = limit;
 			}
 
-			if (auto* s = new char[sz])
+			auto* s = new char[sz];
+
+			read_word(std::cin, s, sz);
+
+			check_stream();
+
+			std::cout << s << " is";
+
+			if (!is_palindrome(s, strlen(s)))
 			{
-				read_word(std::cin, s, sz);
-
-				check_stream();
-
-				std::cout << s << " is";
-
-				if (!is_palindrome(s, strlen(s)))
-				{
-					std::cout << " not";
-				}
-
-				std::cout << " a palindrome\n";
-
-				delete[] s;
+				std::cout << " not";
 			}
+
+			std::cout << " a palindrome\n";
+
+			delete[] s;
 		}
 
 		check_stream();
