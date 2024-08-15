@@ -2,11 +2,9 @@
 //to deal with long strings by(a) reporting if an input string was too long
 //and (b)allowing an arbitrarily long string.Comment on the complexity
 //of the two versions
-
 //Current version is paramount in complexity since string size is taken into account;
 //permitting an arbitrary long strings comprise allocating heap memory using new and delete to return it to the
 //free store
-
 #include <iostream>
 
 class Terminate : public std::exception
@@ -14,10 +12,10 @@ class Terminate : public std::exception
 	using std::exception::exception;
 };
 
-static auto is_palindrome(const char s[], int n) -> bool
+static auto is_palindrome(const char s[], std::size_t n) -> bool
 {
-	int first = 0; // index of first letter
-	int last = n - 1; // index of last letter
+	std::size_t first = 0; // index of first letter
+	std::size_t last = n - 1; // index of last letter
 	while (first < last) { // we haven’t reached the middle
 		if (s[first] != s[last]) return false;
 		++first; // move forward
@@ -26,7 +24,7 @@ static auto is_palindrome(const char s[], int n) -> bool
 	return true;
 }
 
-static auto read_word(std::istream& is, char* buffer, int max) -> std::istream&
+static auto read_word(std::istream& is, char* buffer, std::streamsize max) -> std::istream&
 // read at most max–1 characters from is into buffer
 {
 	is.width(max); // read at most max–1 characters in the next >>
@@ -35,16 +33,11 @@ static auto read_word(std::istream& is, char* buffer, int max) -> std::istream&
 	return is;
 }
 
-static auto check_stream(std::istream& is = std::cin) -> void
+static auto check_stream(const std::istream& is = std::cin) -> void
 {
-	if (is.eof())
+	if (is.eof() || is.fail())
 	{
-		throw Terminate{ "exiting..." };
-	}
-
-	if (is.fail())
-	{
-		throw std::runtime_error{ "Oops something went wrong..." };
+		throw Terminate{ "oops something went wrong. Exiting..." };
 	}
 }
 
@@ -52,7 +45,7 @@ int main()
 {
 	try
 	{
-		for (auto sz = 0, limit = 128; std::cin >> sz;)
+		for (std::size_t sz = 0, limit = 128; std::cin >> sz;)
 		{
 			if (sz > limit)
 			{
