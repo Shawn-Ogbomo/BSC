@@ -4,11 +4,12 @@
 #include <iostream>
 #include <string>
 
-class Terminate {
+class Terminate : public std::runtime_error {
 public:
-	explicit Terminate(const std::string& err) :error_message{ err } {}
-	const std::string& what() const { return error_message; }
-private:
-	std::string error_message;
+	using std::runtime_error::runtime_error;
+};
+
+class Invalid_format : public std::runtime_error {
+	using std::runtime_error::runtime_error;
 };
 #endif // EXCEPTIONS_H

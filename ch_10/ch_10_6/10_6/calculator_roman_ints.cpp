@@ -32,18 +32,20 @@
 //
 //Roman numeral :
 //<string, int>
-#include <string_view>
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <cctype>
 #include <cmath>
-#include "roman.h"
+#include <cctype>
+#include <vector>
+#include <fstream>
+#include <iostream>
+#include <algorithm>
+#include <string_view>
+
 #include "util.h"
+#include "roman.h"
 #include "exceptions.h"
 
 struct Token {
+public:
 	Token() = default;
 	explicit Token(char c) :kind{ c } {}
 	explicit Token(const std::string& name)
@@ -58,72 +60,86 @@ struct Token {
 class Token_stream {
 public:
 	explicit Token_stream(std::istream const&) {}
-	Token get(std::istream& is = std::cin, std::ostream & = std::cout);
+	auto get(std::istream& is = std::cin, std::ostream & = std::cout) -> Token;
 
-	void unget(Token const& t) {
+	auto unget(const Token& t) -> void
+	{
 		if (full) {
-			throw  std::runtime_error{ "cannot put token into full stream..." };
+			throw  std::invalid_argument{ "cannot put token into full stream..." };
 		}
+
 		buffer = t;
 		full = true;
 	}
-	void ignore(char c);
+
+	auto ignore(char c) -> void;
 private:
 	bool full{};
 	Token buffer;
 };
 
-const char print = ';';
-const char  quit = 'q';
-const char  help = 'h';
-const char let = '#';
-const char name = '~';
-const char assignment = '=';
-const char underscore = '_';
-const char permanent = 'k';
-const char roman_numeral = 'r';
-const char file = 'x';
-const char output_to_file = 'y';
-constexpr std::string_view constant = "const";
-constexpr std::string_view ex_key = "exit";
+const auto print = ';';
+const auto  quit = 'q';
+const auto  help = 'h';
+const auto let = '#';
+const auto name = '~';
+const auto assignment = '=';
+const auto underscore = '_';
+const auto permanent = 'k';
+const auto roman_numeral = 'r';
+const auto file = 'x';
+const auto output_to_file = 'y';
+
+std::string_view constant = "const";
+std::string_view ex_key = "exit";
 
 //CHECKS FOR NAME,CONST,EXIT, AND ROMAN INT
-Token remaining_case(char c, std::istream& is) {
-	if (c == name) {
+static auto remaining_case(char c, std::istream& is) -> Token
+{
+	if (c == name)
+	{
 		std::string s;
-		while (is.get(c) && c == underscore || isalpha(c) || isdigit(c)) {
+
+		while (is.get(c) && c == underscore || isalpha(c) || isdigit(c))
+		{
 			s += c;
 		}
 
 		is.unget();
 
-		if (s.empty() || s.front() == underscore || isdigit(s.front())) {
-			throw std::runtime_error{ "Invalid name format..." };
+		if (s.empty() || s.front() == underscore || isdigit(s.front()))
+		{
+			throw Invalid_format{ "Invalid name format..." };
 		}
 
 		Util::format_string(s);
+
 		return Token(s);
 	}
 
-	if (c == 'c' || c == 'e') {
+	if (c == 'c' || c == 'e')
+	{
 		std::string pattern = "abcdefghijklmnopqrstuvwxyz";
 		std::string internal_s;
 
 		is.unget();
 
-		while (is.get(c) && (pattern.find(c) != std::string::npos)) {
+		while (is.get(c) && (pattern.find(c) != std::string::npos))
+		{
 			internal_s += c;
 		}
 
-		if (internal_s == constant) {
+		if (internal_s == constant)
+		{
 			return Token{ permanent };
 		}
 
-		if (internal_s == ex_key) {
+		if (internal_s == ex_key)
+		{
 			return Token{ quit };
 		}
 
-		throw std::runtime_error{ "your input is not const or exit..." };
+		throw Invalid_format{ "your input is not const or exit..." };
 	}
 
 	is.putback(c);
@@ -136,11 +152,14 @@ Token remaining_case(char c, std::istream& is) {
 	return Token{ rmn };
 }
 
-Token Token_stream::get(std::istream& is, std::ostream& os) {
-	if (full) {
+Token Token_stream::get(std::istream& is, std::ostream& os)
+{
+	if (full)
+	{
 		full = false;
 		return buffer;
 	}
+
 	char c{};
 	is.get(c);
 	Util::check_stream(is, "exiting...");
@@ -171,20 +190,23 @@ Token Token_stream::get(std::istream& is, std::ostream& os) {
 	case '9':
 	case '.':
 	{
-		throw  std::runtime_error{ "Roman numerals only." };
+		throw  Invalid_format{ "Roman numerals only." };
 	}
 
 	default:
-		if (isspace(c)) {
+		if (isspace(c))
+		{
 			return Token(print);
 		}
 
-		if (isalpha(c) && is.peek() == '\n') {
+		if (isalpha(c) && is.peek() == '\n')
+		{
 			if (c == quit) {
 				return Token(quit);
 			}
 
-			if (c == help) {
+			if (c == help)
+			{
 				os << "\nCalculator application...\n\n"
 					<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included.\n"
 					<< "The calculator is also capable of creating variables and constants.\n"
@@ -196,11 +218,13 @@ Token Token_stream::get(std::istream& is, std::ostream& os) {
 				throw  std::runtime_error{ "\nrestarting..." };
 			}
 
-			if (c == file) {
+			if (c == file)
+			{
 				return Token{ file };
 			}
 
-			if (c == output_to_file) {
+			if (c == output_to_file)
+			{
 				return Token{ output_to_file };
 			}
 		}
@@ -213,8 +237,10 @@ Roman_int statement(Token_stream& ts, std::istream& is = std::cin, std::ostream&
 Roman_int expression(Token_stream& ts, std::istream& is = std::cin);
 
 // ignores print characters ';'
-void Token_stream::ignore(char c) {
-	if (full && c == buffer.kind) {
+auto Token_stream::ignore(char c) -> void
+{
+	if (full && c == buffer.kind)
+	{
 		full = false;
 		return;
 	}
@@ -223,19 +249,22 @@ void Token_stream::ignore(char c) {
 	full = false;
 	char ch;
 
-	while (std::cin >> ch) {
-		if (ch == c) {
+	while (std::cin >> ch)
+	{
+		if (ch == c)
+		{
 			return;
 		}
 	}
 }
 
-void clean_up_mess(Token_stream& ts) {
+static auto  clean_up_mess(Token_stream& ts) -> void
+{
 	ts.ignore(print);
 }
 
-const char prompt = '>';
-const char result = '=';
+const auto prompt = '>';
+const auto result = '=';
 
 class Variable {
 public:
@@ -256,34 +285,42 @@ private:
 	bool state{};
 };
 
-void file_prompt(std::string& f_name) {
+static auto file_prompt(std::string& f_name) -> void
+{
 	std::cout << "Enter the name of the file: ";
 	std::cin >> f_name;
 }
 
 //TAKES INPUT FROM FILE
-void from_file(Token_stream& ts, std::ostream& os = std::cout) {
+static auto from_file(Token_stream& ts, std::ostream& os = std::cout) -> void
+{
 	std::string file_name;
 	file_prompt(file_name);
 	std::ifstream ifs{ file_name };
 
 	Util::check_stream(ifs, "Oops, the file: " + file_name + " does not exist...", "\nyou pressed ctrl+z\nexiting....");
 
-	while (ifs)try {
+	while (ifs)try
+	{
 		os << prompt << " ";
-		Token t = ts.get(ifs);
 
-		while (t.kind == print) {
-			if (ifs.peek() == -1) {
+		auto t = ts.get(ifs);
+
+		while (t.kind == print)
+		{
+			if (ifs.peek() == -1)
+			{
 				return;
 			}
+
 			t = ts.get(ifs);
 		}
 
 		ts.unget(t);
 		os << result << " " << statement(ts, ifs) << std::endl;
 	}
-	catch (std::runtime_error& e) {
+	catch (std::runtime_error& e)
+	{
 		os << e.what() << "\n";
 		Util::skip_input(ifs, print);
 	}
@@ -292,32 +329,39 @@ void from_file(Token_stream& ts, std::ostream& os = std::cout) {
 void calculate(Token_stream& ts, std::ostream& os = std::cout);
 
 //SEND OUTPUT TO FILE
-void to_file(Token_stream& ts, std::ostream& os) {
+static auto to_file(Token_stream& ts, std::ostream& os) -> void
+{
 	std::cout << "press q or type exit to stop sending output to file...\n";
 
 	calculate(ts, os);
 }
 
-void calculate(Token_stream& ts, std::ostream& os) {
-	while (true)try {
+static auto calculate(Token_stream& ts, std::ostream& os) -> void
+{
+	while (true)try
+	{
 		std::cout << prompt << " ";
-		Token t = ts.get(std::cin, os);
+		auto t = ts.get(std::cin, os);
 
-		while (t.kind == print) {
+		while (t.kind == print)
+		{
 			t = ts.get(std::cin, os);
 		}
 
-		if (t.kind == quit) {
+		if (t.kind == quit)
+		{
 			return;
 		}
 
-		if (t.kind == file) {
+		if (t.kind == file)
+		{
 			from_file(ts, os);
 			std::cout << "Finished reading file contents.\n";
 			continue;
 		}
 
-		if (t.kind == output_to_file) {
+		if (t.kind == output_to_file)
+		{
 			std::string file_name;	file_prompt(file_name);
 			std::ofstream oft{ file_name };
 
@@ -330,7 +374,8 @@ void calculate(Token_stream& ts, std::ostream& os) {
 		os << result << " " << statement(ts) << std::endl;
 	}
 
-	catch (std::exception& e) {
+	catch (std::exception& e)
+	{
 		os << e.what() << "\n";
 		clean_up_mess(ts);
 	}
@@ -338,55 +383,69 @@ void calculate(Token_stream& ts, std::ostream& os) {
 
 class Symbol_table {
 public:
-	static Roman_int declare(Token_stream& ts, const Token& t, std::istream& is = std::cin) {
-		Token t2 = ts.get(is);
+	static Roman_int declare(Token_stream& ts, const Token& t, std::istream& is = std::cin)
+	{
+		auto t2 = ts.get(is);
 
-		if (t2.kind != name) {
-			throw  std::runtime_error{ "invalid token: " + std::string{t2.kind} + " expected a name" };
+		if (t2.kind != name)
+		{
+			throw  Invalid_format{ "invalid token: " + std::string{t2.kind} + " expected a name" };
 		}
 
-		if (Token t3 = ts.get(is); t3.kind != print) {
+		if (Token t3 = ts.get(is); t3.kind != print)
+		{
 			ts.unget(t3);
 		}
 
-		if (Token t4 = ts.get(is); t4.kind != assignment) {
-			throw  std::runtime_error{ "invalid token: " + std::string{t4.kind} + " expected " + assignment };
+		if (Token t4 = ts.get(is); t4.kind != assignment)
+		{
+			throw  Invalid_format{ "invalid token: " + std::string{t4.kind} + " expected " + assignment };
 		}
 
-		if (Token t5 = ts.get(is); t5.kind != print) {
+		if (Token t5 = ts.get(is); t5.kind != print)
+		{
 			ts.unget(t5);
 		}
 
-		if (Symbol_table::is_declared(t2.name)) {
-			throw  std::runtime_error{ t2.name + std::string{" is already declared\n"} };
+		if (Symbol_table::is_declared(t2.name))
+		{
+			throw  std::invalid_argument{ t2.name + std::string{" is already declared\n"} };
 		}
 
-		Roman_int rmn_numeral = expression(ts, is);
-		Variable v = (t.kind == let ? Variable{ t2.name, rmn_numeral } : Variable{ t2.name, rmn_numeral, true });
+		auto rmn_numeral = expression(ts, is);
+		auto v = (t.kind == let ? Variable{ t2.name, rmn_numeral } : Variable{ t2.name, rmn_numeral, true });
 
 		var_table.push_back(v);
 		return v.value();
 	}
 
-	static bool is_declared(std::string_view variable_name) {
+	static bool is_declared(std::string_view variable_name)
+	{
 		return std::any_of(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) {return v.name() == variable_name; });
 	}
 
-	static Roman_int value(std::string_view variable_name) {
+	static Roman_int value(std::string_view variable_name)
+	{
 		if (auto found = std::find_if(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
-			found != std::end(var_table)) {
+			found != std::end(var_table))
+		{
 			return found->value();
 		}
-		throw  std::runtime_error{ "The variable: " + static_cast<std::string>(variable_name) + " does not exist..." };
+
+		throw  std::invalid_argument{ "The variable: " + static_cast<std::string>(variable_name) + " does not exist..." };
 	}
 
-	static void update_value(std::string_view variable_name, const Roman_int& new_value, std::ostream& os = std::cout) {
+	static void update_value(std::string_view variable_name, const Roman_int& new_value, std::ostream& os = std::cout)
+	{
 		if (auto found = std::find_if(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
-			found != std::end(var_table)) {
-			if (found->is_const()) {
+			found != std::end(var_table))
+		{
+			if (found->is_const())
+			{
 				os << variable_name << ": is marked constant. Unmodifiable...\n";
 				return;
 			}
+
 			found->set_value(new_value);
 			return;
 		}
@@ -397,51 +456,70 @@ private:
 	static inline std::vector<Variable> var_table;
 };
 
-Roman_int statement(Token_stream& ts, std::istream& is, std::ostream& os) {
-	Token t = ts.get(is);
-	if (t.kind == let || t.kind == permanent) {
+auto statement(Token_stream& ts, std::istream& is, std::ostream& os) -> Roman_int
+{
+	auto t = ts.get(is);
+
+	if (t.kind == let || t.kind == permanent)
+	{
 		return Symbol_table::declare(ts, t, is);
 	}
 
-	if (t.kind == name) {
-		if (Symbol_table::is_declared(t.name)) {
-			Token t2 = ts.get(is);
-			if (t2.kind == print) {
+	if (t.kind == name)
+	{
+		if (Symbol_table::is_declared(t.name))
+		{
+			auto t2 = ts.get(is);
+
+			if (t2.kind == print)
+			{
 				return Symbol_table::value(t.name);
 			}
 
-			if (t2.kind == assignment) {
+			if (t2.kind == assignment)
+			{
 				Symbol_table::update_value(t.name, expression(ts, is), os);
 				return Symbol_table::value(t.name);
 			}
 		}
-		throw std::runtime_error{ "The variable: " + t.name + " does not exist...\n" };
+
+		throw Invalid_format{ "The variable: " + t.name + " does not exist...\n" };
 	}
 
 	ts.unget(t);
+
 	return expression(ts, is);
 }
 
-Roman_int primary(Token_stream& ts, std::istream& is = std::cin) {
-	Token t = ts.get(is);
+static auto primary(Token_stream& ts, std::istream& is = std::cin) -> Roman_int
+{
+	auto t = ts.get(is);
+
 	switch (t.kind) {
 	case '(':
 	{
-		Roman_int left = expression(ts, is);
+		auto left = expression(ts, is);
 		t = ts.get(is);
-		if (t.kind != ')') {
+
+		if (t.kind != ')')
+		{
 			throw  std::runtime_error{ "')' expected\n" };
 		}
-		while (is.peek() == '(') {
+
+		while (is.peek() == '(')
+		{
 			t = ts.get(is);
 			left = left * expression(ts, is);
 			t = ts.get(is);
-			if (t.kind != ')') {
+
+			if (t.kind != ')')
+			{
 				throw  std::runtime_error{ "')' expected\n" };
 			}
 		}
 		return left;
 	}
+
 	case roman_numeral:
 		return t.v_rmn;
 	case name:
@@ -451,14 +529,17 @@ Roman_int primary(Token_stream& ts, std::istream& is = std::cin) {
 	}
 }
 
-Roman_int term(Token_stream& ts, std::istream& is = std::cin) {
-	Roman_int left = primary(ts, is);
-	Token t2 = ts.get(is);
-	while (true) {
+static auto term(Token_stream& ts, std::istream& is = std::cin) -> Roman_int
+{
+	auto left = primary(ts, is);
+	auto t2 = ts.get(is);
+
+	while (true)
+	{
 		switch (t2.kind) {
 		case '$':
 		{
-			left = Roman_int{ integer_to_roman_code(std::sqrt(left.as_int())) };
+			left = Roman_int{ integer_to_roman_code(static_cast<int>(std::sqrt(left.as_int()))) };
 			t2 = ts.get(is);
 			break;
 		}
@@ -493,10 +574,12 @@ Roman_int term(Token_stream& ts, std::istream& is = std::cin) {
 	}
 }
 
-Roman_int expression(Token_stream& ts, std::istream& is) {
-	Roman_int left = term(ts, is);
-	Token t2 = ts.get(is);
-	while (true) {
+static auto expression(Token_stream& ts, std::istream& is) -> Roman_int {
+	auto left = term(ts, is);
+	auto t2 = ts.get(is);
+
+	while (true)
+	{
 		switch (t2.kind) {
 		case '+':
 			left = left + term(ts, is);
@@ -514,17 +597,20 @@ Roman_int expression(Token_stream& ts, std::istream& is) {
 }
 
 int main() {
-	try {
+	try
+	{
 		Token_stream ts{ std::cin };
 		calculate(ts);
 	}
 
-	catch (Terminate& e) {
+	catch (Terminate& e)
+	{
 		std::cerr << e.what() << std::endl;
 		return 1;
 	}
 
-	catch (...) {
+	catch (...)
+	{
 		std::cerr << "Something went wrong...\n";
 		return 2;
 	}

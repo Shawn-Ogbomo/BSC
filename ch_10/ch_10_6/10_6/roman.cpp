@@ -82,9 +82,9 @@ std::istream& operator>>(std::istream& is, Roman_int& r) {
 }
 
 std::string integer_to_roman_code(int val) {
-	if (constexpr int max_value = 3999;
-		val <= 0 || val > max_value) {
-		throw  std::runtime_error{ "cannot represent " + std::to_string(val) + " as a roman numeral..." };
+	if (const auto max_value = 3999; val <= 0 || val > max_value)
+	{
+		throw  std::invalid_argument{ "cannot represent " + std::to_string(val) + " as a roman numeral..." };
 	}
 
 	std::string roman_notation;

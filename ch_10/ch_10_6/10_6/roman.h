@@ -12,7 +12,7 @@ public:
 	const int& as_int() const;
 	std::string_view as_string() const;
 private:
-	std::string roman_code = "nulla";
+	std::string roman_code{ "nulla" };
 	int value{};
 };
 
