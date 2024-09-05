@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <algorithm>
+
 #include "util.h"
 #include "roman.h"
 
@@ -48,40 +49,48 @@ Roman_int::Roman_int(const std::string& letters)
 	}
 }
 
-const int& Roman_int::as_int() const {
+auto Roman_int::as_int() const -> const int&
+{
 	return value;
 }
 
-std::string_view Roman_int::as_string() const {
+auto Roman_int::as_string() const -> std::string_view
+{
 	return roman_code;
 }
 
-std::ostream& operator<<(std::ostream& os, const Roman_int& r) {
+auto operator<<(std::ostream& os, const Roman_int& r) -> std::ostream&
+{
 	return os << r.as_string();
 }
 
-std::istream& operator>>(std::istream& is, Roman_int& r) {
-	auto c = static_cast<char>(toupper(is.peek()));
+auto operator>>(std::istream& is, Roman_int& r) -> std::istream&
+{
+	if (std::istream::sentry s{ is })
+	{
+		auto c = static_cast<char>(toupper(is.peek()));
 
-	if (auto test = roman_ints.find(std::string{ c }); test == roman_ints.end()) {
-		is.clear(std::ios_base::failbit);
-		return is;
+		if (auto test = roman_ints.find(std::string{ c }); test == roman_ints.end()) {
+			is.clear(std::ios_base::failbit);
+			return is;
+		}
+
+		std::string internal_s;
+		while (is.get(c) && roman_ints.find(std::string{ static_cast<char>((toupper(c))) }) != roman_ints.end()) {
+			internal_s += c;
+		}
+
+		is.unget();
+
+		Roman_int rmn{ internal_s };
+		r = rmn;
 	}
-
-	std::string s;
-	while (is.get(c) && roman_ints.find(std::string{ static_cast<char>((toupper(c))) }) != roman_ints.end()) {
-		s += c;
-	}
-
-	is.unget();
-
-	Roman_int rmn{ s };
-	r = rmn;
 
 	return is;
 }
 
-std::string integer_to_roman_code(int val) {
+auto integer_to_roman_code(int val) -> std::string
+{
 	if (const auto max_value = 3999; val <= 0 || val > max_value)
 	{
 		throw  std::invalid_argument{ "cannot represent " + std::to_string(val) + " as a roman numeral..." };
@@ -97,26 +106,32 @@ std::string integer_to_roman_code(int val) {
 	return roman_notation;
 }
 
-Roman_int operator+(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(left.as_int() + right.as_int()) };
+auto operator+(const Roman_int& left, const Roman_int& right) -> Roman_int
+{
+	return Roman_int{ integer_to_roman_code(left.value + right.value) };
 }
 
-Roman_int operator-(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(left.as_int() - right.as_int()) };
+auto operator-(const Roman_int& left, const Roman_int& right) -> Roman_int
+{
+	return Roman_int{ integer_to_roman_code(left.value - right.value) };
 }
 
-Roman_int operator*(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(left.as_int() * right.as_int()) };
+auto operator*(const Roman_int& left, const Roman_int& right) -> Roman_int
+{
+	return Roman_int{ integer_to_roman_code(left.value * right.value) };
 }
 
-Roman_int operator/(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(left.as_int() / right.as_int()) };
+auto operator/(const Roman_int& left, const Roman_int& right) -> Roman_int
+{
+	return Roman_int{ integer_to_roman_code(left.value / right.value) };
 }
 
-Roman_int operator^(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(static_cast<int>(std::pow(left.as_int(),right.as_int()))) };
+auto operator^(const Roman_int& left, const Roman_int& right) -> Roman_int
+{
+	return Roman_int{ integer_to_roman_code(static_cast<int>(std::pow(left.value,right.value))) };
 }
 
-Roman_int operator%(const Roman_int& left, const Roman_int& right) {
-	return Roman_int{ integer_to_roman_code(left.as_int() % right.as_int()) };
+auto operator%(const Roman_int& left, const Roman_int& right) -> Roman_int
+{
+	return Roman_int{ integer_to_roman_code(left.value % right.value) };
 }

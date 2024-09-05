@@ -1,8 +1,8 @@
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H
 
-#include <iostream>
 #include <string>
+#include <iostream>
 
 class Terminate : public std::runtime_error {
 public:

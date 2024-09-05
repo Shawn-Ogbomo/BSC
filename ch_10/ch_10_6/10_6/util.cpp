@@ -48,9 +48,9 @@ auto Util::build_new_case(const std::map <std::string, int>& m
 	return m.find(rmn_code[current_index] + std::string{ rmn_code[new_index] });
 }
 
-auto Util::next_or_previous(const std::map<std::string, int>& m, std::string_view rmn_code, int new_index) -> std::map<std::string, int>::const_iterator
+auto Util::next_or_previous(const std::map<std::string, int>& m, std::string_view rmn_code, std::size_t new_index) -> std::map<std::string, int>::const_iterator
 {
-	if (auto rmn_code_sz = rmn_code.size(); new_index >= rmn_code_sz
+	if (std::size_t rmn_code_sz = rmn_code.size(); new_index >= rmn_code_sz
 		|| new_index < 0)
 	{
 		return m.end();
