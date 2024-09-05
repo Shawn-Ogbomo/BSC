@@ -60,7 +60,7 @@ public:
 class Token_stream {
 public:
 	explicit Token_stream(std::istream const&) {}
-	auto get(std::istream& is = std::cin, std::ostream & = std::cout) -> Token;
+	auto get(std::istream& is = std::cin) -> Token;
 
 	auto unget(const Token& t) -> void
 	{
@@ -152,7 +152,7 @@ static auto remaining_case(char c, std::istream& is) -> Token
 	return Token{ rmn };
 }
 
-Token Token_stream::get(std::istream& is, std::ostream& os)
+auto Token_stream::get(std::istream& is) -> Token
 {
 	if (full)
 	{
@@ -207,15 +207,7 @@ Token Token_stream::get(std::istream& is, std::ostream& os)
 
 			if (c == help)
 			{
-				os << "\nCalculator application...\n\n"
-					<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included.\n"
-					<< "The calculator is also capable of creating variables and constants.\n"
-					<< "\nFunctions...\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n\n# variable declaration format\n#~shawn=roman_numeral or one space after or before = key\n\n"
-					<< "const declaration format \nconst ~shawn=roman_numeral or const ~shawn =roman_numeral or const ~shawn = roman_numeral\n"
-					<< "h key to display instructions...\n"
-					<< "y key to send all cerr output and standard output to a file\n";
-
-				throw  std::runtime_error{ "\nrestarting..." };
+				return Token{ help };
 			}
 
 			if (c == file)
@@ -273,10 +265,10 @@ public:
 		:n{ name },
 		v{ val },
 		state{ qualifier } {}
-	const Roman_int& value()const { return v; }
-	std::string_view name() const { return n; }
-	bool is_const() const { return state; }
-	void set_value(const Roman_int& val) {
+	auto value()const -> const Roman_int& { return v; }
+	auto name() const -> std::string_view { return n; }
+	auto is_const() const -> bool { return state; }
+	auto set_value(const Roman_int& val) -> void {
 		v = val;
 	}
 private:
@@ -319,14 +311,20 @@ static auto from_file(Token_stream& ts, std::ostream& os = std::cout) -> void
 		ts.unget(t);
 		os << result << " " << statement(ts, ifs) << std::endl;
 	}
-	catch (std::runtime_error& e)
+	catch (std::invalid_argument& e)
 	{
 		os << e.what() << "\n";
 		Util::skip_input(ifs, print);
 	}
+
+	catch (Invalid_format& internal_e)
+	{
+		os << internal_e.what() << "\n";
+		Util::skip_input(ifs, print);
+	}
 }
 
-void calculate(Token_stream& ts, std::ostream& os = std::cout);
+static auto calculate(Token_stream& ts, std::ostream& os = std::cout) -> void;
 
 //SEND OUTPUT TO FILE
 static auto to_file(Token_stream& ts, std::ostream& os) -> void
@@ -336,16 +334,27 @@ static auto to_file(Token_stream& ts, std::ostream& os) -> void
 	calculate(ts, os);
 }
 
+static auto help_message(std::ostream& os) -> void
+{
+	os << "\nCalculator application...\n\n"
+		<< "This calculator contains the functions of a basic calculator. \nModulo, exponent, and square root functions are also included.\n"
+		<< "The calculator is also capable of creating variables and constants.\n"
+		<< "\nFunctions...\n" << "$ = sqrt\nenter-key = print instead of '='\nq-key to quit or type exit to quit\n\n# variable declaration format\n#~shawn=roman_numeral or one space after or before = key\n\n"
+		<< "const declaration format \nconst ~shawn=roman_numeral or const ~shawn =roman_numeral or const ~shawn = roman_numeral\n"
+		<< "h key to display instructions...\n"
+		<< "y key to send all cerr output and standard output to a file\n\n";
+}
+
 static auto calculate(Token_stream& ts, std::ostream& os) -> void
 {
 	while (true)try
 	{
 		std::cout << prompt << " ";
-		auto t = ts.get(std::cin, os);
+		auto t = ts.get(std::cin);
 
 		while (t.kind == print)
 		{
-			t = ts.get(std::cin, os);
+			t = ts.get(std::cin);
 		}
 
 		if (t.kind == quit)
@@ -370,11 +379,17 @@ static auto calculate(Token_stream& ts, std::ostream& os) -> void
 			continue;
 		}
 
+		if (t.kind == help)
+		{
+			help_message(os);
+			continue;
+		}
+
 		ts.unget(t);
 		os << result << " " << statement(ts) << std::endl;
 	}
 
-	catch (std::exception& e)
+	catch (std::invalid_argument& e)
 	{
 		os << e.what() << "\n";
 		clean_up_mess(ts);
@@ -383,7 +398,7 @@ static auto calculate(Token_stream& ts, std::ostream& os) -> void
 
 class Symbol_table {
 public:
-	static Roman_int declare(Token_stream& ts, const Token& t, std::istream& is = std::cin)
+	static auto declare(Token_stream& ts, const Token& t, std::istream& is = std::cin) -> Roman_int
 	{
 		auto t2 = ts.get(is);
 
@@ -392,17 +407,17 @@ public:
 			throw  Invalid_format{ "invalid token: " + std::string{t2.kind} + " expected a name" };
 		}
 
-		if (Token t3 = ts.get(is); t3.kind != print)
+		if (auto t3 = ts.get(is); t3.kind != print)
 		{
 			ts.unget(t3);
 		}
 
-		if (Token t4 = ts.get(is); t4.kind != assignment)
+		if (auto t4 = ts.get(is); t4.kind != assignment)
 		{
 			throw  Invalid_format{ "invalid token: " + std::string{t4.kind} + " expected " + assignment };
 		}
 
-		if (Token t5 = ts.get(is); t5.kind != print)
+		if (auto t5 = ts.get(is); t5.kind != print)
 		{
 			ts.unget(t5);
 		}
@@ -419,12 +434,12 @@ public:
 		return v.value();
 	}
 
-	static bool is_declared(std::string_view variable_name)
+	static auto is_declared(std::string_view variable_name) -> bool
 	{
 		return std::any_of(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) {return v.name() == variable_name; });
 	}
 
-	static Roman_int value(std::string_view variable_name)
+	static auto value(std::string_view variable_name) -> Roman_int
 	{
 		if (auto found = std::find_if(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
 			found != std::end(var_table))
@@ -435,7 +450,7 @@ public:
 		throw  std::invalid_argument{ "The variable: " + static_cast<std::string>(variable_name) + " does not exist..." };
 	}
 
-	static void update_value(std::string_view variable_name, const Roman_int& new_value, std::ostream& os = std::cout)
+	static auto update_value(std::string_view variable_name, const Roman_int& new_value, std::ostream& os = std::cout) -> void
 	{
 		if (auto found = std::find_if(var_table.begin(), var_table.end(), [&variable_name](Variable const& v) { return v.name() == variable_name; });
 			found != std::end(var_table))
@@ -503,7 +518,7 @@ static auto primary(Token_stream& ts, std::istream& is = std::cin) -> Roman_int
 
 		if (t.kind != ')')
 		{
-			throw  std::runtime_error{ "')' expected\n" };
+			throw  Invalid_format{ "')' expected\n" };
 		}
 
 		while (is.peek() == '(')
@@ -514,7 +529,7 @@ static auto primary(Token_stream& ts, std::istream& is = std::cin) -> Roman_int
 
 			if (t.kind != ')')
 			{
-				throw  std::runtime_error{ "')' expected\n" };
+				throw  Invalid_format{ "')' expected\n" };
 			}
 		}
 		return left;
@@ -525,7 +540,7 @@ static auto primary(Token_stream& ts, std::istream& is = std::cin) -> Roman_int
 	case name:
 		return Symbol_table::value(t.name);
 	default:
-		throw  std::runtime_error{ "\nExpected term..." };
+		throw  Invalid_format{ "\nExpected term..." };
 	}
 }
 

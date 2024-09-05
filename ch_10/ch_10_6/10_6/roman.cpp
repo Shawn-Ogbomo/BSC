@@ -43,7 +43,7 @@ Roman_int::Roman_int(const std::string& letters)
 		}
 
 		default:
-			throw std::runtime_error{ " Invalid Roman Int...\n" };
+			throw std::invalid_argument{ " Invalid Roman Int...\n" };
 		}
 	}
 }

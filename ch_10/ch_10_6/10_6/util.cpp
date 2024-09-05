@@ -22,7 +22,7 @@ auto Util::repeats(const std::string_view s, char c, unsigned pos) -> void
 		|| (num_of_consecutive_characters != std::string::npos)
 		&& (num_of_consecutive_characters - pos > 3))
 	{
-		throw std::runtime_error{ "Invalid roman int...\n" };
+		throw std::invalid_argument{ "Invalid roman int...\n" };
 	}
 }
 
@@ -72,7 +72,7 @@ auto::Util::sum(const std::map<std::string, int>::const_iterator it1_new_case
 		if ((it2_next_new_case != map.end() && it2_next_new_case->second >= map.find(c_as_string)->second)
 			|| ((it4_prev != map.end()) && (it4_prev->second < it3_next->second)))
 		{
-			throw std::runtime_error{ "Invalid roman int...\n" };
+			throw std::invalid_argument{ "Invalid roman int...\n" };
 		}
 
 		val += map.find(it1_new_case->first)->second;
@@ -81,7 +81,7 @@ auto::Util::sum(const std::map<std::string, int>::const_iterator it1_new_case
 	else if (it3_next != map.end() && it3_next->second > map.find(c_as_string)->second
 		|| it4_prev != map.end() && it4_prev->second < map.find(c_as_string)->second)
 	{
-		throw std::runtime_error{ "Invalid roman int...\n" };
+		throw std::invalid_argument{ "Invalid roman int...\n" };
 	}
 
 	else
@@ -162,6 +162,6 @@ auto Util::check_stream(std::istream& is, const std::string& message, const std:
 	if (is.fail())
 	{
 		is.clear();
-		throw std::runtime_error{ message };
+		throw std::invalid_argument{ message };
 	}
 }
