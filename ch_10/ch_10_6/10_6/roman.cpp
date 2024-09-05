@@ -17,7 +17,7 @@ Roman_int::Roman_int(const std::string& letters)
 	: roman_code{ letters } {
 	const auto& rmn_code_sz = roman_code.size();
 
-	for (auto i = 0U; i < rmn_code_sz; ++i) {
+	for (std::size_t i = 0; i < rmn_code_sz; ++i) {
 		const auto& new_case = Util::build_new_case(roman_ints, roman_code, i, i + 1);
 		auto next_new_case = Util::next_or_previous(roman_ints, roman_code, i + 2);
 		auto next = Util::next_or_previous(roman_ints, roman_code, i + 1);
@@ -61,7 +61,7 @@ auto Roman_int::as_string() const -> std::string_view
 
 auto operator<<(std::ostream& os, const Roman_int& r) -> std::ostream&
 {
-	return os << r.as_string();
+	return os << r.roman_code;
 }
 
 auto operator>>(std::istream& is, Roman_int& r) -> std::istream&
@@ -76,6 +76,7 @@ auto operator>>(std::istream& is, Roman_int& r) -> std::istream&
 		}
 
 		std::string internal_s;
+
 		while (is.get(c) && roman_ints.find(std::string{ static_cast<char>((toupper(c))) }) != roman_ints.end()) {
 			internal_s += c;
 		}
