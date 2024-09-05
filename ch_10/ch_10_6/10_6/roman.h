@@ -5,7 +5,7 @@
 #include <string_view>
 
 class Roman_int {
-	static constexpr int repeat_limit = 3;
+	static constexpr auto repeat_limit = 3;
 public:
 	Roman_int();
 	explicit Roman_int(const std::string& letters);
