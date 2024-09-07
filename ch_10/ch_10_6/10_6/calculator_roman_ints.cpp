@@ -386,6 +386,7 @@ static auto calculate(Token_stream& ts, std::ostream& os) -> void
 		}
 
 		ts.unget(t);
+
 		os << result << " " << statement(ts) << std::endl;
 	}
 

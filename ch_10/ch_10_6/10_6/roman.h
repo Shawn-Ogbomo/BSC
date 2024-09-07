@@ -5,7 +5,6 @@
 #include <string_view>
 
 class Roman_int {
-	static constexpr auto repeat_limit = 3;
 public:
 	Roman_int();
 	explicit Roman_int(const std::string& letters);
@@ -22,7 +21,7 @@ public:
 	auto as_int() const -> const int&;
 	auto as_string() const->std::string_view;
 private:
-	std::string roman_code{ "nulla" };
+	std::string roman_code;
 	int value{};
 };
 
