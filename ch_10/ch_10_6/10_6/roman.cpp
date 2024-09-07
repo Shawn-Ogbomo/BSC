@@ -107,32 +107,32 @@ auto integer_to_roman_code(int val) -> std::string
 	return roman_notation;
 }
 
-auto operator+(const Roman_int& left, const Roman_int& right) -> Roman_int
+auto operator+(const Roman_int& lhs, const Roman_int& rhs) -> Roman_int
 {
-	return Roman_int{ integer_to_roman_code(left.value + right.value) };
+	return Roman_int{ integer_to_roman_code(lhs.value + rhs.value) };
 }
 
-auto operator-(const Roman_int& left, const Roman_int& right) -> Roman_int
+auto operator-(const Roman_int& lhs, const Roman_int& rhs) -> Roman_int
 {
-	return Roman_int{ integer_to_roman_code(left.value - right.value) };
+	return Roman_int{ integer_to_roman_code(lhs.value - rhs.value) };
 }
 
-auto operator*(const Roman_int& left, const Roman_int& right) -> Roman_int
+auto operator*(const Roman_int& lhs, const Roman_int& rhs) -> Roman_int
 {
-	return Roman_int{ integer_to_roman_code(left.value * right.value) };
+	return Roman_int{ integer_to_roman_code(lhs.value * rhs.value) };
 }
 
-auto operator/(const Roman_int& left, const Roman_int& right) -> Roman_int
+auto operator/(const Roman_int& lhs, const Roman_int& rhs) -> Roman_int
 {
-	return Roman_int{ integer_to_roman_code(left.value / right.value) };
+	return Roman_int{ integer_to_roman_code(lhs.value / rhs.value) };
 }
 
-auto operator^(const Roman_int& left, const Roman_int& right) -> Roman_int
+auto operator^(const Roman_int& lhs, const Roman_int& rhs) -> Roman_int
 {
-	return Roman_int{ integer_to_roman_code(static_cast<int>(std::pow(left.value,right.value))) };
+	return Roman_int{ integer_to_roman_code(static_cast<int>(std::pow(lhs.value,rhs.value))) };
 }
 
-auto operator%(const Roman_int& left, const Roman_int& right) -> Roman_int
+auto operator%(const Roman_int& lhs, const Roman_int& rhs) -> Roman_int
 {
-	return Roman_int{ integer_to_roman_code(left.value % right.value) };
+	return Roman_int{ integer_to_roman_code(lhs.value % rhs.value) };
 }

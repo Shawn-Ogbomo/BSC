@@ -11,12 +11,12 @@ public:
 
 	friend auto operator >> (std::istream& is, Roman_int& r)->std::istream&;
 	friend auto operator<< (std::ostream& os, const Roman_int& r)->std::ostream&;
-	friend auto operator +(const Roman_int& left, const Roman_int& right)->Roman_int;
-	friend auto operator -(const Roman_int& left, const Roman_int& right)->Roman_int;
-	friend auto operator *(const Roman_int& left, const Roman_int& right)->Roman_int;
-	friend auto operator /(const Roman_int& left, const Roman_int& right)->Roman_int;
-	friend auto operator ^(const Roman_int& left, const Roman_int& right)->Roman_int;
-	friend auto operator %(const Roman_int& left, const Roman_int& right)->Roman_int;
+	friend auto operator +(const Roman_int& lhs, const Roman_int& rhs)->Roman_int;
+	friend auto operator -(const Roman_int& lhs, const Roman_int& rhs)->Roman_int;
+	friend auto operator *(const Roman_int& lhs, const Roman_int& rhs)->Roman_int;
+	friend auto operator /(const Roman_int& lhs, const Roman_int& rhs)->Roman_int;
+	friend auto operator ^(const Roman_int& lhs, const Roman_int& rhs)->Roman_int;
+	friend auto operator %(const Roman_int& lhs, const Roman_int& rhs)->Roman_int;
 
 	auto as_int() const -> const int&;
 	auto as_string() const->std::string_view;
