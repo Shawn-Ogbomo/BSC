@@ -8,7 +8,7 @@
 
 auto Util::find_duplicates(std::string_view target_string, char c) -> void
 {
-	if (const int num_items = std::count(target_string.begin(), target_string.end(), c); num_items > 1)
+	if (const auto num_items = std::count(target_string.begin(), target_string.end(), c); num_items > 1)
 	{
 		throw std::invalid_argument{ "Invalid roman int...\n" };
 	}
@@ -27,7 +27,7 @@ auto Util::repeats(const std::string_view s, char c, unsigned pos) -> void
 }
 
 auto Util::increment(const std::map<std::string, int>& map
-	, const std::map<std::string, int>::const_iterator it, unsigned& index) -> void
+	, const std::map<std::string, int>::const_iterator it, std::size_t& index) -> void
 {
 	if (it == map.end())
 	{

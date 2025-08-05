@@ -9,7 +9,6 @@
 //Singly linked-lists required less overhead since prev is removed; their operations are cheaper.
 //doubly linked-lists do not allow tail-sharing and cannot be used as persistent data structures.
 //singly linked lists are paramount to doubly-linked list when searching is trivial.
-
 #include <iostream>
 #include "link.h"
 

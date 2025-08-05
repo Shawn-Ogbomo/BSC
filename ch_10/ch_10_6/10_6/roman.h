@@ -25,6 +25,6 @@ private:
 	int value{};
 };
 
-std::string integer_to_roman_code(int val);
+auto integer_to_roman_code(int val) -> std::string;
 
 #endif // ROMAN_H

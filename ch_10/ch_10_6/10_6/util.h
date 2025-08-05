@@ -11,7 +11,7 @@ namespace Util {
 	//RETURNS TRUE IF C REPEATS MORE THAN 3 TIMES IN SUCCESSION
 	auto repeats(const std::string_view s, char c, unsigned pos) -> void;
 
-	auto increment(const std::map<std::string, int>& map, const std::map<std::string, int>::const_iterator it, unsigned& index) -> void;
+	auto increment(const std::map<std::string, int>& map, const std::map<std::string, int>::const_iterator it, std::size_t& index) -> void;
 
 	//BUILDS A NEW CASE
 	auto build_new_case(const std::map <std::string, int>& m, std::string_view rmn_code, int current_index, int new_index) -> std::map<std::string, int>::const_iterator;
